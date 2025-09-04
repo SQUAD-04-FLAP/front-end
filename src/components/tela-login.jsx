@@ -14,7 +14,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await axios.post("https://seu-backend.com/login", {
+      const response = await axios.post("token", {
         email,
         password,
       });
