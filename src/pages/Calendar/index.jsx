@@ -1,10 +1,10 @@
 import MainTemplate from "../../templates/MainTemplate";
 
-export function Home() {
+export function Calendar() {
     return(
         <MainTemplate>
           <div>
-             <h1>Página principal</h1>
+             <h1>Calendário</h1>
           </div>
         </MainTemplate>
     );

@@ -1,14 +1,13 @@
-import { Footer } from "../../components/Footer";
-import { Header } from "../../components/Header";
+import { Sidebar } from "../../components/Sidebar";
 
 export default function MainTemplate({ children }) {
     return(
         <>
-            <Header />
+         <Sidebar />
             
+        <div className="ml-0 md:ml-60 transition-all">
             {children}
-
-            <Footer />
+        </div>
         </>
     );
 }
