@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, Megaphone, Monitor, Palette, Settings } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Megaphone, Monitor, Palette, Search, Settings } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
+import { ButtonNewTask } from "../ButtonNewTask";
+import { SearchSidebar } from "../SearchSidebar";
+import { IconsTopSidebar } from "../IconsTopSidebar";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
@@ -20,13 +23,12 @@ export function Sidebar() {
         </a>
 
         <nav className="text-sm font-medium text-gray-500" aria-label="Main Navigation">
-
             <SectionSidebar>Navegação</SectionSidebar>
 
             <IconSidebar href="/">
               <ContainerLinks>
-                <Home />
-                <span>Home</span>
+                <LayoutDashboard />
+                <span>Dashboard</span>
               </ContainerLinks>
             </IconSidebar>
 
@@ -100,30 +102,60 @@ export function Sidebar() {
             </IconSidebar>
         </nav>
       </nav>
+      
+  <div className="ml-0 transition md:ml-60">
+    <header className="flex items-center justify-between w-full px-4 h-14">
+      <button
+        className="block btn btn-light-secondary md:hidden"
+        onClick={(e) => { e.stopPropagation(); setSideBar(true); }}
+      >
+        <span className="sr-only">Menu</span>
+        <svg
+          className="w-4 h-4"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
 
-      <div className="ml-0 transition md:ml-60">
-        <header className="flex items-center justify-between w-full px-4 h-14">
-          <button
-            className="block btn btn-light-secondary md:hidden"
-            onClick={() => setSideBar(true)}
-          >
-            <span className="sr-only">Menu</span>
-            <svg
-              className="w-4 h-4"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-        </header>
-      </div>
+   <div className="flex items-center justify-between w-full px-4 h-14">
 
+  {/* Campo de busca */}
+  <SearchSidebar />
+  
+  { /* Botão para adicionar nova tarefa */ }
+  <div className="flex items-center gap-4">
+   <ButtonNewTask />
+
+   <IconsTopSidebar>
+        <Bell />
+   </IconsTopSidebar>
+
+   <IconsTopSidebar>
+        <Calendar />
+   </IconsTopSidebar>
+
+   <IconsTopSidebar>
+        <Settings />
+   </IconsTopSidebar>
+
+    <a href="#" className="flex ml-2">
+      <img
+        src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
+        alt="Foto do usuário"
+        className="w-8 h-8 rounded-full border border-gray-200 object-cover"
+      />
+    </a>
+  </div>
+</div>
+      </header>
+  </div>
       {/* Backdrop */}
       {sideBar && (
         <div
