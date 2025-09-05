@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Megaphone, Monitor, Palette, Search, Settings } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Megaphone, Monitor, Palette, Search, Settings, Sun } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
@@ -12,7 +12,7 @@ export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
 
   return (
-    <section className="min-h-screen bg-gray-50">
+    <section className="bg-gray-50">
       <nav
         className={`fixed top-0 left-0 z-20 h-full pb-10 overflow-x-hidden overflow-y-auto transition origin-left transform bg-gray-900 w-60 ${
           sideBar ? "translate-x-0" : "-translate-x-full"
@@ -25,28 +25,28 @@ export function Sidebar() {
         <nav className="text-sm font-medium text-gray-500" aria-label="Main Navigation">
             <SectionSidebar>Navegação</SectionSidebar>
 
-            <IconSidebar href="/">
+            <IconSidebar href="/dashboard">
               <ContainerLinks>
                 <LayoutDashboard />
                 <span>Dashboard</span>
               </ContainerLinks>
             </IconSidebar>
 
-            <IconSidebar href="/">
+            <IconSidebar href="/board">
               <ContainerLinks>
                 <Columns />
                 <span>Quadro Kanban</span>
               </ContainerLinks>
             </IconSidebar>
 
-            <IconSidebar href="/">
+            <IconSidebar href="/calendar">
               <ContainerLinks>
                 <Calendar />
                 <span>Calendário</span>
               </ContainerLinks>
             </IconSidebar>
 
-             <IconSidebar href="/">
+             <IconSidebar href="/reports">
               <ContainerLinks>
                 <BarChart />
                 <span>Relatórios</span>
@@ -129,8 +129,8 @@ export function Sidebar() {
   {/* Campo de busca */}
   <SearchSidebar />
   
-  { /* Botão para adicionar nova tarefa */ }
   <div className="flex items-center gap-4">
+    { /* Botão para adicionar nova tarefa */ }
    <ButtonNewTask />
 
    <IconsTopSidebar>
@@ -143,6 +143,10 @@ export function Sidebar() {
 
    <IconsTopSidebar>
         <Settings />
+   </IconsTopSidebar>
+
+   <IconsTopSidebar>
+        <Sun />
    </IconsTopSidebar>
 
     <a href="#" className="flex ml-2">

@@ -1,10 +1,10 @@
 import MainTemplate from "../../templates/MainTemplate";
 
-export function Home() {
+export function Board() {
     return(
         <MainTemplate>
           <div>
-             <h1>Página principal</h1>
+             <h1>Quadro Kanban</h1>
           </div>
         </MainTemplate>
     );
