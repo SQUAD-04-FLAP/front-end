@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Calendar, Columns, Home } from "lucide-react";
+import { BarChart, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, Megaphone, Monitor, Palette, Settings } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
+import { SectionSidebar } from "../SectionSidebar";
+import { BorderSidebar } from "../BorderSidebar";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
@@ -18,6 +20,9 @@ export function Sidebar() {
         </a>
 
         <nav className="text-sm font-medium text-gray-500" aria-label="Main Navigation">
+
+            <SectionSidebar>Navegação</SectionSidebar>
+
             <IconSidebar href="/">
               <ContainerLinks>
                 <Home />
@@ -43,6 +48,54 @@ export function Sidebar() {
               <ContainerLinks>
                 <BarChart />
                 <span>Relatórios</span>
+              </ContainerLinks>
+            </IconSidebar>
+
+            <BorderSidebar />
+
+            <SectionSidebar>Setores</SectionSidebar>
+
+             <IconSidebar href="/">
+              <ContainerLinks>
+                <Megaphone />
+                <span>Marketing</span>
+              </ContainerLinks>
+            </IconSidebar>
+
+            <IconSidebar href="/">
+              <ContainerLinks>
+                <Palette />
+                <span>Design</span>
+              </ContainerLinks>
+            </IconSidebar>
+
+            <IconSidebar href="/">
+              <ContainerLinks>
+                <Headphones />
+                <span>Atendimento</span>
+              </ContainerLinks>
+            </IconSidebar>
+
+            <IconSidebar href="/">
+              <ContainerLinks>
+                <Monitor />
+                <span>TI</span>
+              </ContainerLinks>
+            </IconSidebar>
+
+            <BorderSidebar />
+
+            <IconSidebar href="/">
+              <ContainerLinks>
+                <Settings />
+                <span>Configurações</span>
+              </ContainerLinks>
+            </IconSidebar>
+
+             <IconSidebar href="/">
+              <ContainerLinks>
+                <HelpCircle />
+                <span>Ajuda</span>
               </ContainerLinks>
             </IconSidebar>
         </nav>
