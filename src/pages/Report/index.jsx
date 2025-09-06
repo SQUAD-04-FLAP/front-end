@@ -1,10 +1,10 @@
 import MainTemplate from "../../templates/MainTemplate";
 
-export function Home() {
+export function Report() {
     return(
         <MainTemplate>
           <div>
-             <h1>Página principal</h1>
+             <h1>Relatórios</h1>
           </div>
         </MainTemplate>
     );

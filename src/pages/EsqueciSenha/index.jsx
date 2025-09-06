@@ -1,11 +1,10 @@
 import MainTemplate from "../../templates/MainTemplate";
+import EsqueciSenha from "../../components/EsqueciSenha";
 
-export function Home() {
+export function Login() {
     return(
         <MainTemplate>
-          <div>
-             <h1>Página principal</h1>
-          </div>
+            <EsqueciSenha />
         </MainTemplate>
     );
 }
