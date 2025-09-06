@@ -14,7 +14,7 @@ export function TelaLogin() {
     setErro('');
     
     try{
-      const response = await axios.post('token',{
+      const response = await axios.post('ENDERECO',{
         email,
         senha,
       });
