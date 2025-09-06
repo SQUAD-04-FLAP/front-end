@@ -1,20 +1,23 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Megaphone, Monitor, Palette, Search, Settings, Sun } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Megaphone, Monitor, Moon, Palette, Search, Settings, Sun } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
 import { ButtonNewTask } from "../ButtonNewTask";
 import { SearchSidebar } from "../SearchSidebar";
 import { IconsTopSidebar } from "../IconsTopSidebar";
+import { useTheme } from "../../hooks/useTheme";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
 
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <section className="bg-gray-50">
+    <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
       <nav
-        className={`fixed top-0 left-0 z-20 h-full pb-10 overflow-x-hidden overflow-y-auto transition origin-left transform bg-gray-900 w-60 ${
+        className={`fixed top-0 left-0 z-20 h-full pb-10 overflow-x-hidden overflow-y-auto transition origin-left transform bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 w-60 ${
           sideBar ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
@@ -22,7 +25,7 @@ export function Sidebar() {
           <img src="img/logo.jpg" alt="Flap Logo" className="w-10" />
         </a>
 
-        <nav className="text-sm font-medium text-gray-500" aria-label="Main Navigation">
+        <nav className="text-sm font-medium text-gray-600 dark:text-gray-300" aria-label="Main Navigation">
             <SectionSidebar>Navegação</SectionSidebar>
 
             <IconSidebar href="/dashboard">
@@ -104,7 +107,7 @@ export function Sidebar() {
       </nav>
       
   <div className="ml-0 transition md:ml-60">
-    <header className="flex items-center justify-between w-full px-4 h-14">
+    <header className="flex items-center justify-between w-full px-4 h-14 bg-white dark:bg-gray-800">
       <button
         className="block btn btn-light-secondary md:hidden"
         onClick={(e) => { e.stopPropagation(); setSideBar(true); }}
@@ -145,15 +148,23 @@ export function Sidebar() {
         <Settings />
    </IconsTopSidebar>
 
-   <IconsTopSidebar>
-        <Sun />
-   </IconsTopSidebar>
+   <button
+    onClick={toggleTheme}
+    className="p-2 rounded-lg transition cursor-pointer"
+   >
+
+    {theme === "dark" ? (
+    <Sun className="text-yellow-400 hover:text-yellow-300" />
+  ) : (
+    <Moon className="text-gray-800 hover:text-gray-600" />
+  )}
+   </button>
 
     <a href="#" className="flex ml-2">
       <img
         src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
         alt="Foto do usuário"
-        className="w-8 h-8 rounded-full border border-gray-200 object-cover"
+        className="w-8 h-8 rounded-full border border-gray-200 dark:border-gray-600 object-cover"
       />
     </a>
   </div>
