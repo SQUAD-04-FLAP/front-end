@@ -5,6 +5,7 @@ import { Dashboard } from "../../pages/Dashboard";
 import { Board } from "../../pages/Board";
 import { Calendar } from "../../pages/Calendar";
 import { Report } from "../../pages/Report";
+import TelaTeste from "../../pages/TelaTeste";
 
 export function MainRouter() {
     return(
@@ -16,6 +17,7 @@ export function MainRouter() {
                 <Route path="/board" element={<Board />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/reports" element={<Report />} />
+                <Route path="/tela-teste" element={<TelaTeste />} />
             </Routes>
         </BrowserRouter>
     );
