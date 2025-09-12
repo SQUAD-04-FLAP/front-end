@@ -26,7 +26,7 @@ export function TelaTeste() {
       ...prev,
       [field]: value
     }));
-    // Limpa o erro quando o usuário começa a digitar
+    
     if (errors[field]) {
       setErrors(prev => ({
         ...prev,
@@ -41,7 +41,7 @@ export function TelaTeste() {
   };
 
   const handleSubmit = () => {
-    // Validação dos campos
+    
     const newErrors = {};
     
     if (!formData.nomeCompleto.trim()) {
@@ -62,12 +62,12 @@ export function TelaTeste() {
     
     setErrors(newErrors);
     
-    // Se houver erros, não prossegue
+    
     if (Object.keys(newErrors).length > 0) {
       return;
     }
     
-    // Se não houver erros, prossegue com o cadastro
+    
     console.log('Dados do formulário:', formData);
     alert('Usuário cadastrado com sucesso!');
   };
@@ -93,7 +93,7 @@ export function TelaTeste() {
   return (
     <div>
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
+        
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -106,18 +106,18 @@ export function TelaTeste() {
           </div>
         </div>
 
-        {/* Main Form Card */}
+        
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          {/* Form Header */}
+          
           <div className="bg-blue-500 px-6 py-4">
             <h2 className="text-lg font-medium text-white">Informações do Usuário</h2>
             <p className="text-blue-100 text-sm mt-1">Preencha os dados abaixo para criar uma nova conta de usuário</p>
           </div>
 
-          {/* Form Content */}
+          
           <div className="p-6">
             <div className="space-y-6">
-              {/* Nome Completo */}
+              
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                   <Users className="w-4 h-4" />
@@ -142,7 +142,7 @@ export function TelaTeste() {
                 )}
               </div>
 
-              {/* E-mail */}
+              
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +169,7 @@ export function TelaTeste() {
                 )}
               </div>
 
-              {/* Perfil de Acesso */}
+              
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,7 +219,7 @@ export function TelaTeste() {
               </div>
             </div>
 
-            {/* Action Buttons */}
+            
             <div className="flex gap-3 mt-8">
               <button
                 onClick={handleSubmit}
@@ -238,7 +238,7 @@ export function TelaTeste() {
           </div>
         </div>
 
-        {/* Profile Information Card */}
+        
         <div className="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Informações sobre perfis:</h3>
           <div className="space-y-3">
