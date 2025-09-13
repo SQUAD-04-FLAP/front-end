@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Megaphone, Monitor, Moon, Palette, Search, Settings, Sun } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Megaphone, Monitor, Moon, Palette, Search, Settings, Sun, Plus } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
 import { ButtonNewTask } from "../ButtonNewTask";
 import { SearchSidebar } from "../SearchSidebar";
 import { IconsTopSidebar } from "../IconsTopSidebar";
+import { AdicionarSetorModal } from "../AdicionarSetorModal";
 import { useTheme } from "../../hooks/useTheme";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
+  const [modalSetorOpen, setModalSetorOpen] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
 
@@ -28,6 +30,13 @@ export function Sidebar() {
         <nav className="text-sm font-medium text-gray-600 dark:text-gray-300" aria-label="Main Navigation">
             <SectionSidebar>Navegação</SectionSidebar>
 
+            <IconSidebar href="/">
+              <ContainerLinks>
+                <Home />
+                <span>Painel</span>
+              </ContainerLinks>
+            </IconSidebar>
+
             <IconSidebar href="/dashboard">
               <ContainerLinks>
                 <LayoutDashboard />
@@ -35,7 +44,7 @@ export function Sidebar() {
               </ContainerLinks>
             </IconSidebar>
 
-            <IconSidebar href="/board">
+            <IconSidebar href="/board-v2">
               <ContainerLinks>
                 <Columns />
                 <span>Quadro Kanban</span>
@@ -88,9 +97,20 @@ export function Sidebar() {
               </ContainerLinks>
             </IconSidebar>
 
+            {/* Botão Adicionar Setor */}
+            <button 
+              onClick={() => setModalSetorOpen(true)}
+              className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
+            >
+              <ContainerLinks>
+                <Plus />
+                <span>Adicionar Setor</span>
+              </ContainerLinks>
+            </button>
+
             <BorderSidebar />
 
-            <IconSidebar href="/">
+            <IconSidebar href="/configuracoes">
               <ContainerLinks>
                 <Settings />
                 <span>Configurações</span>
@@ -144,9 +164,11 @@ export function Sidebar() {
         <Calendar />
    </IconsTopSidebar>
 
-   <IconsTopSidebar>
-        <Settings />
-   </IconsTopSidebar>
+   <a href="/configuracoes">
+     <IconsTopSidebar>
+          <Settings />
+     </IconsTopSidebar>
+   </a>
 
    <button
     onClick={toggleTheme}
@@ -178,6 +200,12 @@ export function Sidebar() {
           onClick={() => setSideBar(false)}
         ></div>
       )}
+
+      {/* Modal Adicionar Setor */}
+      <AdicionarSetorModal 
+        isOpen={modalSetorOpen}
+        onClose={() => setModalSetorOpen(false)}
+      />
     </section>
   );
 }
