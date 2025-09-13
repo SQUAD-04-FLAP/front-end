@@ -1,8 +1,8 @@
-import React from "react";
+import { RouterLinks } from "../RouterLinks";
 
-export function RecuperarSenha() {
+export default function EsqueciSenha() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="flex h-screen items-center justify-center">
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
         <h1 className="text-2xl font-semibold text-center text-gray-500 mt-8 mb-6">
           Esqueci a senha
@@ -36,11 +36,14 @@ export function RecuperarSenha() {
           </button>
         </form>
 
-        <div className="text-center">
-          <p className="text-sm">
-            Voltar para o<a href="#" className="text-cyan-600">Login</a>
-          </p>
-        </div>
+       <div className="text-center mt-4">
+          <RouterLinks
+            href="/login"
+            className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors duration-200"
+          >
+            ← Voltar ao login
+          </RouterLinks>
+      </div>
 
       </div>
     </div>
