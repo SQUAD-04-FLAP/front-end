@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Sidebar } from '../../components/Sidebar';
 import { Column } from '../../components/Column';
 import { CardModal } from '../../components/CardModal';
 import { boardData } from './data/mockData';
@@ -20,9 +19,9 @@ export default function BoardV2() {
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
-      <Sidebar />
+      {/* <Sidebar /> */}
 
-      <div className="ml-0 md:ml-60">
+      <div>
         {/* Conteúdo Principal */}
         <main className="px-6 py-6">
           {/* Cabeçalho da Página */}

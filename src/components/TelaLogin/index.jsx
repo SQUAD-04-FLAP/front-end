@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, {useState} from "react"
 import GoogleButton from "../GoogleButton";
+import { RouterLinks } from "../RouterLinks";
 
 export function TelaLogin() {
   const [email, setEmail] = useState('');
@@ -35,8 +36,8 @@ export function TelaLogin() {
   }
 
     return(
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="max-w-sm w-full bg-white rounded-xl shadow-lg p-8">
+    <div className="flex h-screen items-center justify-center p-4">
+      <div className="max-w-sm w-full rounded-xl shadow-lg p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">FLAP</h2>
 
         <form className="space-y-4">
@@ -74,9 +75,10 @@ export function TelaLogin() {
               />
               <span className="ml-2 text-sm text-gray-600">Lembrar senha</span>
             </label>
-            <a href="#" className="text-sm text-indigo-600 hover:text-indigo-500 cursor-pointer">
+
+            <RouterLinks href={"/forget-password"} className="text-sm text-indigo-600 hover:text-indigo-500 cursor-pointer">
               Esqueceu a senha?
-            </a>
+            </RouterLinks>
           </div>
           
           {erro && <p className="text-red-500 text-sm">{erro}</p>}
