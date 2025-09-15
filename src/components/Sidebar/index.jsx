@@ -65,7 +65,7 @@ export function Sidebar() {
               </ContainerLinks>
             </IconSidebar>
 
-            <BorderSidebar />
+            < BorderSidebar />
 
             <SectionSidebar>Setores</SectionSidebar>
 

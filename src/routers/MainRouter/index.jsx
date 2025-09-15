@@ -9,10 +9,11 @@ import BoardV2 from "../../pages/BoardV2";
 import Configuracoes from "../../pages/Configuracoes";
 import PublicLayout from "../../layout/PublicLayout";
 import MainTemplate from "../../templates/MainTemplate";
-import { ForgetPassword } from "../../pages/ForgetPassword";
+import { ForgotPassword } from "../../pages/ForgotPassword";
 
 export function MainRouter() {
-    const isAuthenticated = !!localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+    const isAuthenticated = user && user.token;
 
     return (
         <BrowserRouter>
@@ -20,7 +21,7 @@ export function MainRouter() {
                 {/* Rotas públicas */}
                 <Route element={<PublicLayout />}>
                     <Route path="/login" element={<Login />} />
-                    <Route path="/forget-password" element={<ForgetPassword />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
                 </Route>
                 
                 {/* Rotas privadas (apenas dashboard e suas páginas) */}
