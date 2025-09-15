@@ -1,7 +1,8 @@
-import axios from "axios";
 import React, {useState} from "react"
 import GoogleButton from "../GoogleButton";
 import { RouterLinks } from "../RouterLinks";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export function TelaLogin() {
   const [email, setEmail] = useState('');
@@ -9,28 +10,24 @@ export function TelaLogin() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
 
+  const navigate = useNavigate();
+
+  const { login } = useAuth();
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setErro('');
-    
-    try{
-      const response = await axios.post('ENDERECO',{
-        email,
-        senha,
-      });
+    setLoading(true);
 
-      const {token} = response.data;
+    try {
+      await login(email, senha);
+      alert("Login realizado com sucesso.");
 
-      localStorage.setItem('token', token);
-
-      alert('Login realizado com sucesso!');
-      console.log('token', token);
-
-    } catch (err){
-      console.error(err);
-      setErro('Email ou senha inválidos');
-    } finally{
+      navigate("/dashboard");
+    } catch(e) {
+      console.error(e);
+      setErro("Email ou senha inválidos.");
+    } finally {
       setLoading(false);
     }
   }
@@ -40,7 +37,7 @@ export function TelaLogin() {
       <div className="max-w-sm w-full rounded-xl shadow-lg p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">FLAP</h2>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleLogin}>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
@@ -76,7 +73,7 @@ export function TelaLogin() {
               <span className="ml-2 text-sm text-gray-600">Lembrar senha</span>
             </label>
 
-            <RouterLinks href={"/forget-password"} className="text-sm text-indigo-600 hover:text-indigo-500 cursor-pointer">
+            <RouterLinks href={"/forgot-password"} className="text-sm text-indigo-600 hover:text-indigo-500 cursor-pointer">
               Esqueceu a senha?
             </RouterLinks>
           </div>

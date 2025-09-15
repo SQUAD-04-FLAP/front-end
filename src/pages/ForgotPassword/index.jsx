@@ -1,6 +1,6 @@
 import EsqueciSenha from "../../components/EsqueciSenha";
 
-export function ForgetPassword() {
+export function ForgotPassword() {
     return(
         <EsqueciSenha />
     );
