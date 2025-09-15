@@ -16,7 +16,6 @@ export const userAuthentication = {
     }
 
     const data = await res.json();
-    console.log("🔑 Resposta do login:", data);
 
     if(data.token) {
         localStorage.setItem("user", JSON.stringify(data)); // salve token e dados do usuario
