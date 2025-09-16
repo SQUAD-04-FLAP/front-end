@@ -1,6 +1,11 @@
-import axios from "axios";
 import React, {useState} from "react"
 import GoogleButton from "../GoogleButton";
+import { RouterLinks } from "../RouterLinks";
+import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { showMessage } from "../../adapters/showMessage";
+
 
 export function TelaLogin() {
   const [email, setEmail] = useState('');
@@ -8,38 +13,39 @@ export function TelaLogin() {
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
 
+  const navigate = useNavigate();
+
+  const { login } = useAuth();
+
   const handleLogin = async (e) => {
+    showMessage.dismiss();
+
     e.preventDefault();
-    setLoading(true);
     setErro('');
-    
-    try{
-      const response = await axios.post('token',{
-        email,
-        senha,
-      });
+    setLoading(true);
 
-      const {token} = response.data;
+    try {
+      await login(email, senha);
 
-      localStorage.setItem('token', token);
+    toast.success("Login realizado com sucesso.", {
+      autoClose: 1000, // 1 segundo
+      onClose: () => navigate("/"), // redireciona quando o toast fecha
+    });
 
-      alert('Login realizado com sucesso!');
-      console.log('token', token);
-
-    } catch (err){
-      console.error(err);
-      setErro('Email ou senha inválidos');
-    } finally{
+    } catch(e) {
+      console.error(e);
+      showMessage.error("Email ou senha inválidos.")
+    } finally {
       setLoading(false);
     }
   }
 
     return(
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="max-w-sm w-full bg-white rounded-xl shadow-lg p-8">
+    <div className="flex h-screen items-center justify-center p-4">
+      <div className="max-w-sm w-full rounded-xl shadow-lg p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">FLAP</h2>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleLogin}>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
@@ -74,9 +80,10 @@ export function TelaLogin() {
               />
               <span className="ml-2 text-sm text-gray-600">Lembrar senha</span>
             </label>
-            <a href="#" className="text-sm text-indigo-600 hover:text-indigo-500 cursor-pointer">
+
+            <RouterLinks href={"/forgot-password"} className="text-sm text-indigo-600 hover:text-indigo-500 cursor-pointer">
               Esqueceu a senha?
-            </a>
+            </RouterLinks>
           </div>
           
           {erro && <p className="text-red-500 text-sm">{erro}</p>}
@@ -94,9 +101,12 @@ export function TelaLogin() {
         </form>
         <div className="mt-6 text-center text-sm text-gray-600">
           Ainda não tem uma conta?
-          <a href="#" onSubmit={handleLogin} className="ml-1 text-indigo-600 hover:text-indigo-500 font-medium cursor-pointer">
+          {/* <a href="#" onSubmit={handleLogin} className="ml-1 text-indigo-600 hover:text-indigo-500 font-medium cursor-pointer">
             Cadastre-se
-          </a>
+          </a> */}
+          <RouterLinks href={"/register"} className="ml-1 text-indigo-600 hover:text-indigo-500 font-medium cursor-pointer">
+            Cadastre-se
+          </RouterLinks>
         </div>
       </div>
     </div>
