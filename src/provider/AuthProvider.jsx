@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     const user = await userAuthentication.login(email, password);
     localStorage.setItem("user", JSON.stringify(user));
     dispatch({ type: "LOGIN", payload: user });
+    return user;
   };
 
   const logout = () => {
