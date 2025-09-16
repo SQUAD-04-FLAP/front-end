@@ -1,4 +1,5 @@
-const API_URL = "http://ec2-54-226-167-245.compute-1.amazonaws.com:8080/auth/login";
+// const API_URL = "http://ec2-54-226-167-245.compute-1.amazonaws.com:8080/auth/login";
+const API_URL = "/api/auth/login";
 
 export const userAuthentication = {
   login: async (email, senha) => {
