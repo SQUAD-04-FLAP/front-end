@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import { useState} from "react"
 import GoogleButton from "../GoogleButton";
 import { RouterLinks } from "../RouterLinks";
 import { useAuth } from "../../hooks/useAuth";
@@ -31,10 +31,9 @@ export function TelaLogin() {
         toast.success("Login realizado com sucesso.", {
         autoClose: 1000, // 1 segundo
         onClose: () => navigate("/"), // redireciona quando o toast fecha
-    });
-      }
+      });
 
-    
+      }
 
     } catch(e) {
       console.error(e);

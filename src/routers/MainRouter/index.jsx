@@ -14,10 +14,11 @@ import MainTemplate from "../../templates/MainTemplate";
 import { ForgotPassword } from "../../pages/ForgotPassword";
 import { RecoveryPassword } from "../../pages/RecoveryPassword";
 import { Register } from "../../pages/Register";
+import { useAuth } from "../../hooks/useAuth";
 
 export function MainRouter() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const isAuthenticated = user && user.token;
+    const { user } = useAuth();
+    const isAuthenticated = !!user;
 
     return (
         <BrowserRouter>

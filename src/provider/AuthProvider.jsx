@@ -8,12 +8,16 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const user = userAuthentication.getUserFromStorage();
+    
     if (user) dispatch({ type: "LOGIN", payload: user });
     dispatch({ type: "SET_LOADING", payload: false });
   }, []);
 
   const login = async (email, password) => {
     const user = await userAuthentication.login(email, password);
+
+    if(!user) throw new Error("Usuário inválido.");
+
     localStorage.setItem("user", JSON.stringify(user));
     dispatch({ type: "LOGIN", payload: user });
     return user;
