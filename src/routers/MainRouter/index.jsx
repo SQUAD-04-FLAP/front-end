@@ -7,6 +7,8 @@ import { Calendar } from "../../pages/Calendar";
 import { Report } from "../../pages/Report";
 import BoardV2 from "../../pages/BoardV2";
 import Configuracoes from "../../pages/Configuracoes";
+import AdminEmpresas from "../../pages/Admin/Empresas";
+import AdminKanban from "../../pages/Admin/Kanban";
 
 export function MainRouter() {
     return(
@@ -20,6 +22,11 @@ export function MainRouter() {
                 <Route path="/configuracoes" element={<Configuracoes />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/reports" element={<Report />} />
+                
+                {/* Rotas de Admin - Só Kanban e Empresas */}
+                <Route path="/admin" element={<AdminKanban />} />
+                <Route path="/admin/kanban" element={<AdminKanban />} />
+                <Route path="/admin/empresas" element={<AdminEmpresas />} />
             </Routes>
         </BrowserRouter>
     );
