@@ -59,7 +59,7 @@ export default function ResetPassword() {
           <button
             type="submit"
             disabled={code.length !== 6 || newPassword.length < 6 || loading}
-            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg disabled:bg-gray-400 transition"
+            className="w-full py-3 cursor-pointer bg-blue-600 text-white font-semibold rounded-lg disabled:bg-gray-400 transition"
           >
             {loading ? "Alterando..." : "Alterar senha"}
           </button>
@@ -67,7 +67,7 @@ export default function ResetPassword() {
 
         <div className="mt-4 flex justify-between text-sm text-blue-600">
           <button className="hover:underline">Reenviar código</button>
-          
+
           <RouterLinks to={"/login"} className="hover:underline">
               Voltar para login
           </RouterLinks>
