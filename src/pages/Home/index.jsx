@@ -14,7 +14,7 @@ export function Home() {
           onClick={() => navigate("/tela-teste")}
           style={{
             cursor: "pointer",
-            color: "blue", // só pra indicar que é clicável, pode remover se quiser
+            color: "blue",
           }}
         >
           Página Cadastro
