@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Sidebar } from '../../components/Sidebar';
 import { Bell, Settings, Shield, Palette, Users, HelpCircle } from 'lucide-react';
 
 export default function Configuracoes() {
@@ -45,9 +44,8 @@ export default function Configuracoes() {
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
-      <Sidebar />
 
-      <div className="ml-0 md:ml-60">
+      <div>
         {/* Header */}
         <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
           <div className="flex items-center justify-between">

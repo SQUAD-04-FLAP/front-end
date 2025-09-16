@@ -2,7 +2,7 @@ import React from "react";
 
 const GoogleButton = () => {
   return (
-    <button className="bg-white flex gap-x-3 text-sm sm:text-base items-center justify-center text-gray-800 rounded-lg hover:bg-gray-100 duration-300 transition-colors border px-8 py-2.5 cursor-pointer">
+    <a href="http://ec2-54-226-167-245.compute-1.amazonaws.com:8080/auth/login" className="bg-white flex gap-x-3 text-sm sm:text-base items-center justify-center text-gray-800 rounded-lg hover:bg-gray-100 duration-300 transition-colors border px-8 py-2.5 cursor-pointer">
       {/* Ícone Google */}
       <svg
         className="w-5 h-5 sm:h-6 sm:w-6"
@@ -36,8 +36,8 @@ const GoogleButton = () => {
       </svg>
 
       {/* Texto */}
-      <span>Sign in with Google</span>
-    </button>
+      <span>Entrar com o Google</span>
+    </a>
   );
 };
 
