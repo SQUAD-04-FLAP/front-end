@@ -26,7 +26,8 @@ export function AdminSidebar() {
   ];
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
+    <>
+      {/* Sidebar */}
       <nav
         className={`fixed top-0 left-0 z-20 h-full pb-10 overflow-x-hidden overflow-y-auto transition origin-left transform bg-gradient-to-b from-blue-900 to-blue-800 text-white w-60 ${
           sideBar ? "translate-x-0" : "-translate-x-full"
@@ -68,9 +69,10 @@ export function AdminSidebar() {
           </button>
         </div>
       </nav>
-      
-      <div className="ml-0 transition md:ml-60">
-        <header className="flex items-center justify-between w-full px-6 h-16 bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg">
+
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-10 ml-0 md:ml-60 h-16 bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg">
+        <div className="flex items-center justify-between w-full px-6 h-full">
           {/* Botão Menu Mobile */}
           <button
             className="block md:hidden p-2 rounded-lg hover:bg-white/10 transition"
@@ -114,9 +116,11 @@ export function AdminSidebar() {
               </div>
             </div>
 
+            {/* Botão Dark Mode */}
             <button
               onClick={toggleTheme}
               className="p-2 hover:bg-white/10 rounded-lg transition"
+              title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
             >
               {theme === "dark" ? (
                 <Sun className="w-5 h-5 text-yellow-400" />
@@ -138,8 +142,8 @@ export function AdminSidebar() {
               </div>
             </div>
           </div>
-        </header>
-      </div>
+        </div>
+      </header>
 
       {/* Backdrop Mobile */}
       {sideBar && (
@@ -148,6 +152,6 @@ export function AdminSidebar() {
           onClick={() => setSideBar(false)}
         ></div>
       )}
-    </section>
+    </>
   );
 }
