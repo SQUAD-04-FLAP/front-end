@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AdminSidebar } from '../../../components/AdminSidebar';
-import { Plus, Filter, Clock, MessageCircle, Paperclip } from 'lucide-react';
+import { Plus, Filter, MessageCircle, Paperclip } from 'lucide-react';
 
 export default function AdminKanban() {
   const [setores] = useState(['Marketing', 'Design', 'Atendimento', 'TI']);
@@ -146,11 +146,12 @@ export default function AdminKanban() {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <AdminSidebar />
-
-      <div className="ml-0 md:ml-60">
-        <div className="p-6">
+      
+      {/* CONTEÚDO PRINCIPAL COM FUNDO FORÇADO */}
+      <div className="ml-0 md:ml-60 pt-16 min-h-screen bg-gray-50 dark:bg-gray-900 relative z-0">
+        <div className="p-6 bg-gray-50 dark:bg-gray-900">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -264,6 +265,6 @@ export default function AdminKanban() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

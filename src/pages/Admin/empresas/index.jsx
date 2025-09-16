@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AdminSidebar } from '../../../components/AdminSidebar';
-import { Plus, Building2, MapPin, Phone, Mail, Users, BarChart3, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, BarChart3, Eye, Edit, Trash2 } from 'lucide-react';
 
 export default function AdminEmpresas() {
   const [empresas] = useState([
@@ -72,10 +72,10 @@ export default function AdminEmpresas() {
   };
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
       <AdminSidebar />
-
-      <div className="ml-0 md:ml-60">
+      
+      <div className="ml-0 md:ml-60 pt-16">
         {/* Conteúdo Principal */}
         <main className="px-6 py-6">
           {/* Header da Página */}
@@ -161,8 +161,36 @@ export default function AdminEmpresas() {
               </div>
             ))}
           </div>
+
+          {/* Footer/Estatística */}
+          <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  📊 Resumo Geral
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  {empresas.length} empresas cadastradas • {empresas.reduce((total, empresa) => total + empresa.projetosAtivos, 0)} projetos ativos
+                </p>
+              </div>
+              <div className="flex gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    {empresas.filter(e => e.status === 'Ativo').length}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Ativas</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+                    {empresas.filter(e => e.status === 'Em análise').length}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">Em análise</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </main>
       </div>
-    </section>
+    </div>
   );
 }

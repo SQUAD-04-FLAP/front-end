@@ -39,14 +39,10 @@ export function MainRouter() {
                     <Route path="/reports" element={<Report />} />
                 </Route>
 
-                {/* Rotas de Admin - Suas telas novas */}
-                <Route
-                    element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
-                >
-                    <Route path="/admin" element={<AdminKanban />} />
-                    <Route path="/admin/kanban" element={<AdminKanban />} />
-                    <Route path="/admin/empresas" element={<AdminEmpresas />} />
-                </Route>
+                {/* Rotas de Admin - FORA do MainTemplate */}
+                <Route path="/admin" element={<AdminKanban />} />
+                <Route path="/admin/kanban" element={<AdminKanban />} />
+                <Route path="/admin/empresas" element={<AdminEmpresas />} />
 
                 {/* Redirecionamento padrão */}
                 <Route path="*" element={<Navigate to="/" />} />

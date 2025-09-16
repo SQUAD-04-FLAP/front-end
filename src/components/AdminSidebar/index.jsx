@@ -3,12 +3,18 @@ import { useLocation } from "react-router-dom";
 import { 
   Building2, 
   Columns,
-  Plus
+  Plus,
+  Bell,
+  Search,
+  Sun,
+  Moon
 } from "lucide-react";
+import { useTheme } from "../../hooks/useTheme";
 
 export function AdminSidebar() {
   const [sideBar, setSideBar] = useState(false);
   const location = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -21,6 +27,7 @@ export function AdminSidebar() {
 
   return (
     <>
+      {/* Sidebar */}
       <nav
         className={`fixed top-0 left-0 z-20 h-full pb-10 overflow-x-hidden overflow-y-auto transition origin-left transform bg-gradient-to-b from-blue-900 to-blue-800 text-white w-60 ${
           sideBar ? "translate-x-0" : "-translate-x-full"
@@ -62,6 +69,81 @@ export function AdminSidebar() {
           </button>
         </div>
       </nav>
+
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-10 ml-0 md:ml-60 h-16 bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg">
+        <div className="flex items-center justify-between w-full px-6 h-full">
+          {/* Botão Menu Mobile */}
+          <button
+            className="block md:hidden p-2 rounded-lg hover:bg-white/10 transition"
+            onClick={(e) => { e.stopPropagation(); setSideBar(true); }}
+          >
+            <span className="sr-only">Menu</span>
+            <svg
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+
+          {/* Campo de busca */}
+          <div className="flex-1 max-w-xl mx-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-300" />
+              <input
+                type="text"
+                placeholder="Buscar tarefas, projetos ou empresas..."
+                className="w-full pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
+              />
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            {/* Ícones do Header */}
+            <div className="relative">
+              <button className="p-2 hover:bg-white/10 rounded-lg transition">
+                <Bell className="w-5 h-5" />
+              </button>
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-cyan-400 rounded-full flex items-center justify-center">
+                <span className="text-xs font-bold text-blue-900">3</span>
+              </div>
+            </div>
+
+            {/* Botão Dark Mode */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 hover:bg-white/10 rounded-lg transition"
+              title={theme === "dark" ? "Modo Claro" : "Modo Escuro"}
+            >
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5 text-yellow-400" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
+            </button>
+
+            {/* Avatar do Admin */}
+            <div className="flex items-center gap-3">
+              <img
+                src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
+                alt="Marina Oliveira"
+                className="w-8 h-8 rounded-full border-2 border-cyan-400 object-cover"
+              />
+              <div className="hidden lg:block">
+                <p className="text-sm font-medium text-white">Marina Oliveira</p>
+                <p className="text-xs text-cyan-200">Administrador</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
 
       {/* Backdrop Mobile */}
       {sideBar && (
