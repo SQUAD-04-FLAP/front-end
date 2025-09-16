@@ -1,6 +1,36 @@
+import { useState } from "react";
 import { RouterLinks } from "../RouterLinks";
+import { showMessage } from "../../adapters/showMessage";
+import { sendEmailRecovery } from "../../services/sendEmailRecovery";
 
 export default function EsqueciSenha() {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [, setErro] = useState('');
+
+  const handleSentEmail = async (e) => {
+    showMessage.dismiss();
+
+    e.preventDefault();
+    setErro('');
+    setLoading(true);
+
+    try {
+      const result = await sendEmailRecovery.send(email);
+
+      if(result.success) {
+         showMessage.success("Se uma conta com este email existir, um código foi enviado.");
+         setEmail('')
+      }
+
+    } catch(e) {
+      console.log(e);
+      showMessage.error(e.message || "Ocorreu um erro no envio do e-mail. Tente novamente mais tarde.");
+    } finally {
+      setLoading(false);
+    }
+
+  }
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
@@ -11,7 +41,7 @@ export default function EsqueciSenha() {
           Digite seu email para recuperar sua senha
         </p>
 
-        <form>
+        <form onSubmit={handleSentEmail}>
           <div className="mb-6">
             <label
               htmlFor="email"
@@ -21,7 +51,8 @@ export default function EsqueciSenha() {
             </label>
             <input
               type="email"
-              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               name="email"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
               required
@@ -30,9 +61,12 @@ export default function EsqueciSenha() {
 
           <button
             type="submit"
-            className="w-32 bg-gradient-to-r from-cyan-400 to-cyan-600 text-white py-2 rounded-lg mx-auto block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 mt-4 mb-4"
+            disabled={loading}
+            className={`w-32 bg-gradient-to-r from-cyan-400 to-cyan-600 text-white py-2 rounded-lg mx-auto block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 mt-4 mb-4 cursor-pointer ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
+             }`}
           >
-            Enviar
+            {loading ? "Enviando...": "Enviar"}
           </button>
         </form>
 
