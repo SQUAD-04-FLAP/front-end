@@ -34,8 +34,6 @@ export function TelaLogin() {
     });
       }
 
-    
-
     } catch(e) {
       console.error(e);
       showMessage.error("Email ou senha inválidos.")
