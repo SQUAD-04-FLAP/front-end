@@ -1,9 +1,15 @@
+import { Bounce, ToastContainer } from "react-toastify";
+import { AuthProvider } from "../provider/AuthProvider";
 import { MainRouter } from "../routers/MainRouter";
-import { TelaLogin } from "./TelaLogin";
+import { MessagesContainer } from "./MessagesContainer";
 
 function App() {
   return (
-    <MainRouter />
+    <AuthProvider>
+      <MessagesContainer>
+          <MainRouter />
+      </MessagesContainer>
+    </AuthProvider>
   )
 }
 

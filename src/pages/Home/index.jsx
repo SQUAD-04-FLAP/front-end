@@ -1,11 +1,7 @@
-import MainTemplate from "../../templates/MainTemplate";
-
 export function Home() {
     return(
-        <MainTemplate>
           <div>
              <h1>Página principal</h1>
           </div>
-        </MainTemplate>
     );
 }
