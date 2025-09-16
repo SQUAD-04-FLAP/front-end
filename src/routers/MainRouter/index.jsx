@@ -7,7 +7,7 @@ import { Calendar } from "../../pages/Calendar";
 import { Report } from "../../pages/Report";
 import BoardV2 from "../../pages/BoardV2";
 import Configuracoes from "../../pages/Configuracoes";
-import AdminEmpresas from "../../pages/Admin/Empresas";
+import AdminEmpresas from "../../pages/Admin/empresas";
 import AdminKanban from "../../pages/Admin/Kanban";
 import PublicLayout from "../../layout/PublicLayout";
 import MainTemplate from "../../templates/MainTemplate";
