@@ -12,6 +12,7 @@ import AdminKanban from "../../pages/Admin/Kanban";
 import PublicLayout from "../../layout/PublicLayout";
 import MainTemplate from "../../templates/MainTemplate";
 import { ForgotPassword } from "../../pages/ForgotPassword";
+import { RecoveryPassword } from "../../pages/RecoveryPassword";
 
 export function MainRouter() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -24,6 +25,7 @@ export function MainRouter() {
                 <Route element={<PublicLayout />}>
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/recovery-code" element={<RecoveryPassword />} />
                 </Route>
                 
                 {/* Rotas privadas (apenas dashboard e suas páginas) */}
@@ -38,6 +40,7 @@ export function MainRouter() {
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/reports" element={<Report />} />
                 </Route>
+
 
                 {/* Rotas de Admin - Suas telas novas */}
                 <Route

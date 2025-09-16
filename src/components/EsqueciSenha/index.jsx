@@ -2,11 +2,15 @@ import { useState } from "react";
 import { RouterLinks } from "../RouterLinks";
 import { showMessage } from "../../adapters/showMessage";
 import { sendEmailRecovery } from "../../services/sendEmailRecovery";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function EsqueciSenha() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [, setErro] = useState('');
+
+  const navigate = useNavigate();
 
   const handleSentEmail = async (e) => {
     showMessage.dismiss();
@@ -19,8 +23,13 @@ export default function EsqueciSenha() {
       const result = await sendEmailRecovery.send(email);
 
       if(result.success) {
-         showMessage.success("Se uma conta com este email existir, um código foi enviado.");
+        //  showMessage.success("Se uma conta com este email existir, um código foi enviado.");
          setEmail('')
+
+         toast.success("Se uma conta com este email existir, um código foi enviado.", {
+               autoClose: 1000, // 1 segundo
+               onClose: () => navigate("/recovery-code"), // redireciona quando o toast fecha
+          });
       }
 
     } catch(e) {
