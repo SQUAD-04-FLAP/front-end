@@ -13,6 +13,7 @@ import PublicLayout from "../../layout/PublicLayout";
 import MainTemplate from "../../templates/MainTemplate";
 import { ForgotPassword } from "../../pages/ForgotPassword";
 import { RecoveryPassword } from "../../pages/RecoveryPassword";
+import { Register } from "../../pages/Register";
 
 export function MainRouter() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -26,6 +27,7 @@ export function MainRouter() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/recovery-code" element={<RecoveryPassword />} />
+                    <Route path="/register" element={<Register />} />
                 </Route>
                 
                 {/* Rotas privadas (apenas dashboard e suas páginas) */}
