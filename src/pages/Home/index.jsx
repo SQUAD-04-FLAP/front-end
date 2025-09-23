@@ -1,5 +1,3 @@
-import TestDnd from "../../components/TestDnd.jsx";
-
 export function Home() {
     return(
           <div>
