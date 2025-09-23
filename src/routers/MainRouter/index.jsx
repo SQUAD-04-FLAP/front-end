@@ -44,6 +44,19 @@ export function MainRouter() {
                     <Route path="/reports" element={<Report />} />
                 </Route>
 
+                {/* Codigo que libera as rotas */}
+                 {/* <Route
+                    element={<MainTemplate />}
+                >
+                    <Route path="/" element={<Home />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/board" element={<Board />} />
+                    <Route path="/board-v2" element={<BoardV2 />} />
+                    <Route path="/configuracoes" element={<Configuracoes />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/reports" element={<Report />} />
+                </Route> */}
+
 
                 {/* Rotas de Admin - Suas telas novas */}
                 <Route

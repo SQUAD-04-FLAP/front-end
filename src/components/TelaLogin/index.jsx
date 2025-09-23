@@ -31,7 +31,6 @@ export function TelaLogin() {
         autoClose: 1000, // 1 segundo
         onClose: () => navigate("/"), // redireciona quando o toast fecha
       });
-
       }
 
     } catch(e) {
