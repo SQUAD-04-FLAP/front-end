@@ -1,4 +1,5 @@
 import { Card } from '../Card';
+import { Droppable, Draggable } from '@hello-pangea/dnd';
 
 export function Column({ data, onCardClick }) {
   return (
@@ -13,11 +14,35 @@ export function Column({ data, onCardClick }) {
         </span>
       </header>
 
-      <div className="mt-3 space-y-3">
-        {data.tasks.map((task) => (
-          <Card key={task.id} task={task} onClick={onCardClick} />
-        ))}
-      </div>
+      <Droppable droppableId={data.id}>
+        {(provided, ) => (
+          <div
+            className="mt-3 space-y-3 min-h-[50px]" // garante espaço para placeholder
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
+            {data.tasks.map((task, index) => (
+              <Draggable key={task.id} draggableId={task.id} index={index}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    style={{
+                      ...provided.draggableProps.style,
+                      opacity: snapshot.isDragging ? 0.8 : 1,
+                      transition: "opacity 0.2s",
+                    }}
+                  >
+                    <Card task={task} onClick={onCardClick} />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
 
       <button className="mt-4 w-full text-center text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 transition">
         Novo Card
