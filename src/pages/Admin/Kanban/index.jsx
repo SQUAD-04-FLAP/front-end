@@ -150,7 +150,7 @@ export default function AdminKanban() {
       <AdminSidebar />
       
       {/* CONTEÚDO PRINCIPAL COM FUNDO FORÇADO */}
-      <div className="ml-0 md:ml-60 pt-16 min-h-screen bg-gray-50 dark:bg-gray-900 relative z-0">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 relative z-0">
         <div className="p-6 bg-gray-50 dark:bg-gray-900">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
