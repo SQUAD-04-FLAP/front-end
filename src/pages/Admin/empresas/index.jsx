@@ -75,7 +75,7 @@ export default function AdminEmpresas() {
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
       <AdminSidebar />
       
-      <div className="ml-0 md:ml-60 pt-16">
+      <div>
         {/* Conteúdo Principal */}
         <main className="px-6 py-6">
           {/* Header da Página */}

@@ -59,8 +59,18 @@ export function MainRouter() {
 
 
                 {/* Rotas de Admin - Suas telas novas */}
-                <Route
+                {/* <Route
                     element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
+                >
+                    <Route path="/admin" element={<AdminKanban />} />
+                    <Route path="/admin/kanban" element={<AdminKanban />} />
+                    <Route path="/admin/empresas" element={<AdminEmpresas />} />
+                </Route> */}
+
+                 {/* Codigo que libera as rotas admin */}
+
+                 <Route
+                    element={<MainTemplate />}
                 >
                     <Route path="/admin" element={<AdminKanban />} />
                     <Route path="/admin/kanban" element={<AdminKanban />} />
