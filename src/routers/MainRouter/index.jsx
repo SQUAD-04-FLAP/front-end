@@ -32,7 +32,7 @@ export function MainRouter() {
                 </Route>
                 
                 {/* Rotas privadas (apenas dashboard e suas páginas) */}
-                {/* <Route
+                <Route
                     element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
                 >
                     <Route path="/" element={<Home />} />
@@ -42,10 +42,10 @@ export function MainRouter() {
                     <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/reports" element={<Report />} />
-                </Route> */}
+                </Route>
 
                 {/* Codigo que libera as rotas */}
-                 <Route
+                 {/* <Route
                     element={<MainTemplate />}
                 >
                     <Route path="/" element={<Home />} />
@@ -55,27 +55,27 @@ export function MainRouter() {
                     <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/reports" element={<Report />} />
-                </Route>
+                </Route> */}
 
 
                 {/* Rotas de Admin - Suas telas novas */}
-                {/* <Route
+                <Route
                     element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
                 >
                     <Route path="/admin" element={<AdminKanban />} />
                     <Route path="/admin/kanban" element={<AdminKanban />} />
                     <Route path="/admin/empresas" element={<AdminEmpresas />} />
-                </Route> */}
+                </Route>
 
                  {/* Codigo que libera as rotas admin */}
 
-                 <Route
+                 {/* <Route
                     element={<MainTemplate />}
                 >
                     <Route path="/admin" element={<AdminKanban />} />
                     <Route path="/admin/kanban" element={<AdminKanban />} />
                     <Route path="/admin/empresas" element={<AdminEmpresas />} />
-                </Route>
+                </Route> */}
 
                 {/* Redirecionamento padrão */}
                 <Route path="*" element={<Navigate to="/" />} />
