@@ -9,6 +9,8 @@ import { SearchSidebar } from "../SearchSidebar";
 import { IconsTopSidebar } from "../IconsTopSidebar";
 import { AdicionarSetorModal } from "../AdicionarSetorModal";
 import { useTheme } from "../../hooks/useTheme";
+import AvatarDropdown from "../AvatarDropdown";
+import NotificationDropdown from "../NotifcationDropdown";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
@@ -157,7 +159,7 @@ export function Sidebar() {
    <ButtonNewTask />
 
    <IconsTopSidebar>
-        <Bell />
+        <NotificationDropdown />
    </IconsTopSidebar>
 
    <IconsTopSidebar>
@@ -182,13 +184,8 @@ export function Sidebar() {
   )}
    </button>
 
-    <a href="#" className="flex ml-2">
-      <img
-        src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
-        alt="Foto do usuário"
-        className="w-8 h-8 rounded-full border border-gray-200 dark:border-gray-600 object-cover"
-      />
-    </a>
+<AvatarDropdown />
+
   </div>
 </div>
       </header>

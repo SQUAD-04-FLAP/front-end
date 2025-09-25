@@ -87,7 +87,7 @@ export function AdicionarSetorModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   const modalContent = (
-    <div className="fixed inset-0 z- flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex justify-center p-4 overflow-auto">
       {/* Backdrop com efeito glass/vidro borrado */}
       <div 
         className="absolute inset-0 bg-white/30 backdrop-blur-md"
@@ -95,7 +95,7 @@ export function AdicionarSetorModal({ isOpen, onClose }) {
       />
 
       {/* Modal Container */}
-      <div className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 dark:border-gray-700/20 w-full max-w-md">
+      <div className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 dark:border-gray-700/20 w-full max-w-lg max-h-[90vh] overflow-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-gray-700/50">

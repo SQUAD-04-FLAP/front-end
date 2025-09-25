@@ -67,6 +67,16 @@ export function MainRouter() {
                     <Route path="/admin/empresas" element={<AdminEmpresas />} />
                 </Route>
 
+                 {/* Codigo que libera as rotas admin */}
+
+                 {/* <Route
+                    element={<MainTemplate />}
+                >
+                    <Route path="/admin" element={<AdminKanban />} />
+                    <Route path="/admin/kanban" element={<AdminKanban />} />
+                    <Route path="/admin/empresas" element={<AdminEmpresas />} />
+                </Route> */}
+
                 {/* Redirecionamento padrão */}
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
