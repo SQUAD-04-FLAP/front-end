@@ -14,11 +14,15 @@ import MainTemplate from "../../templates/MainTemplate";
 import { ForgotPassword } from "../../pages/ForgotPassword";
 import { RecoveryPassword } from "../../pages/RecoveryPassword";
 import { Register } from "../../pages/Register";
-// import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 export function MainRouter() {
-    // const { user } = useAuth();
-    // const isAuthenticated = !!user;
+    const { user, loading } = useAuth();
+    const isAuthenticated = !!user;
+
+    if(loading) {
+        return <div>Carregando...</div>
+    }
 
     return (
         <BrowserRouter>
@@ -32,21 +36,8 @@ export function MainRouter() {
                 </Route>
                 
                 {/* Rotas privadas (apenas dashboard e suas páginas) */}
-                {/* <Route
+                <Route
                     element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
-                >
-                    <Route path="/" element={<Home />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/board" element={<Board />} />
-                    <Route path="/board-v2" element={<BoardV2 />} />
-                    <Route path="/configuracoes" element={<Configuracoes />} />
-                    <Route path="/calendar" element={<Calendar />} />
-                    <Route path="/reports" element={<Report />} />
-                </Route> */}
-
-                {/* Codigo que libera as rotas */}
-                 <Route
-                    element={<MainTemplate />}
                 >
                     <Route path="/" element={<Home />} />
                     <Route path="/dashboard" element={<Dashboard />} />
@@ -57,20 +48,9 @@ export function MainRouter() {
                     <Route path="/reports" element={<Report />} />
                 </Route>
 
-
                 {/* Rotas de Admin - Suas telas novas */}
-                {/* <Route
+                <Route
                     element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
-                >
-                    <Route path="/admin" element={<AdminKanban />} />
-                    <Route path="/admin/kanban" element={<AdminKanban />} />
-                    <Route path="/admin/empresas" element={<AdminEmpresas />} />
-                </Route> */}
-
-                 {/* Codigo que libera as rotas admin */}
-
-                 <Route
-                    element={<MainTemplate />}
                 >
                     <Route path="/admin" element={<AdminKanban />} />
                     <Route path="/admin/kanban" element={<AdminKanban />} />
