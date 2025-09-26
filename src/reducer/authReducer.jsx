@@ -8,7 +8,7 @@ export function authReducer(state, action) {
         case "LOGIN":
             return { ...state, user: action.payload }
         case "LOGOUT":
-            return { user: null, loading: false };
+            return { ...state, user: null, loading: false };
         case "SET_LOADING":
             return { ...state, loading: action.payload };
         default:

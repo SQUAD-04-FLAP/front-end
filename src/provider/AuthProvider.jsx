@@ -23,9 +23,16 @@ export const AuthProvider = ({ children }) => {
     return user;
   };
 
-  const logout = () => {
-    userAuthentication.logout();
+  const logout =  () => {
+    // remove dados do storage
+    localStorage.removeItem("user");
+    userAuthentication.logout?.();
+
+    // dispara o reducer
     dispatch({ type: "LOGOUT" });
+
+    // redireciona pra login
+    window.location.href = "/login";
   };
 
   return (
