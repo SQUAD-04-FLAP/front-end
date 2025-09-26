@@ -1,13 +1,34 @@
 import { useState, useEffect, useRef } from "react";
 import { User, Settings, LogOut } from "lucide-react";
+import { useAuth } from "../../hooks/useAuth";
+import { RouterLinks } from "../RouterLinks";
+import { useLocation } from "react-router-dom";
 
 export default function AvatarDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  const { logout } = useAuth();
+  const location = useLocation();
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Fecha o dropdown ao mudar de rota
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
 
   // Fecha o dropdown ao clicar fora
   useEffect(() => {
@@ -37,31 +58,31 @@ export default function AvatarDropdown() {
       </div>
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
             <li>
-              <a
+              <RouterLinks
                 href="#"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-purple-50 dark:hover:bg-purple-600 rounded-md transition"
               >
                 <User className="w-4 h-4 text-blue-600" />
                 Perfil
-              </a>
+              </RouterLinks>
             </li>
             <li>
-              <a
-                href="#"
+              <RouterLinks
+                href="/configuracoes"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-purple-50 dark:hover:bg-purple-600 rounded-md transition"
               >
                 <Settings className="w-4 h-4 text-blue-600" />
                 Configurações
-              </a>
+              </RouterLinks>
             </li>
             <li>
-              <a
-                href="#"
+              <RouterLinks
+                onClick={logout}
                 className="flex items-center gap-2 px-4 py-2 hover:bg-purple-50 dark:hover:bg-purple-600 rounded-md transition"
               >
                 <LogOut className="w-4 h-4 text-red-500" />
                 Sair
-              </a>
+              </RouterLinks>
             </li>
           </ul>
         </div>
