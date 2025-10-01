@@ -16,12 +16,9 @@ import { useAuth } from "../../hooks/useAuth";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
-  const [modalSetorOpen, setModalSetorOpen] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
-
-  console.log(user);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -209,7 +206,9 @@ export function Sidebar() {
 
   </div>
 </div>
-      </header>
+
+</header>
+
   </div>
       {/* Backdrop */}
       {sideBar && (
@@ -220,10 +219,10 @@ export function Sidebar() {
       )}
 
       {/* Modal Adicionar Setor */}
-      <AdicionarSetorModal 
+      {/* <AdicionarSetorModal 
         isOpen={modalSetorOpen}
         onClose={() => setModalSetorOpen(false)}
-      />
+      /> */}
     </section>
   );
 }
