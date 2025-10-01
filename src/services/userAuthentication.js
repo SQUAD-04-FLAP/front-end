@@ -18,18 +18,20 @@ export const userAuthentication = {
     const data = await res.json();
 
     if(data.token) {
-        localStorage.setItem("user", JSON.stringify(data)); // salve token e dados do usuario
+        localStorage.setItem("token", data.token) // salva o token
+        return data.token;
     }
 
-    return data;
+    return null;
   },
 
   logout: () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   },
 
-  getUserFromStorage: () => {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
+  getTokenFromStorage: () => {
+    // const user = localStorage.getItem("token");
+    // return user ? JSON.parse(user) : null;
+    return localStorage.getItem("token");
   },
 };

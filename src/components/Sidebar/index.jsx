@@ -11,6 +11,7 @@ import { AdicionarSetorModal } from "../AdicionarSetorModal";
 import { useTheme } from "../../hooks/useTheme";
 import AvatarDropdown from "../AvatarDropdown";
 import NotificationDropdown from "../NotifcationDropdown";
+import { RouterLinks } from "../RouterLinks";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
@@ -25,9 +26,9 @@ export function Sidebar() {
           sideBar ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
-        <a href="/" className="flex items-center px-4 py-5">
+        <RouterLinks href="/" className="flex items-center px-4 py-5">
           <img src="img/logo.jpg" alt="Flap Logo" className="w-10" />
-        </a>
+        </RouterLinks>
 
         <nav className="text-sm font-medium text-gray-600 dark:text-gray-300" aria-label="Main Navigation">
             <SectionSidebar>Navegação</SectionSidebar>
