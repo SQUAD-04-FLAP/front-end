@@ -12,12 +12,16 @@ import { useTheme } from "../../hooks/useTheme";
 import AvatarDropdown from "../AvatarDropdown";
 import NotificationDropdown from "../NotifcationDropdown";
 import { RouterLinks } from "../RouterLinks";
+import { useAuth } from "../../hooks/useAuth";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
   const [modalSetorOpen, setModalSetorOpen] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
+
+  console.log(user);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -72,7 +76,22 @@ export function Sidebar() {
 
             <SectionSidebar>Setores</SectionSidebar>
 
-             <IconSidebar href="/">
+            {/* Mapear setores do usuário */}
+            {user?.setores?.length > 0 ? (
+              user.setores.map((setor) => (
+                <IconSidebar key={setor.id || setor.nome} href={setor.href || "/"}>
+                  <ContainerLinks>
+                    {/* Aqui pode escolher um ícone baseado no setor */}
+                    <Megaphone /> {/* exemplo genérico, pode criar um mapa de ícones */}
+                    <span>{setor.nome}</span>
+                  </ContainerLinks>
+                </IconSidebar>
+              ))
+            ) : (
+              <p className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Nenhum setor atribuído</p>
+            )}
+
+             {/* <IconSidebar href="/">
               <ContainerLinks>
                 <Megaphone />
                 <span>Marketing</span>
@@ -98,10 +117,11 @@ export function Sidebar() {
                 <Monitor />
                 <span>TI</span>
               </ContainerLinks>
-            </IconSidebar>
+            </IconSidebar> */}
+
 
             {/* Botão Adicionar Setor */}
-            <button 
+            {/* <button 
               onClick={() => setModalSetorOpen(true)}
               className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
             >
@@ -109,7 +129,7 @@ export function Sidebar() {
                 <Plus />
                 <span>Adicionar Setor</span>
               </ContainerLinks>
-            </button>
+            </button> */}
 
             <BorderSidebar />
 
