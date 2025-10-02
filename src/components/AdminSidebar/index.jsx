@@ -109,11 +109,6 @@ export function AdminSidebar() {
               onClick={() => setModalSetorOpen(true)}
               className="flex items-center w-full py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
             >
-              {/* <ContainerLinks>
-                <Plus />
-                <span>Adicionar Setor</span>
-              </ContainerLinks> */}
-
                <ContainerLinks bgColor="bg-[#324D9F]">
                 <Plus />
                 <span>Adicionar Setor</span>
