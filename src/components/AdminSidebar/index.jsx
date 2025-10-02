@@ -7,11 +7,17 @@ import {
   Bell,
   Search,
   Sun,
-  Moon
+  Moon,
+  Users,
+  Layers,
+  Settings
 } from "lucide-react";
 import { useTheme } from "../../hooks/useTheme";
 import { ContainerLinks } from "../ContainerLinks";
 import { AdicionarSetorModal } from "../AdicionarSetorModal";
+import { BorderSidebar } from "../../components/BorderSidebar";
+import { SectionSidebar } from "../../components/SectionSidebar";
+import { IconSidebar } from "../../components/IconSidebar";
 
 export function AdminSidebar() {
   const [sideBar, setSideBar] = useState(false);
@@ -64,16 +70,68 @@ export function AdminSidebar() {
           })}
         </nav>
 
+        <BorderSidebar />
+
+        <SectionSidebar>Gerenciamento</SectionSidebar>
+
+        <IconSidebar href="#">
+              <ContainerLinks bgColor="bg-transparent">
+                <Users />
+                <span>Gerenciar usuários</span>
+              </ContainerLinks>
+        </IconSidebar>
+
+        <IconSidebar href="#">
+              <ContainerLinks bgColor="bg-transparent">
+                <Layers />
+                <span>Gerenciar setores</span>
+              </ContainerLinks>
+        </IconSidebar>
+
+        <IconSidebar href="#">
+              <ContainerLinks bgColor="bg-transparent">
+                <Columns />
+                <span>Gerenciar quadros</span>
+              </ContainerLinks>
+        </IconSidebar>
+
+         <IconSidebar href="#">
+              <ContainerLinks bgColor="bg-transparent">
+                <Settings />
+                <span>Configurações</span>
+              </ContainerLinks>
+        </IconSidebar>
+
+        <BorderSidebar />
+
          {/* Botão Adicionar Setor */}
             <button 
               onClick={() => setModalSetorOpen(true)}
-              className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
+              className="flex items-center w-full py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
             >
-              <ContainerLinks>
+              {/* <ContainerLinks>
+                <Plus />
+                <span>Adicionar Setor</span>
+              </ContainerLinks> */}
+
+               <ContainerLinks bgColor="bg-[#324D9F]">
                 <Plus />
                 <span>Adicionar Setor</span>
               </ContainerLinks>
             </button>
+
+             <button 
+              onClick={() => setModalSetorOpen(true)}
+              className="flex items-center w-full py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
+            >
+
+              <ContainerLinks bgColor="bg-[#324D9F]">
+                <Plus />
+                <span>Adicionar Quadro</span>
+              </ContainerLinks>
+            </button>
+
+            <BorderSidebar />
 
         {/* Botão Nova Tarefa */}
         <div className="px-4 mt-8">
