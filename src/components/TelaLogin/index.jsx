@@ -100,15 +100,6 @@ export function TelaLogin() {
             <GoogleButton />
           </div>
         </form>
-        <div className="mt-6 text-center text-sm text-gray-600">
-          Ainda não tem uma conta?
-          {/* <a href="#" onSubmit={handleLogin} className="ml-1 text-indigo-600 hover:text-indigo-500 font-medium cursor-pointer">
-            Cadastre-se
-          </a> */}
-          <RouterLinks href={"/register"} className="ml-1 text-indigo-600 hover:text-indigo-500 font-medium cursor-pointer">
-            Cadastre-se
-          </RouterLinks>
-        </div>
       </div>
     </div>
   );
