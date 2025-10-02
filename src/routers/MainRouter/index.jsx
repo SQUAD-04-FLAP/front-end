@@ -16,13 +16,14 @@ import { ForgotPassword } from "../../pages/ForgotPassword";
 import { RecoveryPassword } from "../../pages/RecoveryPassword";
 import { Register } from "../../pages/Register";
 import { useAuth } from "../../hooks/useAuth";
+import { SpinnerLoading } from "../../components/SpinnerLoading";
 
 export function MainRouter() {
     const { user, loading } = useAuth();
     const isAuthenticated = !!user;
 
     if(loading) {
-        return <div>Carregando...</div>
+        return <SpinnerLoading />
     }
 
     return (

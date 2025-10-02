@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 export default function AvatarDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { user } = useAuth();
 
   const { logout } = useAuth();
   const location = useLocation();
@@ -46,15 +47,15 @@ export default function AvatarDropdown() {
       <img
         onClick={toggleDropdown}
         className="w-10 h-10 rounded-full cursor-pointer transition"
-        src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
-        alt="User dropdown"
+        src={user.avatar || "img/profile-default.jpg"}
+        alt={user.nome}
       />
 
       {isOpen && (
         <div className="absolute right-0 mt-2 z-10 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 rounded-lg shadow-lg w-48 animate-fadeIn">
             <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-      <div>João Buscapé</div>
-        <div class="font-medium truncate">joao@email.com</div>
+      <div>{user.nome}</div>
+        <div class="font-medium truncate">{user.email}</div>
       </div>
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
             <li>

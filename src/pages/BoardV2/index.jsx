@@ -23,7 +23,6 @@ export default function BoardV2() {
     const { source, destination } = result;
     if (!destination) return;
 
-    // Nada mudou
     if (
       source.droppableId === destination.droppableId &&
       source.index === destination.index
