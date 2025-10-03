@@ -1,7 +1,9 @@
+import { TelaDashBoard } from "../../components/TelaDashboard";
+
 export function Dashboard() {
     return(
           <div>
-             <h1>Dashboard</h1>
+             <TelaDashBoard />
           </div>
     );
 }
