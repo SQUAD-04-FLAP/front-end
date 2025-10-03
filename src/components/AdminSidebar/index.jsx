@@ -75,28 +75,28 @@ export function AdminSidebar() {
         <SectionSidebar>Gerenciamento</SectionSidebar>
 
         <IconSidebar href="#">
-              <ContainerLinks bgColor="bg-transparent">
+              <ContainerLinks bgColor="bg-transparent" textColor="text-white" hoverColor="hover:bg-[#334E9E] hover:text-gray-100">
                 <Users />
                 <span>Gerenciar usuários</span>
               </ContainerLinks>
         </IconSidebar>
 
         <IconSidebar href="#">
-              <ContainerLinks bgColor="bg-transparent">
+              <ContainerLinks bgColor="bg-transparent" textColor="text-white" hoverColor="hover:bg-[#334E9E] hover:text-gray-100">
                 <Layers />
                 <span>Gerenciar setores</span>
               </ContainerLinks>
         </IconSidebar>
 
         <IconSidebar href="#">
-              <ContainerLinks bgColor="bg-transparent">
+              <ContainerLinks bgColor="bg-transparent" textColor="text-white" hoverColor="hover:bg-[#334E9E] hover:text-gray-100">
                 <Columns />
                 <span>Gerenciar quadros</span>
               </ContainerLinks>
         </IconSidebar>
 
          <IconSidebar href="#">
-              <ContainerLinks bgColor="bg-transparent">
+              <ContainerLinks bgColor="bg-transparent" textColor="text-white" hoverColor="hover:bg-[#334E9E] hover:text-gray-100">
                 <Settings />
                 <span>Configurações</span>
               </ContainerLinks>
@@ -107,20 +107,19 @@ export function AdminSidebar() {
          {/* Botão Adicionar Setor */}
             <button 
               onClick={() => setModalSetorOpen(true)}
-              className="flex items-center w-full py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
+              className="flex items-center w-full py-2 text-left rounded-lg mx-2 transition-colors"
             >
-               <ContainerLinks bgColor="bg-[#324D9F]">
+               <ContainerLinks bgColor="bg-[#324D9F]" textColor="text-white">
                 <Plus />
                 <span>Adicionar Setor</span>
               </ContainerLinks>
             </button>
 
              <button 
-              onClick={() => setModalSetorOpen(true)}
-              className="flex items-center w-full py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
+              className="flex items-center w-full py-2 text-left rounded-lg mx-2 transition-colors"
             >
 
-              <ContainerLinks bgColor="bg-[#324D9F]">
+              <ContainerLinks bgColor="bg-[#324D9F]" textColor="text-white">
                 <Plus />
                 <span>Adicionar Quadro</span>
               </ContainerLinks>

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { AdminSidebar } from '../../../components/AdminSidebar';
 import { Plus, Filter, MessageCircle, Paperclip } from 'lucide-react';
+import { ListSectors } from '../../../components/ListSectors';
+import { FilterSectors } from '../../../components/FilterSectors';
 
 export default function AdminKanban() {
-  const [setores] = useState(['Marketing', 'Design', 'Atendimento', 'TI']);
-
   const [tarefas] = useState([
     {
       id: 1,
@@ -147,6 +147,7 @@ export default function AdminKanban() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+
       <AdminSidebar />
       
       {/* CONTEÚDO PRINCIPAL COM FUNDO FORÇADO */}
@@ -163,10 +164,7 @@ export default function AdminKanban() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition">
-                <Filter className="w-4 h-4" />
-                Filtrar
-              </button>
+              <FilterSectors />
               <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition">
                 Ordenar
               </button>
@@ -174,16 +172,7 @@ export default function AdminKanban() {
           </div>
 
           {/* Setores */}
-          <div className="flex items-center gap-4 mb-6">
-            {setores.map((setor) => (
-              <button
-                key={setor}
-                className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-              >
-                {setor}
-              </button>
-            ))}
-          </div>
+          <ListSectors />
 
           {/* Kanban Board */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
