@@ -23,7 +23,7 @@ export function Sidebar() {
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
       <nav
-        className={`fixed top-0 left-0 z-20 h-full pb-10 overflow-x-hidden overflow-y-auto transition origin-left transform bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 w-60 ${
+        className={`fixed border-e-2 top-0 left-0 z-20 h-full pb-10 overflow-x-hidden overflow-y-auto transition origin-left transform bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 w-60 ${
           sideBar ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
@@ -33,14 +33,6 @@ export function Sidebar() {
 
         <nav className="text-sm font-medium text-gray-600 dark:text-gray-300" aria-label="Main Navigation">
             <SectionSidebar>Navegação</SectionSidebar>
-
-            <IconSidebar href="/">
-              <ContainerLinks>
-                <Home />
-                <span>Painel</span>
-              </ContainerLinks>
-            </IconSidebar>
-
             <IconSidebar href="/dashboard">
               <ContainerLinks>
                 <LayoutDashboard />
