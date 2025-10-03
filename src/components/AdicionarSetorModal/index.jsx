@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Megaphone, Palette, Headphones, Monitor, Users, Building, Briefcase, Heart, Globe, Zap, Camera, Music, ShoppingCart, Calculator, BookOpen, Coffee, Gamepad2 } from 'lucide-react';
 import { useSectors } from '../../hooks/useSectors';
+import { showMessage } from '../../adapters/showMessage';
 
 export function AdicionarSetorModal({ isOpen, onClose }) {
   const [nomeSetor, setNomeSetor] = useState('');
   const [iconeEscolhido, setIconeEscolhido] = useState('Megaphone');
   const [corEscolhida, setCorEscolhida] = useState('#3b82f6');
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const { createSector } = useSectors();
 
@@ -66,7 +69,10 @@ export function AdicionarSetorModal({ isOpen, onClose }) {
   ];
 
   const handleSalvar = async () => {
-    if (nomeSetor.trim()) {  
+    if (nomeSetor.trim()) {
+      
+      setIsLoading(true);
+
     try {
       await createSector({
         nome: nomeSetor,
@@ -77,9 +83,14 @@ export function AdicionarSetorModal({ isOpen, onClose }) {
     setIconeEscolhido('Megaphone');
     setCorEscolhida('#3b82f6');
 
+    showMessage.success("Setor criado com sucesso!");
+
     onClose();
   } catch (error) {
+    showMessage.error("Ocorreu um erro ao criar o setor.")
     console.error('Erro ao criar setor:', error);
+  } finally {
+    setIsLoading(false);
   }
     }
   };
@@ -227,14 +238,18 @@ export function AdicionarSetorModal({ isOpen, onClose }) {
           </button>
           <button
             onClick={handleSalvar}
-            disabled={!nomeSetor.trim()}
+            disabled={!nomeSetor.trim() || isLoading}
             className={`px-6 py-2 rounded-lg font-medium transition backdrop-blur-sm ${
               nomeSetor.trim()
                 ? 'bg-blue-600/90 hover:bg-blue-700/90 text-white shadow-lg'
                 : 'bg-gray-300/60 dark:bg-gray-700/60 text-gray-500 dark:text-gray-400 cursor-not-allowed'
             }`}
           >
-            Criar Setor
+            {isLoading && (
+              <span className="w-5 h-5 border-t-transparent rounded-full animate-spin" />
+            )}
+            {isLoading ? 'Criando...' : 'Criar Setor'}
+            {/* Criar Setor */}
           </button>
         </div>
       </div>
