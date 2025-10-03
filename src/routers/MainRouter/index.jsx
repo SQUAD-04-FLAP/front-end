@@ -1,5 +1,4 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { Home } from "../../pages/Home";
 import { Login } from "../../pages/Login";
 import { Dashboard } from "../../pages/Dashboard";
 import { Board } from "../../pages/Board";
@@ -41,8 +40,7 @@ export function MainRouter() {
                 <Route
                     element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
                 >
-                    <Route path="/" element={<Home />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/" element={<Dashboard />} />
                     <Route path="/board" element={<Board />} />
                     <Route path="/board-v2" element={<BoardV2 />} />
                     <Route path="/configuracoes" element={<Configuracoes />} />
