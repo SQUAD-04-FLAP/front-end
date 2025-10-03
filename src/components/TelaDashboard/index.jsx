@@ -11,7 +11,7 @@ import {
   List
 } from 'lucide-react';
 
-export function TelaDashBoard() {
+export function TelaDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
@@ -29,10 +29,6 @@ export function TelaDashBoard() {
             <button className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-900 dark:text-gray-300">
               <ArrowUpDown size={14} />
               Ordenar
-            </button>
-            <button className="px-3 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded text-sm hover:bg-blue-600 dark:hover:bg-blue-700 flex items-center gap-2">
-              <Plus size={14} />
-              Novo Quadro
             </button>
           </div>
         </div>
