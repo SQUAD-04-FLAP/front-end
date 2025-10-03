@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AdminSidebar } from '../../../components/AdminSidebar';
 import { Plus, Filter, MessageCircle, Paperclip } from 'lucide-react';
 import { ListSectors } from '../../../components/ListSectors';
+import { FilterSectors } from '../../../components/FilterSectors';
 
 export default function AdminKanban() {
   const [tarefas] = useState([
@@ -163,10 +164,7 @@ export default function AdminKanban() {
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition">
-                <Filter className="w-4 h-4" />
-                Filtrar
-              </button>
+              <FilterSectors />
               <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition">
                 Ordenar
               </button>
