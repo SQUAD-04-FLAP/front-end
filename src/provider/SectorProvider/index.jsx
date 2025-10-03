@@ -21,16 +21,6 @@ export function SectorProvider({ children }) {
         }
     }
 
-  //   const createSector = async (newSectorData) => {
-  //     dispatch({ type: "CREATE_SECTOR_REQUEST" });
-
-  //   try {create_sector(newSectorData);
-  //     dispatch({ type: "CREATE_SECTOR_SUCCESS", payload: createSector });
-  // } catch (e) {
-  //   dispatch({ type: "CREATE_SECTOR_FAILURE", payload: e.message });
-  // }
-  //   }
-
   const createSector = async (newSectorData) => {
   dispatch({ type: "CREATE_SECTOR_REQUEST" });
 
