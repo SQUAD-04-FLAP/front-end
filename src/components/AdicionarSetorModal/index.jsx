@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Megaphone, Palette, Headphones, Monitor, Users, Building, Briefcase, Heart, Globe, Zap, Camera, Music, ShoppingCart, Calculator, BookOpen, Coffee, Gamepad2 } from 'lucide-react';
+import { useSectors } from '../../hooks/useSectors';
 
 export function AdicionarSetorModal({ isOpen, onClose }) {
   const [nomeSetor, setNomeSetor] = useState('');
   const [iconeEscolhido, setIconeEscolhido] = useState('Megaphone');
   const [corEscolhida, setCorEscolhida] = useState('#3b82f6');
+
+  const { createSector } = useSectors();
 
   // Fechar modal com ESC
   useEffect(() => {
@@ -62,20 +65,22 @@ export function AdicionarSetorModal({ isOpen, onClose }) {
     '#f97316', // Laranja
   ];
 
-  const handleSalvar = () => {
-    if (nomeSetor.trim()) {
-      console.log('Novo setor:', {
+  const handleSalvar = async () => {
+    if (nomeSetor.trim()) {  
+    try {
+      await createSector({
         nome: nomeSetor,
-        icone: iconeEscolhido,
-        cor: corEscolhida
       });
-      
-      // Resetar form
-      setNomeSetor('');
-      setIconeEscolhido('Megaphone');
-      setCorEscolhida('#3b82f6');
-      
-      onClose();
+
+    // Resetar form
+    setNomeSetor('');
+    setIconeEscolhido('Megaphone');
+    setCorEscolhida('#3b82f6');
+
+    onClose();
+  } catch (error) {
+    console.error('Erro ao criar setor:', error);
+  }
     }
   };
 
