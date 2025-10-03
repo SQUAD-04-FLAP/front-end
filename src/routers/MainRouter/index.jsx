@@ -6,7 +6,7 @@ import { Calendar } from "../../pages/Calendar";
 import { Report } from "../../pages/Report";
 import BoardV2 from "../../pages/BoardV2";
 import Configuracoes from "../../pages/Configuracoes";
-import AdminEmpresas from "../../pages/Admin/Empresas";
+import AdminEmpresas from '../../pages/Admin/Empresas';
 import AdminKanban from "../../pages/Admin/Kanban";
 import PublicLayout from "../../layout/PublicLayout";
 import MainTemplate from "../../templates/MainTemplate";
@@ -15,8 +15,6 @@ import { RecoveryPassword } from "../../pages/RecoveryPassword";
 import { Register } from "../../pages/Register";
 import { useAuth } from "../../hooks/useAuth";
 import { SpinnerLoading } from "../../components/SpinnerLoading";
-
-import { SectorProvider } from "../../provider/SectorProvider";
 
 export function MainRouter() {
     const { user, loading } = useAuth();
