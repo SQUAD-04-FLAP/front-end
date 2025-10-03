@@ -1,9 +1,77 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X } from 'lucide-react';
+import { X, Upload, Trash2 } from 'lucide-react';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [comment, setComment] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  
+  // Estados editáveis
+  const [editedTitle, setEditedTitle] = useState('');
+  const [editedDescription, setEditedDescription] = useState('');
+  const [editedDeadline, setEditedDeadline] = useState('');
+  const [editedCreatedDate, setEditedCreatedDate] = useState('');
+  const [editedEstimatedTime, setEditedEstimatedTime] = useState('');
+  const [editedAssignee, setEditedAssignee] = useState('');
+  const [editedRole, setEditedRole] = useState('');
+  const [attachments, setAttachments] = useState([
+    { id: 1, name: 'mockup-filtros-v4.png', type: 'image' },
+    { id: 2, name: 'especificacoes-tecnicas.pdf', type: 'pdf' }
+  ]);
+  const [tags, setTags] = useState([
+    { id: 1, name: 'Front-end', color: 'gray' },
+    { id: 2, name: 'UX/UI', color: 'blue' },
+    { id: 3, name: 'Sprint 5', color: 'green' },
+    { id: 4, name: 'Filtros', color: 'purple' }
+  ]);
+  const [activityHistory, setActivityHistory] = useState([
+    { id: 1, user: 'Marina Silva', action: "alterou para 'Em Progresso'", time: 'há 2 horas', color: 'green' },
+    { id: 2, user: 'Carlos Mendes', action: 'adicionou comentário', time: 'ontem às 16:43', color: 'blue' },
+    { id: 3, user: 'João Santos', action: "moveu de 'A Fazer' para 'Em Progresso'", time: 'há 3 dias', color: 'yellow' }
+  ]);
+  const [comments, setComments] = useState([
+    {
+      id: 1,
+      user: 'Marina Silva',
+      avatar: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
+      text: 'Precisamos garantir que os filtros sejam intuitivos. Vamos agendar uma reunião com o time de UX para discutir a melhor abordagem.',
+      time: 'Hoje, 14:57'
+    },
+    {
+      id: 2,
+      user: 'Carlos Mendes',
+      avatar: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
+      text: 'Já comecei a implementação dos filtros básicos. Vou precisar de mais detalhes sobre como os filtros avançados devem funcionar.',
+      time: 'Ontem, 16:43'
+    }
+  ]);
+  
+  // Estados para rastrear valores originais
+  const [originalValues, setOriginalValues] = useState({});
+
+  // Inicializar campos quando o task mudar
+  useEffect(() => {
+    if (task) {
+      const initialValues = {
+        title: task.title || '',
+        description: task.description || '',
+        deadline: '25/05/2023',
+        createdDate: '10/05/2023',
+        estimatedTime: '16',
+        assignee: 'Carlos Mendes',
+        role: 'Desenvolvedor Frontend'
+      };
+      
+      setEditedTitle(initialValues.title);
+      setEditedDescription(initialValues.description);
+      setEditedDeadline(initialValues.deadline);
+      setEditedCreatedDate(initialValues.createdDate);
+      setEditedEstimatedTime(initialValues.estimatedTime);
+      setEditedAssignee(initialValues.assignee);
+      setEditedRole(initialValues.role);
+      setOriginalValues(initialValues);
+    }
+  }, [task]);
 
   // Fechar modal com ESC
   useEffect(() => {
@@ -41,6 +109,266 @@ export function CardModal({ isOpen, onClose, task }) {
     }
   };
 
+  const getTagClasses = (color) => {
+    switch (color) {
+      case 'gray':
+        return 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+      case 'blue':
+        return 'bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300';
+      case 'green':
+        return 'bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300';
+      case 'purple':
+        return 'bg-purple-100 dark:bg-purple-500/15 text-purple-700 dark:text-purple-300';
+      case 'yellow':
+        return 'bg-yellow-100 dark:bg-yellow-500/15 text-yellow-700 dark:text-yellow-300';
+      case 'red':
+        return 'bg-red-100 dark:bg-red-500/15 text-red-700 dark:text-red-300';
+      case 'pink':
+        return 'bg-pink-100 dark:bg-pink-500/15 text-pink-700 dark:text-pink-300';
+      case 'indigo':
+        return 'bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300';
+      default:
+        return 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+    }
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    const now = new Date();
+    const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const newActivities = [];
+    
+    // Verificar cada campo alterado
+    if (editedTitle !== originalValues.title) {
+      newActivities.push({
+        id: Date.now() + Math.random(),
+        user: 'Você',
+        action: `alterou o título para "${editedTitle}"`,
+        time: `agora às ${timeString}`,
+        color: 'purple'
+      });
+    }
+    
+    if (editedDescription !== originalValues.description) {
+      newActivities.push({
+        id: Date.now() + Math.random(),
+        user: 'Você',
+        action: 'editou a descrição',
+        time: `agora às ${timeString}`,
+        color: 'purple'
+      });
+    }
+    
+    if (editedDeadline !== originalValues.deadline) {
+      newActivities.push({
+        id: Date.now() + Math.random(),
+        user: 'Você',
+        action: `alterou o prazo de ${originalValues.deadline} para ${editedDeadline}`,
+        time: `agora às ${timeString}`,
+        color: 'purple'
+      });
+    }
+    
+    if (editedEstimatedTime !== originalValues.estimatedTime) {
+      newActivities.push({
+        id: Date.now() + Math.random(),
+        user: 'Você',
+        action: `alterou o tempo estimado de ${originalValues.estimatedTime}h para ${editedEstimatedTime}h`,
+        time: `agora às ${timeString}`,
+        color: 'purple'
+      });
+    }
+    
+    if (editedAssignee !== originalValues.assignee) {
+      newActivities.push({
+        id: Date.now() + Math.random(),
+        user: 'Você',
+        action: `alterou o responsável de ${originalValues.assignee} para ${editedAssignee}`,
+        time: `agora às ${timeString}`,
+        color: 'purple'
+      });
+    }
+    
+    if (editedRole !== originalValues.role) {
+      newActivities.push({
+        id: Date.now() + Math.random(),
+        user: 'Você',
+        action: `alterou o cargo de ${originalValues.role} para ${editedRole}`,
+        time: `agora às ${timeString}`,
+        color: 'purple'
+      });
+    }
+    
+    // Adicionar atividades ao histórico
+    if (newActivities.length > 0) {
+      setActivityHistory(prev => [...newActivities, ...prev]);
+      
+      // Atualizar valores originais
+      setOriginalValues({
+        title: editedTitle,
+        description: editedDescription,
+        deadline: editedDeadline,
+        createdDate: editedCreatedDate,
+        estimatedTime: editedEstimatedTime,
+        assignee: editedAssignee,
+        role: editedRole
+      });
+      
+      alert(`${newActivities.length} alteração(ões) salva(s) com sucesso!`);
+    } else {
+      alert('Nenhuma alteração foi feita.');
+    }
+    
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    // Restaurar valores originais
+    setEditedTitle(originalValues.title);
+    setEditedDescription(originalValues.description);
+    setEditedDeadline(originalValues.deadline);
+    setEditedCreatedDate(originalValues.createdDate);
+    setEditedEstimatedTime(originalValues.estimatedTime);
+    setEditedAssignee(originalValues.assignee);
+    setEditedRole(originalValues.role);
+    setIsEditing(false);
+  };
+
+  const handleAddAttachment = () => {
+    // Criar input de arquivo temporário
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = '*/*';
+    
+    input.onchange = (e) => {
+      const files = Array.from(e.target.files);
+      
+      if (files.length > 0) {
+        const now = new Date();
+        const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        files.forEach(file => {
+          const newAttachment = {
+            id: Date.now() + Math.random(),
+            name: file.name,
+            type: file.type.includes('pdf') ? 'pdf' : 'image'
+          };
+          
+          setAttachments(prev => [...prev, newAttachment]);
+          
+          // Adicionar ao histórico
+          setActivityHistory(prev => [{
+            id: Date.now() + Math.random(),
+            user: 'Você',
+            action: `adicionou anexo "${file.name}"`,
+            time: `agora às ${timeString}`,
+            color: 'blue'
+          }, ...prev]);
+        });
+      }
+    };
+    
+    input.click();
+  };
+
+  const handleRemoveAttachment = (id, name) => {
+    if (confirm(`Deseja remover o anexo "${name}"?`)) {
+      setAttachments(prev => prev.filter(att => att.id !== id));
+      
+      // Adicionar ao histórico
+      const now = new Date();
+      const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+      setActivityHistory(prev => [{
+        id: Date.now(),
+        user: 'Você',
+        action: `removeu anexo "${name}"`,
+        time: `agora às ${timeString}`,
+        color: 'red'
+      }, ...prev]);
+    }
+  };
+
+  const handleAddComment = () => {
+    if (comment.trim() === '') {
+      alert('Por favor, escreva um comentário antes de enviar.');
+      return;
+    }
+
+    const now = new Date();
+    const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+    
+    // Adicionar novo comentário
+    const newComment = {
+      id: Date.now(),
+      user: 'Você',
+      avatar: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
+      text: comment,
+      time: `Agora, ${timeString}`
+    };
+    
+    setComments(prev => [newComment, ...prev]);
+    
+    // Adicionar ao histórico de atividades
+    setActivityHistory(prev => [{
+      id: Date.now(),
+      user: 'Você',
+      action: 'adicionou comentário',
+      time: `agora às ${timeString}`,
+      color: 'blue'
+    }, ...prev]);
+    
+    // Limpar campo de comentário
+    setComment('');
+  };
+
+  const handleAddTag = () => {
+    const tagName = prompt('Nome da etiqueta:');
+    if (tagName && tagName.trim() !== '') {
+      const colors = ['gray', 'blue', 'green', 'purple', 'yellow', 'red', 'pink', 'indigo'];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      
+      const newTag = {
+        id: Date.now(),
+        name: tagName.trim(),
+        color: randomColor
+      };
+      
+      setTags(prev => [...prev, newTag]);
+      
+      // Adicionar ao histórico
+      const now = new Date();
+      const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+      setActivityHistory(prev => [{
+        id: Date.now(),
+        user: 'Você',
+        action: `adicionou etiqueta "${tagName.trim()}"`,
+        time: `agora às ${timeString}`,
+        color: 'green'
+      }, ...prev]);
+    }
+  };
+
+  const handleRemoveTag = (id, name) => {
+    if (confirm(`Deseja remover a etiqueta "${name}"?`)) {
+      setTags(prev => prev.filter(tag => tag.id !== id));
+      
+      // Adicionar ao histórico
+      const now = new Date();
+      const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+      setActivityHistory(prev => [{
+        id: Date.now(),
+        user: 'Você',
+        action: `removeu etiqueta "${name}"`,
+        time: `agora às ${timeString}`,
+        color: 'red'
+      }, ...prev]);
+    }
+  };
+
   if (!isOpen || !task) return null;
 
   const modalContent = (
@@ -61,7 +389,7 @@ export function CardModal({ isOpen, onClose, task }) {
       <div className="flex-shrink-0 px-8 py-6 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Detalhes do Card
+            Detalhes do Card {isEditing && <span className="text-orange-500">(Editando)</span>}
           </h1>
           <div className="flex items-center gap-3">
             <span className="px-4 py-2 text-sm font-medium bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300 rounded-full">
@@ -91,9 +419,14 @@ export function CardModal({ isOpen, onClose, task }) {
                 </h2>
                 <input
                   type="text"
-                  value={task.title}
-                  readOnly
-                  className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 text-lg"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  readOnly={!isEditing}
+                  className={`w-full px-4 py-3 border rounded-lg text-lg ${
+                    isEditing 
+                      ? 'bg-white dark:bg-gray-700 border-blue-500 dark:border-blue-400' 
+                      : 'bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600'
+                  } text-gray-900 dark:text-gray-100`}
                 />
               </div>
 
@@ -102,9 +435,18 @@ export function CardModal({ isOpen, onClose, task }) {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Descrição
                 </h3>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
-                  {task.description}
-                </p>
+                {isEditing ? (
+                  <textarea
+                    value={editedDescription}
+                    onChange={(e) => setEditedDescription(e.target.value)}
+                    className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded-lg text-gray-900 dark:text-gray-100 resize-none"
+                    rows="6"
+                  />
+                ) : (
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
+                    {editedDescription}
+                  </p>
+                )}
               </div>
 
               {/* Responsável */}
@@ -112,21 +454,70 @@ export function CardModal({ isOpen, onClose, task }) {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Responsável
                 </h3>
-                <div className="flex items-center gap-4">
-                  <img
-                    src={task.assigneeAvatar || 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg'}
-                    alt="Responsável"
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-900 dark:text-gray-100 text-xl">
-                      Carlos Mendes
-                    </p>
-                    <p className="text-gray-600 dark:text-gray-400 text-lg">
-                      Desenvolvedor Frontend
-                    </p>
+                {isEditing ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Nome
+                      </label>
+                      <select
+                        value={editedAssignee}
+                        onChange={(e) => {
+                          setEditedAssignee(e.target.value);
+                          // Atualizar cargo baseado no nome selecionado
+                          const roles = {
+                            'Carlos Mendes': 'Desenvolvedor Frontend',
+                            'Marina Silva': 'Designer UX/UI',
+                            'João Santos': 'Desenvolvedor Backend',
+                            'Ana Costa': 'Product Manager',
+                            'Pedro Oliveira': 'QA Engineer'
+                          };
+                          setEditedRole(roles[e.target.value] || '');
+                        }}
+                        className="w-full pl-4 pr-10 py-3 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded-lg text-gray-900 dark:text-gray-100 cursor-pointer"
+                      >
+                        <option value="Carlos Mendes">Carlos Mendes</option>
+                        <option value="Marina Silva">Marina Silva</option>
+                        <option value="João Santos">João Santos</option>
+                        <option value="Ana Costa">Ana Costa</option>
+                        <option value="Pedro Oliveira">Pedro Oliveira</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Cargo
+                      </label>
+                      <select
+                        value={editedRole}
+                        onChange={(e) => setEditedRole(e.target.value)}
+                        className="w-full pl-4 pr-10 py-3 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded-lg text-gray-900 dark:text-gray-100 cursor-pointer"
+                      >
+                        <option value="Desenvolvedor Frontend">Desenvolvedor Frontend</option>
+                        <option value="Desenvolvedor Backend">Desenvolvedor Backend</option>
+                        <option value="Designer UX/UI">Designer UX/UI</option>
+                        <option value="Product Manager">Product Manager</option>
+                        <option value="QA Engineer">QA Engineer</option>
+                        <option value="DevOps Engineer">DevOps Engineer</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={task.assigneeAvatar || 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg'}
+                      alt="Responsável"
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100 text-xl">
+                        {editedAssignee}
+                      </p>
+                      <p className="text-gray-600 dark:text-gray-400 text-lg">
+                        {editedRole}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Comentários */}
@@ -134,45 +525,30 @@ export function CardModal({ isOpen, onClose, task }) {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
                   Comentários
                   <span className="ml-3 text-sm text-gray-500 dark:text-gray-400 font-normal">
-                    {task.comments} comentários
+                    {comments.length} comentários
                   </span>
                 </h3>
 
                 {/* Lista de Comentários */}
                 <div className="space-y-4 mb-6">
-                  <div className="flex gap-4 p-4 bg-white dark:bg-gray-700 rounded-xl">
-                    <img
-                      src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
-                      alt="Marina Silva"
-                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">Marina Silva</span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">Hoje, 14:57</span>
+                  {comments.map((commentItem) => (
+                    <div key={commentItem.id} className="flex gap-4 p-4 bg-white dark:bg-gray-700 rounded-xl">
+                      <img
+                        src={commentItem.avatar}
+                        alt={commentItem.user}
+                        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <span className="font-semibold text-gray-900 dark:text-gray-100">{commentItem.user}</span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">{commentItem.time}</span>
+                        </div>
+                        <p className="text-gray-700 dark:text-gray-300">
+                          {commentItem.text}
+                        </p>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300">
-                        Precisamos garantir que os filtros sejam intuitivos. Vamos agendar uma reunião com o time de UX para discutir a melhor abordagem.
-                      </p>
                     </div>
-                  </div>
-
-                  <div className="flex gap-4 p-4 bg-white dark:bg-gray-700 rounded-xl">
-                    <img
-                      src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
-                      alt="Carlos Mendes"
-                      className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="font-semibold text-gray-900 dark:text-gray-100">Carlos Mendes</span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">Ontem, 16:43</span>
-                      </div>
-                      <p className="text-gray-700 dark:text-gray-300">
-                        Já comecei a implementação dos filtros básicos. Vou precisar de mais detalhes sobre como os filtros avançados devem funcionar.
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
 
                 {/* Novo Comentário */}
@@ -185,7 +561,10 @@ export function CardModal({ isOpen, onClose, task }) {
                     rows="4"
                   />
                   <div className="flex justify-end mt-4">
-                    <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">
+                    <button 
+                      onClick={handleAddComment}
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
+                    >
                       Comentar
                     </button>
                   </div>
@@ -201,17 +580,38 @@ export function CardModal({ isOpen, onClose, task }) {
                   Detalhes
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Criado em:</span>
-                    <span className="text-gray-900 dark:text-gray-100 font-medium">10/05/2023</span>
+                    <span className="text-gray-900 dark:text-gray-100 font-medium">{editedCreatedDate}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Prazo:</span>
-                    <span className="text-gray-900 dark:text-gray-100 font-medium">25/05/2023</span>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editedDeadline}
+                        onChange={(e) => setEditedDeadline(e.target.value)}
+                        className="w-28 px-2 py-1 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded text-gray-900 dark:text-gray-100 text-sm"
+                      />
+                    ) : (
+                      <span className="text-gray-900 dark:text-gray-100 font-medium">{editedDeadline}</span>
+                    )}
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Tempo estimado:</span>
-                    <span className="text-gray-900 dark:text-gray-100 font-medium">16 horas</span>
+                    {isEditing ? (
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="number"
+                          value={editedEstimatedTime}
+                          onChange={(e) => setEditedEstimatedTime(e.target.value)}
+                          className="w-16 px-2 py-1 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded text-gray-900 dark:text-gray-100 text-sm"
+                        />
+                        <span className="text-gray-900 dark:text-gray-100 text-sm">horas</span>
+                      </div>
+                    ) : (
+                      <span className="text-gray-900 dark:text-gray-100 font-medium">{editedEstimatedTime} horas</span>
+                    )}
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Tempo registrado:</span>
@@ -226,20 +626,27 @@ export function CardModal({ isOpen, onClose, task }) {
                   Etiquetas
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm">
-                    Front-end
-                  </span>
-                  <span className="px-3 py-2 bg-blue-100 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300 rounded-lg text-sm">
-                    UX/UI
-                  </span>
-                  <span className="px-3 py-2 bg-green-100 dark:bg-green-500/15 text-green-700 dark:text-green-300 rounded-lg text-sm">
-                    Sprint 5
-                  </span>
-                  <span className="px-3 py-2 bg-purple-100 dark:bg-purple-500/15 text-purple-700 dark:text-purple-300 rounded-lg text-sm">
-                    Filtros
-                  </span>
+                  {tags.map((tag) => (
+                    <div
+                      key={tag.id}
+                      className={`px-3 py-2 rounded-lg text-sm flex items-center gap-2 group ${getTagClasses(tag.color)}`}
+                    >
+                      <span>{tag.name}</span>
+                      {isEditing && (
+                        <button
+                          onClick={() => handleRemoveTag(tag.id, tag.name)}
+                          className="opacity-0 group-hover:opacity-100 hover:scale-110 transition"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                <button className="mt-4 w-full text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg py-3 hover:border-blue-300 transition">
+                <button 
+                  onClick={handleAddTag}
+                  className="mt-4 w-full text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg py-3 hover:border-blue-300 transition"
+                >
                   + Adicionar etiqueta
                 </button>
               </div>
@@ -250,22 +657,32 @@ export function CardModal({ isOpen, onClose, task }) {
                   Anexos
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg cursor-pointer transition">
-                    <svg className="w-5 h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M4 4v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0014.586 6L12 3.414A2 2 0 0010.586 3H6a2 2 0 00-2 1z" />
-                    </svg>
-                    <span className="text-gray-700 dark:text-gray-300 truncate">mockup-filtros-v4.png</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg cursor-pointer transition">
-                    <svg className="w-5 h-5 text-red-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M4 4v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0014.586 6L12 3.414A2 2 0 0010.586 3H6a2 2 0 00-2 1z" />
-                    </svg>
-                    <span className="text-gray-700 dark:text-gray-300 truncate">especificacoes-tecnicas.pdf</span>
-                  </div>
+                  {attachments.map((attachment) => (
+                    <div key={attachment.id} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition group">
+                      <svg className={`w-5 h-5 flex-shrink-0 ${attachment.type === 'pdf' ? 'text-red-600' : 'text-blue-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 4v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0014.586 6L12 3.414A2 2 0 0010.586 3H6a2 2 0 00-2 1z" />
+                      </svg>
+                      <span className="text-gray-700 dark:text-gray-300 truncate flex-1">{attachment.name}</span>
+                      {isEditing && (
+                        <button
+                          onClick={() => handleRemoveAttachment(attachment.id, attachment.name)}
+                          className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                <button className="mt-4 w-full text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg py-3 hover:border-blue-300 transition">
-                  + Adicionar anexo
-                </button>
+                {isEditing && (
+                  <button 
+                    onClick={handleAddAttachment}
+                    className="mt-4 w-full text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 border border-dashed border-blue-300 dark:border-blue-600 rounded-lg py-3 hover:border-blue-500 transition flex items-center justify-center gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Adicionar anexo
+                  </button>
+                )}
               </div>
 
               {/* Histórico de Atividades */}
@@ -273,34 +690,18 @@ export function CardModal({ isOpen, onClose, task }) {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Histórico de Atividades
                 </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <div>
-                      <p className="text-gray-900 dark:text-gray-100">
-                        <span className="font-medium">Marina Silva</span> alterou para 'Em Progresso'
-                      </p>
-                      <p className="text-gray-500 dark:text-gray-400 text-xs">há 2 horas</p>
+                <div className="space-y-3 text-sm max-h-64 overflow-y-auto">
+                  {activityHistory.map((activity) => (
+                    <div key={activity.id} className="flex items-start gap-2">
+                      <div className={`w-2 h-2 bg-${activity.color}-500 rounded-full mt-2 flex-shrink-0`}></div>
+                      <div>
+                        <p className="text-gray-900 dark:text-gray-100">
+                          <span className="font-medium">{activity.user}</span> {activity.action}
+                        </p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">{activity.time}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <div>
-                      <p className="text-gray-900 dark:text-gray-100">
-                        <span className="font-medium">Carlos Mendes</span> adicionou comentário
-                      </p>
-                      <p className="text-gray-500 dark:text-gray-400 text-xs">ontem às 16:43</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 flex-shrink-0"></div>
-                    <div>
-                      <p className="text-gray-900 dark:text-gray-100">
-                        <span className="font-medium">João Santos</span> moveu de 'A Fazer' para 'Em Progresso'
-                      </p>
-                      <p className="text-gray-500 dark:text-gray-400 text-xs">há 3 dias</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -323,9 +724,29 @@ export function CardModal({ isOpen, onClose, task }) {
           >
             Fechar
           </button>
-          <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">
-            Salvar
-          </button>
+          {isEditing ? (
+            <>
+              <button 
+                onClick={handleCancelEdit}
+                className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={handleSave}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
+              >
+                Salvar Alterações
+              </button>
+            </>
+          ) : (
+            <button 
+              onClick={handleEdit}
+              className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition"
+            >
+              Editar
+            </button>
+          )}
         </div>
       </div>
     </div>
