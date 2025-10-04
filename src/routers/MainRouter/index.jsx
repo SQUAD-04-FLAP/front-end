@@ -11,17 +11,16 @@ import AdminEmpresas from '../../pages/Admin/empresas';
 import AdminKanban from "../../pages/Admin/Kanban";
 import PublicLayout from "../../layout/PublicLayout";
 import MainTemplate from "../../templates/MainTemplate";
-import { ForgotPassword } from "../../pages/ForgotPassword";
-import { RecoveryPassword } from "../../pages/RecoveryPassword";
 import { Register } from "../../pages/Register";
 import { useAuth } from "../../hooks/useAuth";
 import { SpinnerLoading } from "../../components/SpinnerLoading";
+import NovaTarefa from "../../pages/NovaTarefa"; // ✅ Importando NovaTarefa
 
 export function MainRouter() {
     const { user, loading } = useAuth();
     const isAuthenticated = !!user;
 
-    if(loading) {
+    if (loading) {
         return <SpinnerLoading />
     }
 
@@ -31,12 +30,10 @@ export function MainRouter() {
                 {/* Rotas públicas */}
                 <Route element={<PublicLayout />}>
                     <Route path="/login" element={<Login />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/recovery-code" element={<RecoveryPassword />} />
                     <Route path="/register" element={<Register />} />
                 </Route>
-                
-                {/* Rotas privadas (apenas dashboard e suas páginas) */}
+
+                {/* Rotas privadas */}
                 <Route
                     element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
                 >
@@ -46,19 +43,17 @@ export function MainRouter() {
                     <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/reports" element={<Report />} />
+                    
+                    {/* ✅ Nova Rota para Nova Tarefa */}
+                    <Route path="/nova-tarefa" element={<NovaTarefa />} />
                 </Route>
 
-                {/* Rotas de Admin - Suas telas novas */}
+                {/* Rotas de Admin */}
                 <Route
                     element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
                 >
-                    <Route path="/admin" element={<AdminKanban />} 
-                        />
-                    <Route path="/admin/kanban" element={
-                            <AdminKanban />
-                    } 
-                        
-                    />
+                    <Route path="/admin" element={<AdminKanban />} />
+                    <Route path="/admin/kanban" element={<AdminKanban />} />
                     <Route path="/admin/empresas" element={<AdminEmpresas />} />
                 </Route>
 
