@@ -3,6 +3,8 @@ import { useSectors } from '../../hooks/useSectors';
 export function ListSectors() {
   const { sectors, loading, error } = useSectors();
 
+  console.log(sectors);
+
   if (loading) return <p className='text-center p-4'>Carregando setores...</p>;
   if (error) return <p className='text-red-500 text-center p-4'>Erro ao carregar setores.</p>;
 

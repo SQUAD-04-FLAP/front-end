@@ -1,6 +1,43 @@
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSectors } from '../../hooks/useSectors';
+import { useFramer } from '../../hooks/useFramer';
+import { showMessage } from '../../adapters/showMessage';
 
 export function ModalRegisterFramer({ isOpen, onClose }) {
+  const [nomeQuadro, setNomeQuadro] = useState("");
+  const { sectors } = useSectors();
+  const [idSetor, setIdSetor] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { createFramer } = useFramer();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    if (!nomeQuadro || !idSetor) return;
+
+    try {
+      await createFramer({
+        idSetor: idSetor,
+        nome: nomeQuadro,
+      })
+
+      setNomeQuadro("");
+      setIdSetor("");
+
+      showMessage.success("Quadro criado com sucesso!");
+      onClose();
+    } catch(e) {
+      showMessage.error("Ocorreu um erro ao criar o quadro.")
+      console.error('Erro ao criar quadro:', e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -19,16 +56,28 @@ export function ModalRegisterFramer({ isOpen, onClose }) {
             <h3 className="text-blue-600 text-xl font-semibold mb-4">
               Adicionar Quadro
             </h3>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <input
                 type="text"
                 placeholder="Nome do quadro"
+                value={nomeQuadro}
+                onChange={(e) => setNomeQuadro(e.target.value)}
                 className="w-full px-4 py-3 border rounded-lg focus:outline-blue-600"
               />
-              <textarea
-                placeholder="Descrição (opcional)"
-                className="w-full px-4 py-3 border rounded-lg focus:outline-blue-600"
-              />
+
+             <select
+              value={idSetor}
+              onChange={(e) => setIdSetor(e.target.value)}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-blue-600"
+            >
+              <option value="">Selecione um setor</option>
+              {sectors.map((setor, index) => (
+                <option key={setor.idSetor ?? index} value={setor.idSetor}>
+                  {setor.nome}
+                </option>
+              ))}
+            </select>
+
               <div className="flex justify-end gap-4 mt-4">
                 <button
                   type="button"
@@ -39,9 +88,18 @@ export function ModalRegisterFramer({ isOpen, onClose }) {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+                  disabled={!nomeQuadro.trim() || !idSetor || isLoading}
+                  className={`px-6 py-3 rounded-lg text-white ${
+                    !nomeQuadro.trim() || !idSetor || isLoading
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                  }`}
                 >
-                  Adicionar
+                  {/* Adicionar */}
+                  {isLoading && (
+                <span className="w-5 h-5 border-t-transparent rounded-full animate-spin" />
+              )}
+              {isLoading ? 'Adicionando...' : 'Adicionar quadro'}
                 </button>
               </div>
             </form>

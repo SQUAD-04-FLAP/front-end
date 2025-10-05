@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { SectorProvider } from "../provider/SectorProvider";
 import { SectorContext } from "../provider/SectorProvider/SectorContext";
 
 export function useSectors() {
