@@ -3,6 +3,7 @@ import { AdminSidebar } from '../../../components/AdminSidebar';
 import { Plus, Filter, MessageCircle, Paperclip } from 'lucide-react';
 import { ListSectors } from '../../../components/ListSectors';
 import { FilterSectors } from '../../../components/FilterSectors';
+import { BreadcrumbFramer } from '../../../components/BreadcrumbFramer';
 
 export default function AdminKanban() {
   const [tarefas] = useState([
@@ -173,6 +174,9 @@ export default function AdminKanban() {
 
           {/* Setores */}
           <ListSectors />
+
+          {/* Nome dos quadros */}
+          <BreadcrumbFramer />
 
           {/* Kanban Board */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
