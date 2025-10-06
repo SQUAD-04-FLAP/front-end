@@ -3,9 +3,13 @@ import { AuthProvider } from "../provider/AuthProvider";
 import { MainRouter } from "../routers/MainRouter";
 import { MessagesContainer } from "./MessagesContainer";
 import { SectorProvider } from "../provider/SectorProvider";
+import { FramerProvider } from '../provider/FramerProvider';
+import { FilterProvider } from '../provider/FilterProvider';
 
 function App() {
   return (
+    <FilterProvider>
+    <FramerProvider>
     <SectorProvider>
     <AuthProvider>
       <MessagesContainer>
@@ -13,6 +17,8 @@ function App() {
       </MessagesContainer>
     </AuthProvider>
     </SectorProvider>
+    </FramerProvider>
+    </FilterProvider>
   )
 }
 

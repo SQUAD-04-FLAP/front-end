@@ -80,46 +80,6 @@ export function Sidebar() {
               <p className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Nenhum setor atribuído</p>
             )}
 
-             {/* <IconSidebar href="/">
-              <ContainerLinks>
-                <Megaphone />
-                <span>Marketing</span>
-              </ContainerLinks>
-            </IconSidebar>
-
-            <IconSidebar href="/">
-              <ContainerLinks>
-                <Palette />
-                <span>Design</span>
-              </ContainerLinks>
-            </IconSidebar>
-
-            <IconSidebar href="/">
-              <ContainerLinks>
-                <Headphones />
-                <span>Atendimento</span>
-              </ContainerLinks>
-            </IconSidebar>
-
-            <IconSidebar href="/">
-              <ContainerLinks>
-                <Monitor />
-                <span>TI</span>
-              </ContainerLinks>
-            </IconSidebar> */}
-
-
-            {/* Botão Adicionar Setor */}
-            {/* <button 
-              onClick={() => setModalSetorOpen(true)}
-              className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg mx-2 transition-colors"
-            >
-              <ContainerLinks>
-                <Plus />
-                <span>Adicionar Setor</span>
-              </ContainerLinks>
-            </button> */}
-
             <BorderSidebar />
 
             <IconSidebar href="/configuracoes">
@@ -209,12 +169,6 @@ export function Sidebar() {
           onClick={() => setSideBar(false)}
         ></div>
       )}
-
-      {/* Modal Adicionar Setor */}
-      {/* <AdicionarSetorModal 
-        isOpen={modalSetorOpen}
-        onClose={() => setModalSetorOpen(false)}
-      /> */}
     </section>
   );
 }

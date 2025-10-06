@@ -249,7 +249,6 @@ export function AdicionarSetorModal({ isOpen, onClose }) {
               <span className="w-5 h-5 border-t-transparent rounded-full animate-spin" />
             )}
             {isLoading ? 'Criando...' : 'Criar Setor'}
-            {/* Criar Setor */}
           </button>
         </div>
       </div>
