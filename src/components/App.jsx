@@ -5,9 +5,11 @@ import { MessagesContainer } from "./MessagesContainer";
 import { SectorProvider } from "../provider/SectorProvider";
 import { FramerProvider } from '../provider/FramerProvider';
 import { FilterProvider } from '../provider/FilterProvider';
+import { TaskProvider } from '../provider/TaskProvider';
 
 function App() {
   return (
+    <TaskProvider>
     <FilterProvider>
     <FramerProvider>
     <SectorProvider>
@@ -19,6 +21,7 @@ function App() {
     </SectorProvider>
     </FramerProvider>
     </FilterProvider>
+    </TaskProvider>
   )
 }
 

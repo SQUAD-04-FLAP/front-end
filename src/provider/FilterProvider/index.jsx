@@ -16,7 +16,7 @@ export function FilterProvider({ children }) {
   };
 
   return (
-    <FilterContext.Provider value={{ state, setSelectedSector, setFramers, clearFilters }}>
+    <FilterContext.Provider value={{ state, dispatch, setSelectedSector, setFramers, clearFilters }}>
       {children}
     </FilterContext.Provider>
   );
