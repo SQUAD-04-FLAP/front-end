@@ -1,13 +1,23 @@
 import { useSectors } from '../../hooks/useSectors';
 import { useFilter } from '../../hooks/useFilter';
 import { Filter } from "lucide-react";
+import { listFramersBySector } from '../../services/framerService';
 
 export function FilterSectors() {
   const { sectors } = useSectors();
-  const { state, setSelectedSector } = useFilter();
+  const { state, setSelectedSector, setFramers } = useFilter();
 
-  const handleFilterChange = (e) => {
-    setSelectedSector(e.target.value);
+  const handleFilterChange = async (e) => {
+    // setSelectedSector(e.target.value);
+    const idSetor = e.target.value;
+    setSelectedSector(idSetor);
+
+    if(idSetor) {
+      const data = await listFramersBySector(idSetor);
+      setFramers(data)
+    } else {
+      setFramers([]); // limpa quando não há setor selecionado
+    }
   };
 
   return (

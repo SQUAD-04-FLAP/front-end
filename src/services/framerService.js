@@ -23,3 +23,23 @@ export async function create_framer(framerData) {
         throw e;
     }
 }
+
+export async function listFramersBySector(idSector) {
+    try {
+    const res = await fetch(`${API_URL}/setor/${idSector}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao buscar quadros para o setor ${idSector}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("[QuadroService] Erro ao listar quadros por setor:", error);
+    throw error;
+  }
+}

@@ -9,12 +9,14 @@ export function FilterProvider({ children }) {
     dispatch({ type: "SET_SECTOR", payload: sectorId });
   };
 
+  const setFramers = (framers) => dispatch({ type: "SET_FRAMERS", payload: framers })
+
   const clearFilters = () => {
     dispatch({ type: "CLEAR_FILTERS" });
   };
 
   return (
-    <FilterContext.Provider value={{ state, setSelectedSector, clearFilters }}>
+    <FilterContext.Provider value={{ state, setSelectedSector, setFramers, clearFilters }}>
       {children}
     </FilterContext.Provider>
   );
