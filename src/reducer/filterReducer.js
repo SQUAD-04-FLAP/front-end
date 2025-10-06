@@ -1,6 +1,7 @@
 export const initialStateFilter = {
   selectedSector: "",
   framers: [],
+  selectedFramerId: null,
   loading: false,
 };
 
@@ -14,6 +15,10 @@ export function filterReducer(state, action) {
 
     case "SET_LOADING":
       return { ...state, loading: action.payload };
+
+    case "SET_SELECTED_FRAMER":
+      return { ...state, selectedFramerId: action.payload };
+      
     case "CLEAR_FILTERS":
       return initialStateFilter;
 
