@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Megaphone, Monitor, Moon, Palette, Search, Settings, Sun, Plus } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
 import { ButtonNewTask } from "../ButtonNewTask";
 import { SearchSidebar } from "../SearchSidebar";
 import { IconsTopSidebar } from "../IconsTopSidebar";
-import { AdicionarSetorModal } from "../AdicionarSetorModal";
 import { useTheme } from "../../hooks/useTheme";
 import AvatarDropdown from "../AvatarDropdown";
 import NotificationDropdown from "../NotifcationDropdown";
@@ -68,11 +67,11 @@ export function Sidebar() {
             {/* Mapear setores do usuário */}
             {user?.setores?.length > 0 ? (
               user.setores.map((setor) => (
-                <IconSidebar key={setor.id || setor.nome} href={setor.href || "/"}>
+                <IconSidebar key={setor.id || setor.nome}>
                   <ContainerLinks>
                     {/* Aqui pode escolher um ícone baseado no setor */}
-                    <Megaphone /> {/* exemplo genérico, pode criar um mapa de ícones */}
-                    <span>{setor.nome}</span>
+                    <Box /> {/* exemplo genérico, pode criar um mapa de ícones */}
+                    <span>{setor.nomeSetor}</span>
                   </ContainerLinks>
                 </IconSidebar>
               ))
