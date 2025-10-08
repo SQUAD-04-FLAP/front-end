@@ -37,7 +37,8 @@ export async function listFramersBySector(idSector) {
       throw new Error(`Erro ao buscar quadros para o setor ${idSector}`);
     }
 
-    return await res.json();
+    const data = await res.json();
+    return data;
   } catch (error) {
     console.error("[QuadroService] Erro ao listar quadros por setor:", error);
     throw error;

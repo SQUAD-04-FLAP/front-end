@@ -4,7 +4,6 @@ import { useAuth } from '../../hooks/useAuth';
 export function FilterSectorMember({ onFilter }) {
   const [setorSelecionado, setSetorSelecionado] = useState("");
   const { user } = useAuth();
-  console.log(user);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -21,7 +20,7 @@ export function FilterSectorMember({ onFilter }) {
       >
         <option value="">Filtrar por setor</option>
         {user.setores.map((setor) => (
-          <option key={setor.idSetor} value={setor.id}>
+          <option key={setor.idSetor} value={setor.idSetor}>
             {setor.nomeSetor}
           </option>
         ))}
