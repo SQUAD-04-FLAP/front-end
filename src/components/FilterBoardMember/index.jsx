@@ -7,6 +7,7 @@ export function FilterBoardMember({ onFilter }) {
 
   const handleChange = (e) => {
     setQuadroSelecionado(e.target.value);
+    console.log("Quadro selecionado: ", e.target.value)
     onFilter(e.target.value);
   };
 
@@ -19,7 +20,7 @@ export function FilterBoardMember({ onFilter }) {
       >
         <option value="">Filtrar por quadro</option>
         {state.boards.map((quadro) => (
-          <option key={quadro.id} value={quadro.id}>
+          <option key={quadro.idQuadro} value={quadro.idQuadro}>
             {quadro.nome}
           </option>
         ))}

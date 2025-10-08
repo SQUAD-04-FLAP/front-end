@@ -1,7 +1,7 @@
 export const initialStateKanban = {
   columns: [],
   boards: [],
-  filteredColumns: [],
+  tasks: [],
   loading: true,
   error: null,
   selectedBoard: '',
@@ -12,8 +12,8 @@ export const initialStateKanban = {
 
 export function kanbanReducer(state, action) {
   switch (action.type) {
-    case 'SET_COLUMNS':
-      return { ...state, columns: action.payload, loading: false };
+    case 'SET_TASKS':
+      return { ...state, tasks: action.payload};
     case 'SET_BOARDS':
       return { ...state, boards: action.payload }
     case 'SET_LOADING':
