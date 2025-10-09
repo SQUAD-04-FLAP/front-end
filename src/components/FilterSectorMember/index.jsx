@@ -7,12 +7,14 @@ export function FilterSectorMember({ onFilter }) {
 
   // Ao montar, restaurar o valor salvo no localStorage
   useEffect(() => {
-    const savedSector = localStorage.getItem('selectedSector');
-    if (savedSector) {
-      setSetorSelecionado(savedSector);
-      onFilter(savedSector); // aplica o filtro automaticamente
-    }
-  }, [onFilter]);
+  const savedSector = localStorage.getItem('selectedSector');
+  if (savedSector) {
+    setSetorSelecionado(savedSector);
+    onFilter(savedSector); // aplica o filtro automaticamente
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
 
   // Salvar no localStorage sempre que mudar
   const handleChange = (e) => {

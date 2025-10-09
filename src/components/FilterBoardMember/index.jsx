@@ -7,12 +7,14 @@ export function FilterBoardMember({ onFilter }) {
 
   // Ao montar, busca o último valor salvo
   useEffect(() => {
-    const savedBoard = localStorage.getItem('selectedBoard');
-    if (savedBoard) {
-      setQuadroSelecionado(savedBoard);
-      onFilter(savedBoard);
-    }
-  }, [onFilter]);
+  const savedBoard = localStorage.getItem('selectedBoard');
+  if (savedBoard) {
+    setQuadroSelecionado(savedBoard);
+    onFilter(savedBoard);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
 
   //  Quando mudar, salva no localStorage e propaga para o reducer
   const handleChange = (e) => {
