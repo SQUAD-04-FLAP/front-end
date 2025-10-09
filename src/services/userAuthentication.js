@@ -30,8 +30,6 @@ export const userAuthentication = {
   },
 
   getTokenFromStorage: () => {
-    // const user = localStorage.getItem("token");
-    // return user ? JSON.parse(user) : null;
     return localStorage.getItem("token");
   },
 };
