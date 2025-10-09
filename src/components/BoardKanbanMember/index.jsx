@@ -13,7 +13,6 @@ export function BoardKanbanMember() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log('State', state);
 
   // Monta as colunas dinamicamente assim que state.tasks mudar
   useEffect(() => {
@@ -122,7 +121,7 @@ function groupTasksByStatus(tasks) {
   const statusColumns = [
     { id: 'todo', name: 'Fazer', colorDot: 'bg-amber-500' },
     { id: 'doing', name: 'Em Andamento', colorDot: 'bg-sky-500' },
-    // { id: 'review', name: 'Revisão', colorDot: 'bg-fuchsia-500' },
+    { id: 'review', name: 'Revisão', colorDot: 'bg-fuchsia-500' },
     { id: 'done', name: 'Concluído', colorDot: 'bg-emerald-500' },
   ];
 
