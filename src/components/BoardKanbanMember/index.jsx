@@ -13,9 +13,8 @@ export function BoardKanbanMember() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log('Tasks do state:', state.tasks);
 
-  // Monta as colunas dinamicamente assim que state.tasks mudar
+  // Atualiza colunas quando tasks mudarem
   useEffect(() => {
     if (state.tasks.length > 0) {
       const grouped = groupTasksByStatus(state.tasks);
@@ -33,30 +32,55 @@ export function BoardKanbanMember() {
     setSelectedTask(null);
   };
 
-  const handleDragEnd = (result) => {
-    const { source, destination } = result;
-    if (!destination) return;
 
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) return;
+  const handleDragEnd = async (result) => {
+  const { source, destination, draggableId } = result;
+  if (!destination) return;
+  if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-    setColumns((prevColumns) => {
-      const newColumns = prevColumns.map(col => ({
-        ...col,
-        tasks: [...col.tasks],
-      }));
+  const taskId = parseInt(draggableId);
 
-      const sourceCol = newColumns.find(c => c.id === source.droppableId);
-      const destCol = newColumns.find(c => c.id === destination.droppableId);
+  // 1 Buscar tarefa localmente
+  const task = state.tasks.find(t => t.idTarefa === taskId);
+  if (!task) return;
 
-      const [movedCard] = sourceCol.tasks.splice(source.index, 1);
-      destCol.tasks.splice(destination.index, 0, movedCard);
+  if (!task || task.idQuadro.toString() !== state.selectedBoard) {
+    console.warn('Tentativa de mover tarefa para outro quadro — bloqueado.');
+    return;
+  }
 
-      return newColumns;
-    });
-  };
+  // 3️⃣ Atualizar localmente
+  setColumns((prevColumns) => {
+    const newColumns = prevColumns.map(c => ({ ...c, tasks: [...c.tasks] }));
+    const sourceCol = newColumns.find(c => c.id === source.droppableId);
+    const destCol = newColumns.find(c => c.id === destination.droppableId);
+    const [movedCard] = sourceCol.tasks.splice(source.index, 1);
+    destCol.tasks.splice(destination.index, 0, movedCard);
+    return newColumns;
+  });
+
+  // Essa parte está comentada, mas será trabalhada melhor ainda
+
+  // const statusIdMap = {
+  //   todo: 1,
+  //   doing: 2,
+  //   review: 3,
+  //   done: 4,
+  // };
+
+  // const newStatusId = statusIdMap[destination.droppableId];
+
+  // try {
+  //   await moveTask(taskId, newStatusId, user.idUsuario);
+  //   dispatch({
+  //     type: 'UPDATE_TASK_STATUS',
+  //     payload: { id: taskId, status: destination.droppableId },
+  //   });
+  // } catch (error) {
+  //   console.error('Falha ao mover tarefa:', error);
+  // }
+};
+
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
@@ -81,7 +105,7 @@ export function BoardKanbanMember() {
 
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="overflow-x-auto">
-            <div className="flex gap-4 min-w-max pb-4">
+            <div className="flex justify-center gap-4 min-w-max pb-4">
               {columns.length === 0 || columns.every(col => col.tasks.length === 0) ? (
                 <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
                   Selecione um quadro ou setor para exibir as tarefas.
@@ -109,9 +133,8 @@ export function BoardKanbanMember() {
   );
 }
 
-// Função auxiliar para agrupar e mapear as tasks do backend
+// 🔸 Função auxiliar para agrupar tarefas por status
 function groupTasksByStatus(tasks) {
-  // Mapeamento de nomeStatus do backend para IDs das colunas Kanban
   const statusMap = {
     'A Fazer': 'todo',
     'Em Andamento': 'doing',
@@ -136,8 +159,9 @@ function groupTasksByStatus(tasks) {
         description: t.descricao || '',
         date: t.prazo ? new Date(t.prazo).toLocaleDateString('pt-BR') : '',
         comments: t.comentarios?.length || 0,
-        assigneeAvatar: t.assigneeAvatar || '', // opcional
+        assigneeAvatar: t.assigneeAvatar || "img/profile-default.jpg",
         priority: 'Média',
+        idQuadro: t.idQuadro, // importante p/ validação
       })),
   }));
 }
