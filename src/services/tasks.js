@@ -46,3 +46,22 @@ export async function moveTask(taskId, newStatusId, userId) {
     throw error;
   }
 }
+
+export async function fetchTaskById(taskId) {
+  try {
+    const res = await fetch(`${API_URL}/${taskId}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) throw new Error(`Erro ao buscar tarefa ${taskId}`);
+
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    console.error("[TasksService] Erro ao buscar tarefa por ID:", e);
+    throw e;
+  }
+}

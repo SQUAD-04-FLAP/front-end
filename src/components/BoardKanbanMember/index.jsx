@@ -13,7 +13,6 @@ export function BoardKanbanMember() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log(state);
 
   // Atualiza colunas quando tasks mudarem
   useEffect(() => {

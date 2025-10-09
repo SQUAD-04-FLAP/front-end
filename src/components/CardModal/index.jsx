@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Upload, Trash2 } from 'lucide-react';
-import { CommentsSection } from '../../components/CommentSection';
+import { CommentsTask } from '../../components/CommentsTask';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [comment, setComment] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
-  console.log(task?.comments);
+  console.log(task);
   
   // Estados editáveis
   const [editedTitle, setEditedTitle] = useState('');
@@ -32,24 +32,6 @@ export function CardModal({ isOpen, onClose, task }) {
     { id: 2, user: 'Carlos Mendes', action: 'adicionou comentário', time: 'ontem às 16:43', color: 'blue' },
     { id: 3, user: 'João Santos', action: "moveu de 'A Fazer' para 'Em Progresso'", time: 'há 3 dias', color: 'yellow' }
   ]);
-
-
-  // const [comments, setComments] = useState([
-  //   {
-  //     id: 1,
-  //     user: 'Marina Silva',
-  //     avatar: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-  //     text: 'Precisamos garantir que os filtros sejam intuitivos. Vamos agendar uma reunião com o time de UX para discutir a melhor abordagem.',
-  //     time: 'Hoje, 14:57'
-  //   },
-  //   {
-  //     id: 2,
-  //     user: 'Carlos Mendes',
-  //     avatar: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-  //     text: 'Já comecei a implementação dos filtros básicos. Vou precisar de mais detalhes sobre como os filtros avançados devem funcionar.',
-  //     time: 'Ontem, 16:43'
-  //   }
-  // ]);
   
   // Estados para rastrear valores originais
   const [originalValues, setOriginalValues] = useState({});
@@ -519,22 +501,24 @@ export function CardModal({ isOpen, onClose, task }) {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
                   Comentários
                   <span className="ml-3 text-sm text-gray-500 dark:text-gray-400 font-normal">
-                    {task?.comments?.length || 0} comentários
+                    {task.comments} comentários
                   </span>
+
                 </h3>
 
-                {task?.comments?.length > 0 ? (
-                  <CommentsSection 
-                    comments={task.comments} 
+                {task.comments > 0 ? (
+                  <CommentsTask 
+                    taskId={task.id}
                     onAddComment={handleAddComment} 
                   />
                 ) : (
                   <p className="text-gray-500 dark:text-gray-400 text-sm italic">
-                    Nenhum comentário ainda. Seja o primeiro a comentar!
+                        Nenhum comentário ainda. Seja o primeiro a comentar!
                   </p>
                 )}
               </div>
-
+              
+              {/* Criar comentário */}
               <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
                   <textarea
                     value={comment}
