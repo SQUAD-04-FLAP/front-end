@@ -13,7 +13,7 @@ export function BoardKanbanMember() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log('Tasks do state:', state.tasks);
+  console.log('State', state);
 
   // Monta as colunas dinamicamente assim que state.tasks mudar
   useEffect(() => {
@@ -81,7 +81,7 @@ export function BoardKanbanMember() {
 
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="overflow-x-auto">
-            <div className="flex gap-4 min-w-max pb-4">
+            <div className="flex justify-center gap-4 min-w-max pb-4">
               {columns.length === 0 || columns.every(col => col.tasks.length === 0) ? (
                 <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
                   Selecione um quadro ou setor para exibir as tarefas.
@@ -122,7 +122,7 @@ function groupTasksByStatus(tasks) {
   const statusColumns = [
     { id: 'todo', name: 'Fazer', colorDot: 'bg-amber-500' },
     { id: 'doing', name: 'Em Andamento', colorDot: 'bg-sky-500' },
-    { id: 'review', name: 'Revisão', colorDot: 'bg-fuchsia-500' },
+    // { id: 'review', name: 'Revisão', colorDot: 'bg-fuchsia-500' },
     { id: 'done', name: 'Concluído', colorDot: 'bg-emerald-500' },
   ];
 
@@ -136,7 +136,7 @@ function groupTasksByStatus(tasks) {
         description: t.descricao || '',
         date: t.prazo ? new Date(t.prazo).toLocaleDateString('pt-BR') : '',
         comments: t.comentarios?.length || 0,
-        assigneeAvatar: t.assigneeAvatar || '', // opcional
+        assigneeAvatar: t.assigneeAvatar || "img/profile-default.jpg",
         priority: 'Média',
       })),
   }));
