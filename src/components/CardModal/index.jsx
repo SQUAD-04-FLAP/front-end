@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Upload, Trash2 } from 'lucide-react';
+import { CommentsTask } from '../../components/CommentsTask';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [comment, setComment] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+
+  console.log(task);
   
   // Estados editáveis
   const [editedTitle, setEditedTitle] = useState('');
@@ -28,22 +31,6 @@ export function CardModal({ isOpen, onClose, task }) {
     { id: 1, user: 'Marina Silva', action: "alterou para 'Em Progresso'", time: 'há 2 horas', color: 'green' },
     { id: 2, user: 'Carlos Mendes', action: 'adicionou comentário', time: 'ontem às 16:43', color: 'blue' },
     { id: 3, user: 'João Santos', action: "moveu de 'A Fazer' para 'Em Progresso'", time: 'há 3 dias', color: 'yellow' }
-  ]);
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      user: 'Marina Silva',
-      avatar: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-      text: 'Precisamos garantir que os filtros sejam intuitivos. Vamos agendar uma reunião com o time de UX para discutir a melhor abordagem.',
-      time: 'Hoje, 14:57'
-    },
-    {
-      id: 2,
-      user: 'Carlos Mendes',
-      avatar: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-      text: 'Já comecei a implementação dos filtros básicos. Vou precisar de mais detalhes sobre como os filtros avançados devem funcionar.',
-      time: 'Ontem, 16:43'
-    }
   ]);
   
   // Estados para rastrear valores originais
@@ -301,17 +288,6 @@ export function CardModal({ isOpen, onClose, task }) {
     const now = new Date();
     const timeString = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
     
-    // Adicionar novo comentário
-    const newComment = {
-      id: Date.now(),
-      user: 'Você',
-      avatar: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-      text: comment,
-      time: `Agora, ${timeString}`
-    };
-    
-    setComments(prev => [newComment, ...prev]);
-    
     // Adicionar ao histórico de atividades
     setActivityHistory(prev => [{
       id: Date.now(),
@@ -525,34 +501,25 @@ export function CardModal({ isOpen, onClose, task }) {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
                   Comentários
                   <span className="ml-3 text-sm text-gray-500 dark:text-gray-400 font-normal">
-                    {comments.length} comentários
+                    {task.comments} comentários
                   </span>
+
                 </h3>
 
-                {/* Lista de Comentários */}
-                <div className="space-y-4 mb-6">
-                  {comments.map((commentItem) => (
-                    <div key={commentItem.id} className="flex gap-4 p-4 bg-white dark:bg-gray-700 rounded-xl">
-                      <img
-                        src={commentItem.avatar}
-                        alt={commentItem.user}
-                        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="font-semibold text-gray-900 dark:text-gray-100">{commentItem.user}</span>
-                          <span className="text-sm text-gray-500 dark:text-gray-400">{commentItem.time}</span>
-                        </div>
-                        <p className="text-gray-700 dark:text-gray-300">
-                          {commentItem.text}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Novo Comentário */}
-                <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
+                {task.comments > 0 ? (
+                  <CommentsTask 
+                    taskId={task.id}
+                    onAddComment={handleAddComment} 
+                  />
+                ) : (
+                  <p className="text-gray-500 dark:text-gray-400 text-sm italic">
+                        Nenhum comentário ainda. Seja o primeiro a comentar!
+                  </p>
+                )}
+              </div>
+              
+              {/* Criar comentário */}
+              <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
                   <textarea
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
@@ -561,17 +528,14 @@ export function CardModal({ isOpen, onClose, task }) {
                     rows="4"
                   />
                   <div className="flex justify-end mt-4">
-                    <button 
-                      onClick={handleAddComment}
-                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
-                    >
+                    <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">
                       Comentar
                     </button>
                   </div>
-                </div>
               </div>
-            </div>
 
+            </div>
+            
             {/* Sidebar Direita (25%) */}
             <div className="xl:col-span-1 space-y-6">
               {/* Detalhes */}

@@ -18,12 +18,15 @@ import { AdicionarSetorModal } from "../AdicionarSetorModal";
 import { BorderSidebar } from "../../components/BorderSidebar";
 import { SectionSidebar } from "../../components/SectionSidebar";
 import { IconSidebar } from "../../components/IconSidebar";
+import { ModalRegisterFramer } from "../ModalRegisterFramer";
 
 export function AdminSidebar() {
   const [sideBar, setSideBar] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [modalSetorOpen, setModalSetorOpen] = useState(false);
+  const [modalQuadroOpen, setModalQuadroOpen] = useState(false);
+
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -115,15 +118,16 @@ export function AdminSidebar() {
               </ContainerLinks>
             </button>
 
-             <button 
-              className="flex items-center w-full py-2 text-left rounded-lg mx-2 transition-colors"
-            >
-
-              <ContainerLinks bgColor="bg-[#324D9F]" textColor="text-white">
-                <Plus />
-                <span>Adicionar Quadro</span>
-              </ContainerLinks>
-            </button>
+        {/* Botão Adicionar Quadro */}
+        <button 
+          onClick={() => setModalQuadroOpen(true)}
+          className="flex items-center w-full py-2 text-left rounded-lg mx-2 transition-colors"
+        >
+          <ContainerLinks bgColor="bg-[#324D9F]" textColor="text-white">
+            <Plus />
+            <span>Adicionar Quadro</span>
+          </ContainerLinks>
+        </button>
 
             <BorderSidebar />
 
@@ -224,6 +228,13 @@ export function AdminSidebar() {
         isOpen={modalSetorOpen}
         onClose={() => setModalSetorOpen(false)}
       />
+
+      {/* Modal Adicionar Quadro */}
+      <ModalRegisterFramer 
+      isOpen={modalQuadroOpen}
+      onClose={() => setModalQuadroOpen(false)}
+    />
+
     </>
   );
 }
