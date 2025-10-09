@@ -23,3 +23,26 @@ export async function fetchTasksByBoardID(idBoard) {
       throw e;
     }
 }
+
+export async function moveTask(taskId, newStatusId, userId) {
+  try {
+    const response = await fetch(`${API_URL}/mover/${taskId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify({
+        idNovoStatus: newStatusId,
+        idUsuarioLogado: userId,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Erro ao mover tarefa: ${errorText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erro ao mover tarefa:', error);
+    throw error;
+  }
+}

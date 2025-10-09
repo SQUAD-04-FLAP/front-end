@@ -28,8 +28,15 @@ export function kanbanReducer(state, action) {
       return { ...state, selectedSector: action.payload };
     case 'SET_FILTERED_COLUMNS':
       return { ...state, filteredColumns: action.payload };
-    case 'UPDATE_COLUMNS_AFTER_DRAG':
-      return { ...state, columns: action.payload };
+    case 'UPDATE_TASK_STATUS':
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.idTarefa === action.payload.id
+            ? { ...task, nomeStatus: action.payload.status }
+            : task
+        ),
+      };
     default:
       return state;
   }
