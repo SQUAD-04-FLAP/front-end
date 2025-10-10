@@ -101,6 +101,7 @@ export default function BoardV2() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             Quadro Kanban
           </h1>
+          
           <div className="flex items-center gap-2">
             <button className="px-3 py-1.5 rounded-lg text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200/70 dark:hover:bg-gray-700 transition">
               Filtrar
