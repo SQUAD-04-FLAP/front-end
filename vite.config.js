@@ -4,9 +4,13 @@ import tailwindcss from '@tailwindcss/vite'
 
 // export default defineConfig({
 //   plugins: [react(), tailwindcss()],
+//   build: {
+//     rollupOptions: {
+//       external: ['socket.io-client'],
+//     },
+//   },
 //   server: {
 //     proxy: {
-//       // Todas as requisições que começarem com /api
 //       '/api': {
 //         target: 'http://ec2-54-226-167-245.compute-1.amazonaws.com:8080',
 //         changeOrigin: true,
@@ -19,10 +23,8 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  build: {
-    rollupOptions: {
-      external: ['socket.io-client'],
-    },
+  optimizeDeps: {
+    include: ['socket.io-client'], // força inclusão no bundle
   },
   server: {
     proxy: {
@@ -34,3 +36,4 @@ export default defineConfig({
     },
   },
 })
+
