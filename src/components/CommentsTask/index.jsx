@@ -19,6 +19,7 @@ export function CommentsTask({ taskId }) {
         setLoading(false);
       }
     };
+    
 
     loadComments();
   }, [taskId]);
