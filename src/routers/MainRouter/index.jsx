@@ -4,8 +4,7 @@ import { Dashboard } from "../../pages/Dashboard";
 import { Board } from "../../pages/Board";
 import { Calendar } from "../../pages/Calendar";
 import { Report } from "../../pages/Report";
-// import BoardV2 from "../../pages/BoardV2";
-import BoardV2 from "../../pages/BoardV2/BoardV2ts";
+import BoardV2 from "../../pages/BoardV2/BoardV2js";
 import Configuracoes from "../../pages/Configuracoes";
 import AdminEmpresas from '../../pages/Admin/empresas';
 import AdminKanban from "../../pages/Admin/Kanban";
@@ -14,7 +13,7 @@ import MainTemplate from "../../templates/MainTemplate";
 import { Register } from "../../pages/Register";
 import { useAuth } from "../../hooks/useAuth";
 import { SpinnerLoading } from "../../components/SpinnerLoading";
-import NovaTarefa from "../../pages/NovaTarefa"; // ✅ Importando NovaTarefa
+import NovaTarefa from "../../pages/NovaTarefa";
 
 export function MainRouter() {
     const { user, loading } = useAuth();

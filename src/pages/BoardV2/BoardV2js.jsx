@@ -4,27 +4,17 @@ import { Column } from "../../components/Column";
 import { CardModal } from "../../components/CardModal";
 import { DragDropContext } from "@hello-pangea/dnd";
 
-type ColumnType = {
-  id: string;
-  title: string;
-  tasks: { id: string; title: string }[];
-};
-
-type Board = {
-  columns: ColumnType[];
-};
-
 // const SERVER_URL = "http://localhost:3000";
 const SERVER_URL = "https://api.flapkanban.top";
 
 export default function BoardV2() {
-  const [columns, setColumns] = useState<ColumnType[]>([]);
-  const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [columns, setColumns] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [room] = useState("sala1");
 
-  const socketRef = useRef<Socket | null>(null);
-  const emitTimer = useRef<number | undefined>(undefined);
+  const socketRef = useRef(null);
+  const emitTimer = useRef(undefined);
 
   useEffect(() => {
     const socket = io(SERVER_URL);
@@ -32,12 +22,12 @@ export default function BoardV2() {
 
     socket.on("connect", () => {
       console.log("Conectado:", socket.id);
-      socket.emit("joinRoom", room, (board: Board) => {
+      socket.emit("joinRoom", room, (board) => {
         setColumns(board.columns || []);
       });
     });
 
-    socket.on("project", (proj: any) => {
+    socket.on("project", (proj) => {
       // console.log("projeto:", proj);
       setColumns(proj.columns || []);
     });
@@ -48,7 +38,7 @@ export default function BoardV2() {
     };
   }, [room]);
 
-  const handleCardClick = (task: any) => {
+  const handleCardClick = (task) => {
     setSelectedTask(task);
     setIsModalOpen(true);
   };
@@ -58,7 +48,7 @@ export default function BoardV2() {
     setSelectedTask(null);
   };
 
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result) => {
     const { source, destination } = result;
     if (!destination) return;
 
@@ -74,8 +64,14 @@ export default function BoardV2() {
         tasks: [...col.tasks],
       }));
 
-      const sourceCol = newColumns.find((c) => c.id === source.droppableId)!;
-      const destCol = newColumns.find((c) => c.id === destination.droppableId)!;
+     const sourceCol = newColumns.find((c) => c.id === source.droppableId);
+     const destCol = newColumns.find((c) => c.id === destination.droppableId);
+
+      if (!sourceCol || !destCol) {
+        console.warn("Coluna não encontrada:", source.droppableId, destination.droppableId);
+        return;
+      }
+
 
       const [movedCard] = sourceCol.tasks.splice(source.index, 1);
       destCol.tasks.splice(destination.index, 0, movedCard);
@@ -90,7 +86,7 @@ export default function BoardV2() {
     });
   };
 
-  function emitUpdate(newProj: any) {
+  function emitUpdate(newProj) {
     if (!socketRef.current) return;
     if (emitTimer.current) window.clearTimeout(emitTimer.current);
     emitTimer.current = window.setTimeout(() => {
