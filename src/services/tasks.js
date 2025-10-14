@@ -65,3 +65,29 @@ export async function fetchTaskById(taskId) {
     throw e;
   }
 }
+
+export async function sendTaskComment(idTarefa, mensagem, idUsuario) {
+  try {
+    const response = await fetch(`${API_URL}/comentario/${idTarefa}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({
+        mensagem,
+        idUsuario,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Erro ao enviar comentário: ${errorText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("[TasksService] Erro ao enviar comentário:", error);
+    throw error;
+  }
+}

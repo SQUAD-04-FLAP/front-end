@@ -2,12 +2,17 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Upload, Trash2 } from 'lucide-react';
 import { CommentsTask } from '../../components/CommentsTask';
+import { CreateComment } from '../CreateComment';
+import { useAuth } from '../../hooks/useAuth';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [comment, setComment] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
+  const { user } = useAuth();
+
   console.log(task);
+
   
   // Estados editáveis
   const [editedTitle, setEditedTitle] = useState('');
@@ -517,22 +522,11 @@ export function CardModal({ isOpen, onClose, task }) {
                   </p>
                 )}
               </div>
-              
-              {/* Criar comentário */}
-              <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
-                  <textarea
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Adicione um comentário..."
-                    className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 resize-none"
-                    rows="4"
-                  />
-                  <div className="flex justify-end mt-4">
-                    <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">
-                      Comentar
-                    </button>
-                  </div>
-              </div>
+
+              <CreateComment
+                idTarefa={task.id}
+                idUsuario={user.idUsuario}
+              />
 
             </div>
             
