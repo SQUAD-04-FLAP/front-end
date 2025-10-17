@@ -1,21 +1,40 @@
 import { useState } from "react";
+import { useComments } from "../../hooks/useComments";
+import { useAuth } from '../../hooks/useAuth';
 import { sendTaskComment } from "../../services/tasks";
 
-export function CreateComment({ idTarefa, idUsuario, onCommentAdded }) {
+export function CreateComment({ idTarefa, idUsuario }) {
+  const { dispatch } = useComments();
   const [mensagem, setMensagem] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSendComment = async () => {
-    if (!mensagem.trim()) return; // evita enviar vazio
+  const { user } = useAuth();
 
-    setLoading(true);
+  const handleSendComment = async () => {
+    if (!mensagem.trim()) return;
+
     try {
+      setLoading(true);
+
+      // envia para a API
       const newComment = await sendTaskComment(idTarefa, mensagem, idUsuario);
-      setMensagem(""); // limpa textarea
-      if (onCommentAdded) onCommentAdded(newComment); // callback para atualizar lista
+
+      dispatch({ 
+      type: "ADD_COMMENT", 
+      payload: { 
+        ...newComment, 
+        mensagem, 
+        nomeUsuario: user.nome, 
+        idUsuario: user.idUsuario,
+        avatar: user.avatar,
+        createdAt: new Date().toISOString()
+      } 
+    });
+      
+      // limpa o campo
+      setMensagem("");
     } catch (error) {
       console.error("Erro ao enviar comentário:", error);
-      alert("Erro ao enviar comentário. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -47,3 +66,5 @@ export function CreateComment({ idTarefa, idUsuario, onCommentAdded }) {
     </div>
   );
 }
+
+
