@@ -7,9 +7,11 @@ import { FramerProvider } from '../provider/FramerProvider';
 import { FilterProvider } from '../provider/FilterProvider';
 import { TaskProvider } from '../provider/TaskProvider';
 import { KanbanMemberProvider } from '../provider/KanbanMemberProvider';
+import { CommentsProvider } from "../provider/CommentsProvider";
 
 function App() {
   return (
+    <CommentsProvider>
     <KanbanMemberProvider>
       <TaskProvider>
       <FilterProvider>
@@ -25,6 +27,7 @@ function App() {
       </FilterProvider>
       </TaskProvider>
     </KanbanMemberProvider>
+    </CommentsProvider>
   )
 }
 
