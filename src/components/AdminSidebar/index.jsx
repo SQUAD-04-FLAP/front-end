@@ -20,14 +20,17 @@ import { SectionSidebar } from "../../components/SectionSidebar";
 import { IconSidebar } from "../../components/IconSidebar";
 import { ModalRegisterFramer } from "../ModalRegisterFramer";
 
+import { useAuth } from '../../hooks/useAuth';
+import { ButtonLogoutAdmin } from "../ButtonLogoutAdmin";
+
 export function AdminSidebar() {
   const [sideBar, setSideBar] = useState(false);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [modalSetorOpen, setModalSetorOpen] = useState(false);
   const [modalQuadroOpen, setModalQuadroOpen] = useState(false);
-
-
+  const { user } = useAuth();
+  
   const isActive = (path) => {
     return location.pathname === path;
   };
@@ -202,15 +205,17 @@ export function AdminSidebar() {
             {/* Avatar do Admin */}
             <div className="flex items-center gap-3">
               <img
-                src="https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg"
-                alt="Marina Oliveira"
+                src={user?.profileImage || "https://voxnews.com.br/wp-content/uploads/2017/04/unnamed.png"}
+                alt={user.nome}
                 className="w-8 h-8 rounded-full border-2 border-cyan-400 object-cover"
               />
               <div className="hidden lg:block">
-                <p className="text-sm font-medium text-white">Marina Oliveira</p>
-                <p className="text-xs text-cyan-200">Administrador</p>
+                <p className="text-sm font-medium text-white">{user.nome}</p>
+                <p className="text-xs text-cyan-200">{user.permissao === "ADMIN" ? "Administrador" : user.permissao}</p>
               </div>
             </div>
+
+            <ButtonLogoutAdmin />
           </div>
         </div>
       </header>
