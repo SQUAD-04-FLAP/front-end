@@ -32,7 +32,7 @@ export function Sidebar() {
 
         <nav className="text-sm font-medium text-gray-600 dark:text-gray-300" aria-label="Main Navigation">
             <SectionSidebar>Navegação</SectionSidebar>
-            <IconSidebar href="/dashboard">
+            <IconSidebar href="/">
               <ContainerLinks>
                 <LayoutDashboard />
                 <span>Dashboard</span>
