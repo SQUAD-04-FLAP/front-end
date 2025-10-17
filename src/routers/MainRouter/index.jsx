@@ -8,6 +8,7 @@ import BoardV2 from "../../pages/BoardV2/BoardV2js";
 import Configuracoes from "../../pages/Configuracoes";
 import AdminEmpresas from '../../pages/Admin/empresas';
 import AdminKanban from "../../pages/Admin/Kanban";
+import AdminUsuarios from "../../pages/Admin/Usuarios"; 
 import PublicLayout from "../../layout/PublicLayout";
 import MainTemplate from "../../templates/MainTemplate";
 import { Register } from "../../pages/Register";
@@ -42,18 +43,13 @@ export function MainRouter() {
                     <Route path="/configuracoes" element={<Configuracoes />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/reports" element={<Report />} />
-                    
-                    {/* ✅ Nova Rota para Nova Tarefa */}
                     <Route path="/nova-tarefa" element={<NovaTarefa />} />
-                </Route>
-
-                {/* Rotas de Admin */}
-                <Route
-                    element={isAuthenticated ? <MainTemplate /> : <Navigate to="/login" />}
-                >
+                    
+                    {/* Rotas de Admin */}
                     <Route path="/admin" element={<AdminKanban />} />
                     <Route path="/admin/kanban" element={<AdminKanban />} />
                     <Route path="/admin/empresas" element={<AdminEmpresas />} />
+                    <Route path="/admin/usuarios" element={<AdminUsuarios />} /> {/* ✅ Nova rota de usuários */}
                 </Route>
 
                 {/* Redirecionamento padrão */}
