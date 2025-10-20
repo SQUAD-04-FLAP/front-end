@@ -11,13 +11,17 @@ import { useTheme } from "../../hooks/useTheme";
 import AvatarDropdown from "../AvatarDropdown";
 import NotificationDropdown from "../NotifcationDropdown";
 import { RouterLinks } from "../RouterLinks";
-import { useAuth } from "../../hooks/useAuth";
+import {ButtonNewBoard} from '../../components/ButtonNewBoard';
+import { BtnNewProject } from "../BtnNewProject";
+import { useLocation } from "react-router-dom";
+// import { useAuth } from "../../hooks/useAuth";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
+  const location = useLocation();
+  // const { user } = useAuth();
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -60,24 +64,22 @@ export function Sidebar() {
               </ContainerLinks>
             </IconSidebar>
 
-            < BorderSidebar />
+            {/* < BorderSidebar /> */}
 
-            <SectionSidebar>Setores</SectionSidebar>
+            {/* <SectionSidebar>Setores</SectionSidebar>
 
-            {/* Mapear setores do usuário */}
             {user?.setores?.length > 0 ? (
               user.setores.map((setor) => (
                 <IconSidebar key={setor.id || setor.nome}>
                   <ContainerLinks>
-                    {/* Aqui pode escolher um ícone baseado no setor */}
-                    <Box /> {/* exemplo genérico, pode criar um mapa de ícones */}
+                    <Box />
                     <span>{setor.nomeSetor}</span>
                   </ContainerLinks>
                 </IconSidebar>
               ))
             ) : (
               <p className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Nenhum setor atribuído</p>
-            )}
+            )} */}
 
             <BorderSidebar />
 
@@ -124,8 +126,10 @@ export function Sidebar() {
   <SearchSidebar />
   
   <div className="flex items-center gap-4">
-    { /* Botão para adicionar nova tarefa */ }
-   <ButtonNewTask />
+
+   {location.pathname === "/board-v2" && <BtnNewProject />}
+   {location.pathname === "/board-v2" && <ButtonNewBoard />}
+   {location.pathname === "/board-v2" && <ButtonNewTask />}
 
    <IconsTopSidebar>
         <NotificationDropdown />

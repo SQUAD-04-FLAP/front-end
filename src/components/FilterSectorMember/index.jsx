@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { useAuth } from '../../hooks/useAuth';
+import { useSectors } from '../../hooks/useSectors';
 
 export function FilterSectorMember({ onFilter }) {
   const [setorSelecionado, setSetorSelecionado] = useState("");
   const { user } = useAuth();
+  const { sectors } = useSectors();
+
+  console.log(sectors);
 
   // Ao montar, restaurar o valor salvo no localStorage
   useEffect(() => {
@@ -31,10 +35,10 @@ export function FilterSectorMember({ onFilter }) {
         onChange={handleChange}
         className="px-3 py-1.5 rounded-lg text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200/70 dark:hover:bg-gray-700 transition"
       >
-        <option value="">Filtrar por setor</option>
-        {user.setores.map((setor) => (
+        <option value="">Filtrar por projeto</option>
+        {sectors.map((setor) => (
           <option key={setor.idSetor} value={setor.idSetor}>
-            {setor.nomeSetor}
+            {setor.nome}
           </option>
         ))}
       </select>
