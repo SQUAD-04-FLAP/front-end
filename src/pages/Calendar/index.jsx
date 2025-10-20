@@ -1,7 +1,7 @@
+import UnderConstruction from "../../components/UnderConstruction";
+
 export function Calendar() {
     return(
-          <div>
-             <h1>Calendário</h1>
-          </div>
+          <UnderConstruction />
     );
 }
