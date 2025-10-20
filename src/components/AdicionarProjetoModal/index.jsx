@@ -263,6 +263,7 @@ import { createPortal } from 'react-dom';
 import { X, Briefcase, Palette, Globe, Users, Monitor, Zap, BookOpen, Coffee } from 'lucide-react';
 import { useSectors } from '../../hooks/useSectors';
 import { showMessage } from '../../adapters/showMessage';
+import { DropdownUsers } from '../../components/DropdownUsers';
 
 export function AdicionarProjetoModal({ isOpen, onClose }) {
   const [nomeProjeto, setNomeProjeto] = useState('');
@@ -338,7 +339,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
       <div className="absolute inset-0 bg-white/30 backdrop-blur-md" onClick={onClose} />
 
       {/* Modal Container */}
-      <div className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 dark:border-gray-700/20 w-full max-w-lg max-h-[90vh] overflow-auto">
+      <div className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 dark:border-gray-700/20 w-full max-w-[1200px] max-h-[90vh] overflow-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200/50 dark:border-gray-700/50">
@@ -452,6 +453,14 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
                 {nomeProjeto || 'Nome do Projeto'}
               </span>
             </div>
+          </div>
+
+            {/* Seleção de usuários */}
+          <div>
+             <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
+              Participantes
+            </label>
+            <DropdownUsers />
           </div>
         </div>
 
