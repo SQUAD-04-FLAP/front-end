@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { useAuth } from '../../hooks/useAuth';
+// import { useAuth } from '../../hooks/useAuth';
 import { useSectors } from '../../hooks/useSectors';
 
 export function FilterSectorMember({ onFilter }) {
   const [setorSelecionado, setSetorSelecionado] = useState("");
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const { sectors } = useSectors();
 
-  console.log(sectors);
 
   // Ao montar, restaurar o valor salvo no localStorage
   useEffect(() => {

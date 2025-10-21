@@ -91,3 +91,25 @@ export async function sendTaskComment(idTarefa, mensagem, idUsuario) {
     throw error;
   }
 }
+
+export async function deleteTaskById(taskId) {
+  try {
+    const res = await fetch(`${API_URL}/${taskId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Erro ao excluir tarefa: ${text}`);
+    }
+
+    return true;
+  } catch (e) {
+    console.error("[TasksService] Erro ao excluir tarefa:", e);
+    throw e;
+  }
+}

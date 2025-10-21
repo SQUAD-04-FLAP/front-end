@@ -1,5 +1,8 @@
-import { Trash2 } from "lucide-react";
 import { DeleteButtonTask } from "../DeleteButtonTask";
+import { useKanbanMember } from '../../hooks/useKanbanMember';
+import { toast } from "react-toastify";
+import { Dialog } from "../Dialog";
+import { showMessage } from "../../adapters/showMessage";
 
 export function Card({ task, onClick }) {
   const getPriorityClasses = (priority) => {
@@ -14,6 +17,8 @@ export function Card({ task, onClick }) {
         return '';
     }
   };
+
+  const { deleteTask } = useKanbanMember();
 
   return (
     <div 
@@ -66,7 +71,26 @@ export function Card({ task, onClick }) {
         </div>
       </div>
 
-     <DeleteButtonTask onDelete={() => console.log("Excluir task")} />
+     <DeleteButtonTask
+        onDelete={() => {
+          toast.dismiss();
+          toast(Dialog, {
+            data: "Tem certeza disso?",
+            autoClose: false,
+            closeOnClick: false,
+            closeButton: false,
+            draggable: false,
+            onClose: confirmation => {
+              if(confirmation) {
+                console.log("ID da tarefa a ser deletada:", task.id);
+                deleteTask(task.id);
+                showMessage.success("Tarefa excluída com sucesso!", true);
+              }
+            }
+          }
+          )
+      }}
+/>
     </div>
   );
 }

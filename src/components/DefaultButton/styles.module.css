@@ -1,0 +1,50 @@
+.button {
+  border: none;
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 14rem;  /* menor largura */
+  padding: 0.6rem 1.2rem; /* padding menor */
+  border-radius: 0.6rem;  /* borda mais suave */
+  margin: 2rem 0;  /* margem menor */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15); /* sombra mais leve */
+  font-weight: 600;
+  gap: 0.5rem;
+  font-size: 0.9rem; /* texto menor */
+}
+
+.button svg {
+  width: 1.5rem;  /* ícone menor */
+  height: 1.5rem;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.button:hover {
+  filter: brightness(90%);
+}
+
+.button:hover svg {
+  transform: scale(1.1) rotate(8deg);
+}
+
+/* Botão positivo */
+.green {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: #fff;
+}
+
+/* Botão negativo */
+.red {
+  background: linear-gradient(135deg, #f44336, #e57373);
+  color: #fff;
+}
+
+/* Sombra e efeito nos ícones individualmente */
+.green svg,
+.red svg {
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+}
