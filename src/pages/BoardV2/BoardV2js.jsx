@@ -23,7 +23,7 @@ export default function BoardV2() {
     socket.on("connect", () => {
       console.log("Conectado:", socket.id);
       socket.emit("joinRoom", room, (board) => {
-        setColumns(board.columns || []);
+        // setColumns(board.columns || []);
       });
     });
 
