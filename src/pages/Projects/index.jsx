@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Plus, BarChart3, Eye, Edit, Trash2, Folder } from 'lucide-react';
 import { useSectors } from '../../hooks/useSectors';
+import { toast } from 'react-toastify';
+import { Dialog } from '../../components/Dialog';
+import { showMessage } from '../../adapters/showMessage';
 
 export function Projects() {
 
-    const { sectors } = useSectors();
+    const { sectors, removeSector } = useSectors();
     console.log(sectors);
 
     const [projetos] = useState([
@@ -124,16 +127,38 @@ export function Projects() {
 
                   {/* Ações */}
                   <div className="flex gap-2">
-                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg transition text-sm font-medium">
+                    <button className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-500/10 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-lg transition text-sm font-medium cursor-pointer">
                       <Eye className="w-4 h-4" />
                       Visualizar
                     </button>
-                    <button className="flex items-center justify-center px-3 py-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-lg transition">
+                    <button className="flex items-center justify-center px-3 py-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-lg transition cursor-pointer">
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button className="flex items-center justify-center px-3 py-2 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+
+                    <button 
+                      onClick={() => {
+                      toast.dismiss();
+
+                      toast(Dialog, {
+                        data: "Tem certeza disso?",
+                        autoClose: false,
+                        closeOnClick: false,
+                        closeButton: false,
+                        draggable: false,
+                        onClose: (confirmation) => {
+                          if (confirmation) {
+
+                            removeSector(projeto.idSetor);
+                            showMessage.success("Projeto excluído com sucesso!", true);
+                          }
+                        }
+                      });
+                    }}
+                    className="flex items-center justify-center px-3 py-2 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+
                   </div>
                 </div>
               </div>
@@ -147,9 +172,9 @@ export function Projects() {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   📊 Resumo Geral
                 </h3>
-                {/* <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-600 dark:text-gray-400">
                   {sectors.length} projetos cadastrados • {projetos.reduce((total, projeto) => total + projeto.progresso, 0)}% de progresso total
-                </p> */}
+                </p>
               </div>
               <div className="flex gap-4">
                 <div className="text-center">

@@ -1,11 +1,7 @@
 import { Card } from '../Card';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import { useTask } from '../../hooks/useTask';
 
 export function Column({ data, onCardClick }) {
-  // const { state } = useTask();
-  // console.log(state);
-
   return (
     <section className="w-80 flex-shrink-0">
       <header className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2 border border-gray-200 dark:border-gray-700">

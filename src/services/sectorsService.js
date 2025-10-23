@@ -40,3 +40,20 @@ export async function create_sector(sectorData) {
     throw e;
   }
 }
+
+export const delete_sector = async (idSetor) => {
+  const response = await fetch(`${API_URL}/${idSetor}`, {
+    method: "DELETE",
+    headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+  });
+
+  if (!response.ok) {
+    throw new Error("Erro ao excluir setor");
+  }
+
+  return true;
+};
+
