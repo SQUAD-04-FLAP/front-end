@@ -35,16 +35,39 @@ export function TelaDashboard() {
 
         {/* Top Row Cards */}
         <div className="grid grid-cols-3 gap-6 mb-8">
-          {/* Documento empresa z */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm h-48 flex flex-col dark:border dark:border-gray-700">
-            <div className="flex justify-between items-start">
-              <h3 className="font-medium text-gray-900 dark:text-white">Documento empresa z</h3>
+          {/* Resumo de Tarefas */}
+
+          {/* Resumo de Tarefas */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm h-64 flex flex-col dark:border dark:border-gray-700">
+            <div className="flex justify-between items-start mb-6">
+              <h3 className="font-medium text-gray-900 dark:text-white">Resumo de Tarefas</h3>
               <MoreHorizontal size={16} className="text-gray-400" />
             </div>
-            <div className="flex-grow"></div>
-            <div className="text-sm">
-              <p className="text-gray-500 dark:text-gray-400 mb-1">Última atualização: hoje às 10:45</p>
-              <a href="#" className="text-blue-500 dark:text-blue-400 hover:underline">Ver detalhes</a>
+            
+            <div className="grid grid-cols-4 gap-6 mb-auto">
+              <div>
+                <div className="text-4xl font-bold text-blue-500 mb-2">21</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 ml-1" >Total</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-green-500 mb-2 -ml-2">12</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 -ml-5">Concluídas</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-yellow-500 mb-2 ml-4">6</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 -ml-4 whitespace-nowrap">Em Progresso</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-red-500 mb-2 ml-5">3</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 ">Atrasadas</div>
+              </div>
+            </div>
+
+            <div className="mt-auto">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '57%' }}></div>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">57% das tarefas concluídas</p>
             </div>
           </div>
 
