@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai';
 import { 
   Filter, 
   ArrowUpDown, 
@@ -10,8 +11,11 @@ import {
   CheckCircle,
   List
 } from 'lucide-react';
+import { projectWS } from '../../services/globals';
 
 export function TelaDashboard() {
+  const [columns, ] = useAtom(projectWS);
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
@@ -36,8 +40,6 @@ export function TelaDashboard() {
         {/* Top Row Cards */}
         <div className="grid grid-cols-3 gap-6 mb-8">
           {/* Resumo de Tarefas */}
-
-          {/* Resumo de Tarefas */}
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm h-64 flex flex-col dark:border dark:border-gray-700">
             <div className="flex justify-between items-start mb-6">
               <h3 className="font-medium text-gray-900 dark:text-white">Resumo de Tarefas</h3>
@@ -45,7 +47,7 @@ export function TelaDashboard() {
             </div>
             
             <div className="grid grid-cols-4 gap-6 mb-auto">
-              <div>
+              {/* <div>
                 <div className="text-4xl font-bold text-blue-500 mb-2">21</div>
                 <div className="text-sm text-gray-500 dark:text-gray-400 ml-1" >Total</div>
               </div>
@@ -60,6 +62,31 @@ export function TelaDashboard() {
               <div>
                 <div className="text-4xl font-bold text-red-500 mb-2 ml-5">3</div>
                 <div className="text-sm text-gray-500 dark:text-gray-400 ">Atrasadas</div>
+              </div> */}
+
+              {/* eu poderia fazer um função para realizar esses calculos simples, mas to sem tempo (y) */}
+              <div>
+                <div className="text-4xl font-bold text-blue-500 mb-2">{
+                  columns.length !== 0 ? 
+                    columns.find(val => val.name === "Concluído").tasks.length + 
+                    columns.find(val => val.name === "Em Andamento").tasks.length + 
+                    columns.find(val => val.name === "Revisão").tasks.length +
+                    columns.find(val => val.name === "Fazer").tasks.length
+                    : 0
+                }</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 ml-1" >Total</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-green-500 mb-2 -ml-2">{columns.length !== 0 ? columns.find(val => val.name === "Concluído").tasks.length : 0}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 -ml-5">Concluídas</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-yellow-500 mb-2 ml-4">{columns.length !== 0 ? columns.find(val => val.name === "Em Andamento").tasks.length + columns.find(val => val.name === "Revisão").tasks.length : 0}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 -ml-4 whitespace-nowrap">Em Progresso</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-red-500 mb-2 ml-5">{columns.length !== 0 ? columns.find(val => val.name === "Fazer").tasks.length : 0}</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 ">A Fazer</div>
               </div>
             </div>
 

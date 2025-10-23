@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { Atom, getDefaultStore, WritableAtom } from "jotai";
+import { getDefaultStore } from "jotai";
 
 // modificando os estados do jotai sem precisar de um componente - nao da erro
 // conta com getter e setter para manipulacao
@@ -15,3 +15,7 @@ export function SetterAtom(setAtom, value) {
 }
 
 export const projectWS = atom([]);
+
+export const socketIORef = atom(null)
+
+export const roomWS = atom("sala1");

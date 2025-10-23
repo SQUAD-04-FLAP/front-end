@@ -1,42 +1,52 @@
 import { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 import { Column } from "../../components/Column";
 import { CardModal } from "../../components/CardModal";
 import { DragDropContext } from "@hello-pangea/dnd";
+import { useAtom } from "jotai";
+import { projectWS, roomWS, socketIORef } from "../../services/globals";
 
-const SERVER_URL = "http://localhost:3000";
+// const SERVER_URL = "http://localhost:3000";
 // const SERVER_URL = "https://api.flapkanban.top";
 
 export default function BoardV2() {
-  const [columns, setColumns] = useState([]);
+  // const [columns, setColumns] = useState([]);
+  const [columns, setColumns] = useAtom(projectWS);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [room] = useState("sala1");
+  // const [room] = useState("sala1");
+  const [room, ] = useAtom(roomWS);
+  const [sockeioref, ] = useAtom(socketIORef);
 
   const socketRef = useRef(null);
   const emitTimer = useRef(undefined);
 
   useEffect(() => {
-    const socket = io(SERVER_URL);
-    socketRef.current = socket;
+    // const socket = io(SERVER_URL);
 
-    socket.on("connect", () => {
-      console.log("Conectado:", socket.id);
-      socket.emit("joinRoom", room, (board) => {
-        // setColumns(board.columns || []);
-      });
-    });
+    // socketRef.current = socket;
 
-    socket.on("project", (proj) => {
-      // console.log("projeto:", proj);
-      setColumns(proj.columns || []);
-    });
+    // socket.on("connect", () => {
+    //   console.log("Conectado:", socket.id);
+    //   socket.emit("joinRoom", room, (board) => {
+    //     // setColumns(board.columns || []);
+    //   });
+    // });
 
-    return () => {
-      socket.disconnect();
-      socketRef.current = null;
-    };
+    // socket.on("project", (proj) => {
+    //   // console.log("projeto:", proj);
+    //   setColumns(proj.columns || []);
+    // });
+
+    // return () => {
+    //   socket.disconnect();
+    //   socketRef.current = null;
+    // };
   }, [room]);
+
+  useEffect(() => {
+    socketRef.current = sockeioref;
+  }, []);
 
   const handleCardClick = (task) => {
     setSelectedTask(task);
