@@ -1,13 +1,13 @@
 import { useState, ChangeEvent } from "react";
-import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns } from "lucide-react";
-import { useSectors } from '../../hooks/useSectors';
+import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft } from "lucide-react";
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterBoardMember } from "../../components/FilterBoardMember";
 import { FilterSectorMember } from "../../components/FilterSectorMember";
+import { createTask } from '../../services/tasks';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function NovaTarefa() {
-  const { sectors } = useSectors();
-  const { state } = useKanbanMember();
+  const { user } = useAuth();
   
   const [form, setForm] = useState({
     titulo: "",
@@ -16,7 +16,8 @@ export default function NovaTarefa() {
     prioridade: "Média",
     dataInicio: "",
     dataFim: "",
-    setor: "",
+    projeto: "",
+    quadro: "",
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
@@ -45,28 +46,42 @@ export default function NovaTarefa() {
     }
   }
 
-  // function validateForm() {
-  //   const newErrors: Record<string, string> = {};
+  function validateForm() {
+    const newErrors = {};
 
-  //   if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
-  //   if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
-  //   if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
-  //   if (!form.setor) newErrors.setor = "Selecione um setor";
+    if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
+    if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
+    if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
+    if (!form.setor) newErrors.setor = "Selecione um setor";
     
-  //   if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
-  //     newErrors.dataFim = "A data de término deve ser posterior à data de início";
-  //   }
-
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // }
-
-  function handleSubmit() {
-    if (!validateForm()) {
-      return;
+    if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
+      newErrors.dataFim = "A data de término deve ser posterior à data de início";
     }
 
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  }
+
+  async function handleSubmit() {
+  if (!validateForm()) return;
+
+  try {
+    const idCriador = user.idUsuario;
+    const idQuadro = Number(form.quadro);
+
+    const novaTarefa = await createTask({
+      titulo: form.titulo,
+      descricao: form.descricao,
+      idQuadro,
+      idCriador,
+    });
+
+    // Atualiza o estado local ou global, ex:
+    dispatch({ type: "ADD_TASK", payload: novaTarefa });
+
     setShowSuccess(true);
+
+    // navigate("/board-v2");
 
     setTimeout(() => {
       setForm({
@@ -76,11 +91,15 @@ export default function NovaTarefa() {
         prioridade: "Média",
         dataInicio: "",
         dataFim: "",
-        setor: "",
+        projeto: "",
+        quadro: "",
       });
       setShowSuccess(false);
     }, 2000);
+  } catch (e) {
+    console.error("Erro ao criar tarefa:", e);
   }
+}
 
   return (
     <div className="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-screen transition-colors">
@@ -191,15 +210,14 @@ export default function NovaTarefa() {
 
                 <FilterSectorMember
                 className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
-                    dark:bg-gray-700 dark:border-gray-600 dark:text-white 
-                    ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
+                  dark:bg-gray-700 dark:border-gray-600 dark:text-white 
+                  ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
                 `}
-                  onFilter={(value) =>
-                  dispatch({ type: "SET_SETOR_FILTER", payload: value })
-                  
-                  
-                }
-             />
+                onFilter={(value) => {
+                  dispatch({ type: "SET_SETOR_FILTER", payload: value });
+                  setForm(prev => ({ ...prev, setor: value }));
+                }}
+              />
 
                 {errors.setor && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
@@ -214,15 +232,17 @@ export default function NovaTarefa() {
                   <Columns className="w-4 h-4 mr-2 text-cyan-500" />
                   Quadro
                 </label>
-                <FilterBoardMember
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
-                    dark:bg-gray-700 dark:border-gray-600 dark:text-white 
-                    ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
-                  `}
-                    onFilter={(value) =>
-                    dispatch({ type: "SET_SETOR_FILTER", payload: value })
-                    }
-                  />
+               <FilterBoardMember
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
+                  dark:bg-gray-700 dark:border-gray-600 dark:text-white 
+                  ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
+                `}
+                onFilter={(value) => {
+                  dispatch({ type: "SET_SETOR_FILTER", payload: value });
+                  setForm(prev => ({ ...prev, quadro: value }));
+                }}
+              />
+
                 {errors.setor && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
                     <AlertCircle className="w-4 h-4 mr-1" />
@@ -271,8 +291,18 @@ export default function NovaTarefa() {
               </div>
             </div>
 
-            {/* Botão de Submit */}
-            <div className="flex justify-end pt-4">
+            <div className="flex justify-end pt-4 gap-4">
+              {/* Botão Voltar */}
+              <button
+                type="button"
+                onClick={() => window.history.back()} // ou useNavigate() se estiver com React Router
+                className="flex items-center gap-2 px-8 py-4 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                Voltar
+              </button>
+              
+              {/* Botão Criar Tarefa */}
               <button
                 type="button"
                 onClick={handleSubmit}
@@ -282,6 +312,7 @@ export default function NovaTarefa() {
                 Criar Tarefa
               </button>
             </div>
+
           </div>
         </div>
 
