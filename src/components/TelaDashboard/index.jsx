@@ -36,8 +36,6 @@ export function TelaDashboard() {
         {/* Top Row Cards */}
         <div className="grid grid-cols-3 gap-6 mb-8">
           {/* Resumo de Tarefas */}
-
-          {/* Resumo de Tarefas */}
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm h-64 flex flex-col dark:border dark:border-gray-700">
             <div className="flex justify-between items-start mb-6">
               <h3 className="font-medium text-gray-900 dark:text-white">Resumo de Tarefas</h3>

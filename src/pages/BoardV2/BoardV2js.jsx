@@ -1,11 +1,12 @@
+//BoardV2js.jsx
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { Column } from "../../components/Column";
 import { CardModal } from "../../components/CardModal";
 import { DragDropContext } from "@hello-pangea/dnd";
 
-const SERVER_URL = "http://localhost:3000";
-// const SERVER_URL = "https://api.flapkanban.top";
+//const SERVER_URL = "http://localhost:3000";
+const SERVER_URL = "https://api.flapkanban.top";
 
 export default function BoardV2() {
   const [columns, setColumns] = useState([]);
