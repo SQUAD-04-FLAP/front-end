@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus, Layers } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
@@ -46,6 +46,13 @@ export function Sidebar() {
               <ContainerLinks>
                 <Columns />
                 <span>Quadro Kanban</span>
+              </ContainerLinks>
+            </IconSidebar>
+
+            <IconSidebar href="/projects">
+              <ContainerLinks>
+                <Layers />
+                <span>Projetos</span>
               </ContainerLinks>
             </IconSidebar>
 
