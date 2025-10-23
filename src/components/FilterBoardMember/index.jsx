@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 
-export function FilterBoardMember({ onFilter }) {
+export function FilterBoardMember({ onFilter, ...props }) {
   const { state } = useKanbanMember();
   const [quadroSelecionado, setQuadroSelecionado] = useState("");
 
@@ -30,6 +30,7 @@ export function FilterBoardMember({ onFilter }) {
         value={quadroSelecionado}
         onChange={handleChange}
         className="px-3 py-1.5 rounded-lg text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200/70 dark:hover:bg-gray-700 transition"
+        {...props}
       >
         <option value="">Filtrar por quadro</option>
         {state.boards.map((quadro) => (

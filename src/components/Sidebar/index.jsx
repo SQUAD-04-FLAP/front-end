@@ -14,7 +14,6 @@ import { RouterLinks } from "../RouterLinks";
 import {ButtonNewBoard} from '../../components/ButtonNewBoard';
 import { BtnNewProject } from "../BtnNewProject";
 import { useLocation } from "react-router-dom";
-// import { useAuth } from "../../hooks/useAuth";
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
@@ -63,23 +62,6 @@ export function Sidebar() {
                 <span>Relatórios</span>
               </ContainerLinks>
             </IconSidebar>
-
-            {/* < BorderSidebar /> */}
-
-            {/* <SectionSidebar>Setores</SectionSidebar>
-
-            {user?.setores?.length > 0 ? (
-              user.setores.map((setor) => (
-                <IconSidebar key={setor.id || setor.nome}>
-                  <ContainerLinks>
-                    <Box />
-                    <span>{setor.nomeSetor}</span>
-                  </ContainerLinks>
-                </IconSidebar>
-              ))
-            ) : (
-              <p className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Nenhum setor atribuído</p>
-            )} */}
 
             <BorderSidebar />
 

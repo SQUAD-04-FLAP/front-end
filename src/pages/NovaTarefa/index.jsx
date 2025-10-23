@@ -1,7 +1,14 @@
 import { useState, ChangeEvent } from "react";
-import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns } from "lucide-react";
+import { useSectors } from '../../hooks/useSectors';
+import { useKanbanMember } from '../../hooks/useKanbanMember';
+import { FilterBoardMember } from "../../components/FilterBoardMember";
+import { FilterSectorMember } from "../../components/FilterSectorMember";
 
 export default function NovaTarefa() {
+  const { sectors } = useSectors();
+  const { state } = useKanbanMember();
+  
   const [form, setForm] = useState({
     titulo: "",
     descricao: "",
@@ -13,9 +20,10 @@ export default function NovaTarefa() {
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState({});
 
-  const setores = ["Marketing", "Design", "Atendimento", "TI"];
+  const { dispatch } = useKanbanMember();
+
   const prioridades = ["Baixa", "Média", "Alta"];
 
   const prioridadeColors = {
@@ -24,7 +32,7 @@ export default function NovaTarefa() {
     Alta: "bg-red-100 text-red-700 border-red-300 dark:bg-red-900 dark:text-red-200 dark:border-red-700",
   };
 
-  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     
@@ -37,21 +45,21 @@ export default function NovaTarefa() {
     }
   }
 
-  function validateForm() {
-    const newErrors: Record<string, string> = {};
+  // function validateForm() {
+  //   const newErrors: Record<string, string> = {};
 
-    if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
-    if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
-    if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
-    if (!form.setor) newErrors.setor = "Selecione um setor";
+  //   if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
+  //   if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
+  //   if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
+  //   if (!form.setor) newErrors.setor = "Selecione um setor";
     
-    if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
-      newErrors.dataFim = "A data de término deve ser posterior à data de início";
-    }
+  //   if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
+  //     newErrors.dataFim = "A data de término deve ser posterior à data de início";
+  //   }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // }
 
   function handleSubmit() {
     if (!validateForm()) {
@@ -151,7 +159,7 @@ export default function NovaTarefa() {
             </div>
 
             {/* Responsável e Setor */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                   <User className="w-4 h-4 mr-2 text-cyan-500" />
@@ -178,23 +186,21 @@ export default function NovaTarefa() {
               <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                   <Layers className="w-4 h-4 mr-2 text-cyan-500" />
-                  Setor *
+                  Projeto
                 </label>
-                <select
-                  name="setor"
-                  value={form.setor}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                    errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
-                >
-                  <option value="">Selecione um setor</option>
-                  {setores.map((setor) => (
-                    <option key={setor} value={setor}>
-                      {setor}
-                    </option>
-                  ))}
-                </select>
+
+                <FilterSectorMember
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
+                    dark:bg-gray-700 dark:border-gray-600 dark:text-white 
+                    ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
+                `}
+                  onFilter={(value) =>
+                  dispatch({ type: "SET_SETOR_FILTER", payload: value })
+                  
+                  
+                }
+             />
+
                 {errors.setor && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
                     <AlertCircle className="w-4 h-4 mr-1" />
@@ -202,29 +208,27 @@ export default function NovaTarefa() {
                   </p>
                 )}
               </div>
-            </div>
 
-            {/* Prioridade com visual melhorado */}
-            <div>
-              <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
-                <AlertCircle className="w-4 h-4 mr-2 text-cyan-500" />
-                Prioridade
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                {prioridades.map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => setForm((prev) => ({ ...prev, prioridade: p }))}
-                    className={`px-4 py-3 rounded-lg font-semibold border-2 transition-all ${
-                      form.prioridade === p
-                        ? prioridadeColors[p as keyof typeof prioridadeColors] + " scale-105 shadow-md"
-                        : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-650"
-                    }`}
-                  >
-                    {p}
-                  </button>
-                ))}
+              <div>
+                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <Columns className="w-4 h-4 mr-2 text-cyan-500" />
+                  Quadro
+                </label>
+                <FilterBoardMember
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
+                    dark:bg-gray-700 dark:border-gray-600 dark:text-white 
+                    ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
+                  `}
+                    onFilter={(value) =>
+                    dispatch({ type: "SET_SETOR_FILTER", payload: value })
+                    }
+                  />
+                {errors.setor && (
+                  <p className="mt-1 text-sm text-red-500 flex items-center">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    {errors.setor}
+                  </p>
+                )}
               </div>
             </div>
 
