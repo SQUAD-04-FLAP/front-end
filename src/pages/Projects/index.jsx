@@ -4,11 +4,34 @@ import { useSectors } from '../../hooks/useSectors';
 import { toast } from 'react-toastify';
 import { Dialog } from '../../components/Dialog';
 import { showMessage } from '../../adapters/showMessage';
+import {delete_sector} from '../../services/sectorsService'
+import { useEffect, useRef } from 'react';
 
 export function Projects() {
 
-    const { sectors, removeSector } = useSectors();
+    const { sectors, dispatch, state } = useSectors();
     console.log(sectors);
+
+    const previousSectorsLength = useRef(state.sectors.length);
+
+    useEffect(() => {
+      if (state.error) {
+        showMessage.error(state.error, true);
+
+        // Reseta o erro para permitir futuras mensagens
+        dispatch({ type: "RESET_SECTOR_ERROR" });
+      }
+    }, [state.error]);
+
+
+// Observa mudanças de setores para detectar exclusão
+useEffect(() => {
+  if (state.sectors.length < previousSectorsLength.current) {
+    showMessage.success("Projeto excluído com sucesso!", true);
+  }
+  previousSectorsLength.current = state.sectors.length;
+}, [state.sectors]);
+
 
     const [projetos] = useState([
     {
@@ -135,8 +158,8 @@ export function Projects() {
                       <Edit className="w-4 h-4" />
                     </button>
 
-                    <button 
-                      onClick={() => {
+                  <button
+                    onClick={() => {
                       toast.dismiss();
 
                       toast(Dialog, {
@@ -145,19 +168,30 @@ export function Projects() {
                         closeOnClick: false,
                         closeButton: false,
                         draggable: false,
-                        onClose: (confirmation) => {
+                        onClose: async (confirmation) => {
                           if (confirmation) {
+                            try {
 
-                            removeSector(projeto.idSetor);
-                            showMessage.success("Projeto excluído com sucesso!", true);
+                              // chama a API
+                              await delete_sector(projeto.idSetor);
+                              
+                              // dispara ação de sucesso para o reducer
+                              dispatch({ type: "DELETE_SECTOR_SUCCESS", payload: projeto.idSetor });
+
+                            } catch (error) {
+                              // dispara ação de erro para o reducer
+                              dispatch({ type: "DELETE_SECTOR_FAILURE", payload: error.message });
+                            }
                           }
-                        }
-                      });
-                    }}
-                    className="flex items-center justify-center px-3 py-2 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition cursor-pointer"
-                  >
-                    <Trash2 className="w-4 h-4" />
+                        },
+                  });
+                  }}
+                  className="flex items-center justify-center px-3 py-2 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 rounded-lg transition cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4" />
                   </button>
+
+
 
                   </div>
                 </div>

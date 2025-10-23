@@ -455,13 +455,12 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
             </div>
           </div>
 
-            {/* Seleção de usuários */}
-          <div>
+          {/* <div>
              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
               Participantes
             </label>
             <DropdownUsers />
-          </div>
+          </div> */}
         </div>
 
         {/* Footer */}

@@ -54,6 +54,8 @@ const removeSector = async (idSetor) => {
       error: state.error,
       fetchSectors,
       createSector,
+      state,
+      dispatch,
       removeSector
      }}>
       {children}

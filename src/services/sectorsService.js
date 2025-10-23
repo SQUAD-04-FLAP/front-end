@@ -14,7 +14,7 @@ export async function list_sectors() {
       },
     });
 
-    if (!res.ok) throw new Error("Erro ao buscar setores");
+    if (!res.ok) throw new Error("Erro ao buscar projetos");
     return await res.json();
   } catch (e) {
     console.error("Ocorreu um erro inesperado.", e);
@@ -51,7 +51,7 @@ export const delete_sector = async (idSetor) => {
   });
 
   if (!response.ok) {
-    throw new Error("Erro ao excluir setor");
+    throw new Error("Não foi possível excluir o projeto. Tente novamente mais tarde.");
   }
 
   return true;

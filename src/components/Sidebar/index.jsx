@@ -20,7 +20,6 @@ export function Sidebar() {
 
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
-  // const { user } = useAuth();
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -116,9 +115,11 @@ export function Sidebar() {
   
   <div className="flex items-center gap-4">
 
-   {location.pathname === "/board-v2" && <BtnNewProject />}
+   {(location.pathname === "/board-v2") && <BtnNewProject />}
    {location.pathname === "/board-v2" && <ButtonNewBoard />}
    {location.pathname === "/board-v2" && <ButtonNewTask />}
+
+   {(location.pathname === "/projects") && <BtnNewProject />}
 
    <IconsTopSidebar>
         <NotificationDropdown />

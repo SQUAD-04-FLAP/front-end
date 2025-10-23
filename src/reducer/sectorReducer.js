@@ -26,14 +26,16 @@ export function sectorReducer(state, action) {
                 sectors: state.sectors.filter(sector => sector.idSetor !== action.payload),
                 loading: false
             };
-
             case "DELETE_SECTOR_FAILURE":
+        
             return {
                 ...state,
                 loading: false,
                 error: action.payload
             };
-        default:
+        case "RESET_SECTOR_ERROR":
+            return { ...state, error: null };
+            default:
             return state;
     }
 }
