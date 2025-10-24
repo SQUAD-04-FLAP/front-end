@@ -12,8 +12,16 @@ export const initialStateKanban = {
 
 export function kanbanReducer(state, action) {
   switch (action.type) {
+     case "ADD_TASK":
+      return { ...state, tasks: [...state.tasks, action.payload] };
+    
     case 'SET_TASKS':
       return { ...state, tasks: action.payload};
+    case "DELETE_TASK":
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
+      };
     case 'SET_BOARDS':
       return { ...state, boards: action.payload }
     case 'SET_LOADING':

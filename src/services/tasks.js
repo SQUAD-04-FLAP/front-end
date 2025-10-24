@@ -91,3 +91,48 @@ export async function sendTaskComment(idTarefa, mensagem, idUsuario) {
     throw error;
   }
 }
+
+export async function deleteTaskById(taskId) {
+  try {
+    const res = await fetch(`${API_URL}/${taskId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Erro ao excluir tarefa: ${text}`);
+    }
+
+    return true;
+  } catch (e) {
+    console.error("[TasksService] Erro ao excluir tarefa:", e);
+    throw e;
+  }
+}
+
+export async function createTask({ titulo, descricao, idQuadro, idCriador }) {
+  try {
+    const res = await fetch(`${API_URL}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ titulo, descricao, idQuadro, idCriador }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Erro ao criar tarefa: ${text}`);
+    }
+
+    return await res.json();
+  } catch (e) {
+    console.error("[TasksService] Erro ao criar tarefa:", e);
+    throw e;
+  }
+}

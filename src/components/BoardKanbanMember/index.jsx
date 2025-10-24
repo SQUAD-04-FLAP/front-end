@@ -10,6 +10,8 @@ export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
 
+  console.log(state);
+
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -49,7 +51,7 @@ export function BoardKanbanMember() {
     return;
   }
 
-  // 3️⃣ Atualizar localmente
+  // Atualizar localmente
   setColumns((prevColumns) => {
     const newColumns = prevColumns.map(c => ({ ...c, tasks: [...c.tasks] }));
     const sourceCol = newColumns.find(c => c.id === source.droppableId);

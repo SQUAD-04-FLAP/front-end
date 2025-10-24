@@ -1,7 +1,7 @@
+import UnderConstruction from "../../components/UnderConstruction";
+
 export function Report() {
     return(
-          <div>
-             <h1>Relatórios</h1>
-          </div>
+          <UnderConstruction />
     );
 }
