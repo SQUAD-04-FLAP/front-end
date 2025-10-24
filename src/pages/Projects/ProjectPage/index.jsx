@@ -179,7 +179,9 @@ export default function ProjectDetails() {
 
       {/* Informações gerais */}
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 space-y-2">
-        <p><strong>Descrição:</strong> {projeto?.descricao}</p>
+        {projeto?.descricao && (
+          <p><strong>Descrição:</strong> {projeto.descricao}</p>
+        )}
         <p><strong>Data de criação:</strong> {formatDate(projeto?.createdAt)}</p>
         <p><strong>Última atualização:</strong> {formatDate(projeto?.updatedAt)}</p>
       </div>

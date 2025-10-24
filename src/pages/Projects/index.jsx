@@ -7,6 +7,7 @@ import { showMessage } from '../../adapters/showMessage';
 import {delete_sector} from '../../services/sectorsService'
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BtnNewProject } from '../../components/BtnNewProject';
 
 export function Projects() {
 
@@ -94,10 +95,7 @@ useEffect(() => {
                 Gerencie todos os projetos cadastrados no sistema
               </p>
             </div>
-            <button className="flex items-center gap-2 px-6 py-3 bg-cyan-400 hover:bg-cyan-300 text-blue-900 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl">
-              <Plus className="w-5 h-5" />
-              Novo Projeto
-            </button>
+            <BtnNewProject className="flex items-center gap-2 px-6 py-3 bg-cyan-400 hover:bg-cyan-300 text-blue-900 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer" />
           </div>
 
           {/* Grid de Projetos */}

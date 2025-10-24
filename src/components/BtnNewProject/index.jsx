@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AdicionarProjetoModal } from '../../components/AdicionarProjetoModal';
 
-export function BtnNewProject() {
+export function BtnNewProject( {...props} ) {
   const [modalSetorOpen, setModalSetorOpen] = useState(false);
 
   return (
@@ -13,6 +13,7 @@ export function BtnNewProject() {
       text-white text-sm font-medium rounded-lg 
       hover:bg-indigo-700 dark:hover:bg-indigo-600 
       transition duration-200 cursor-pointer shadow-sm"
+      {...props}
     >
       + Novo Projeto
     </button>
