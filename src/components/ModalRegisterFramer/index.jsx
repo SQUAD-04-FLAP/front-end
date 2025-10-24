@@ -70,7 +70,7 @@ export function ModalRegisterFramer({ isOpen, onClose }) {
               onChange={(e) => setIdSetor(e.target.value)}
               className="w-full px-4 py-3 border rounded-lg focus:outline-blue-600"
             >
-              <option value="">Selecione um setor</option>
+              <option value="">Selecione um projeto</option>
               {sectors.map((setor, index) => (
                 <option key={setor.idSetor ?? index} value={setor.idSetor}>
                   {setor.nome}

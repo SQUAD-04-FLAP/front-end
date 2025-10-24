@@ -1,5 +1,5 @@
 export function BorderSidebar() {
     return(
-         <div className="border-4 m-4 rounded-full"></div>
+         <div className="border-2 m-4 rounded-full"></div>
     );
 }

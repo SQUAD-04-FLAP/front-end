@@ -14,7 +14,7 @@ export async function list_sectors() {
       },
     });
 
-    if (!res.ok) throw new Error("Erro ao buscar setores");
+    if (!res.ok) throw new Error("Erro ao buscar projetos");
     return await res.json();
   } catch (e) {
     console.error("Ocorreu um erro inesperado.", e);
@@ -40,3 +40,20 @@ export async function create_sector(sectorData) {
     throw e;
   }
 }
+
+export const delete_sector = async (idSetor) => {
+  const response = await fetch(`${API_URL}/${idSetor}`, {
+    method: "DELETE",
+    headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+  });
+
+  if (!response.ok) {
+    throw new Error("Não foi possível excluir o projeto. Tente novamente mais tarde.");
+  }
+
+  return true;
+};
+

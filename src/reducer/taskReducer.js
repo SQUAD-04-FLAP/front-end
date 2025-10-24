@@ -23,12 +23,6 @@ export function taskReducer(state, action) {
         ),
       };
 
-    case "DELETE_TASK":
-      return {
-        ...state,
-        tasks: state.tasks.filter((task) => task.idTarefa !== action.payload),
-      };
-
     case "SET_ERROR":
       return { ...state, error: action.payload, loading: false };
 

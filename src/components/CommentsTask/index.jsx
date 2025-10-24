@@ -8,8 +8,6 @@ export function CommentsTask({ taskId }) {
   const { comments, loading } = state;
   const { user } = useAuth();
 
-  console.log(state);
-
   useEffect(() => {
     if (!taskId) return;
 

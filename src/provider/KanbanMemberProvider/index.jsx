@@ -3,6 +3,8 @@ import { initialStateKanban, kanbanReducer } from '../../reducer/kanbanMemberRed
 import { KanbanMemberContext } from './KanbanMemberContext';
 import { listFramersBySector } from '../../services/framerService';
 import { fetchTasksByBoardID } from '../../services/tasks';
+import { deleteTaskById } from '../../services/tasks';
+import {createTask} from '../../services/tasks';
 
 export function KanbanMemberProvider({ children }) {
   const [state, dispatch] = useReducer(kanbanReducer, initialStateKanban);
@@ -26,6 +28,31 @@ export function KanbanMemberProvider({ children }) {
 
     loadData();
   }, [state.selectedSector]);
+
+   async function addTask(newTaskData) {
+    try {
+      const createdTask = await createTask(newTaskData); // chama API
+      // Atualiza localmente
+      dispatch({ type: 'ADD_TASK', payload: createdTask });
+    } catch (err) {
+      console.error('Erro ao criar tarefa:', err);
+      dispatch({ type: 'SET_ERROR', payload: err.message });
+    }
+  }
+
+  async function deleteTask(idTarefa) {
+    dispatch({ type: "DELETE_TASK", payload: idTarefa });
+
+    try {
+      await deleteTaskById(idTarefa);
+  
+      const updatedTasks = await fetchTasksByBoardID(state.selectedBoard);
+      dispatch({ type: 'SET_TASKS', payload: updatedTasks });
+    } catch (e) {
+      console.error("Erro ao excluir tarefa:", e);
+      dispatch({ type: "SET_ERROR", payload: e.message });
+    }
+  }
 
   useEffect(() => {
     if (!state.selectedBoard) return;
@@ -73,7 +100,7 @@ export function KanbanMemberProvider({ children }) {
   }, [state.columns, state.quadroSelecionado, state.setorSelecionado]);
 
   return (
-    <KanbanMemberContext.Provider value={{ state, dispatch }}>
+    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask }}>
       {children}
     </KanbanMemberContext.Provider>
   );

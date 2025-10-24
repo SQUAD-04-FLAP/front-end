@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus, Layers, LogOut } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
@@ -11,13 +11,18 @@ import { useTheme } from "../../hooks/useTheme";
 import AvatarDropdown from "../AvatarDropdown";
 import NotificationDropdown from "../NotifcationDropdown";
 import { RouterLinks } from "../RouterLinks";
-import { useAuth } from "../../hooks/useAuth";
+import {ButtonNewBoard} from '../../components/ButtonNewBoard';
+import { BtnNewProject } from "../BtnNewProject";
+import { useLocation } from "react-router-dom";
+import { useAuth } from '../../hooks/useAuth';
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
+  const location = useLocation();
+
+  const { logout } = useAuth();
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -46,6 +51,13 @@ export function Sidebar() {
               </ContainerLinks>
             </IconSidebar>
 
+            <IconSidebar href="/projects">
+              <ContainerLinks>
+                <Layers />
+                <span>Projetos</span>
+              </ContainerLinks>
+            </IconSidebar>
+
             <IconSidebar href="/calendar">
               <ContainerLinks>
                 <Calendar />
@@ -59,25 +71,6 @@ export function Sidebar() {
                 <span>Relatórios</span>
               </ContainerLinks>
             </IconSidebar>
-
-            < BorderSidebar />
-
-            <SectionSidebar>Setores</SectionSidebar>
-
-            {/* Mapear setores do usuário */}
-            {user?.setores?.length > 0 ? (
-              user.setores.map((setor) => (
-                <IconSidebar key={setor.id || setor.nome}>
-                  <ContainerLinks>
-                    {/* Aqui pode escolher um ícone baseado no setor */}
-                    <Box /> {/* exemplo genérico, pode criar um mapa de ícones */}
-                    <span>{setor.nomeSetor}</span>
-                  </ContainerLinks>
-                </IconSidebar>
-              ))
-            ) : (
-              <p className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Nenhum setor atribuído</p>
-            )}
 
             <BorderSidebar />
 
@@ -94,6 +87,18 @@ export function Sidebar() {
                 <span>Ajuda</span>
               </ContainerLinks>
             </IconSidebar>
+
+            <button
+            onClick={logout}
+              type="button"
+              class="inline-flex items-center gap-3 px-6 py-3 mt-20 rounded-2xl  text-white text-lg font-semibold shadow-lg hover:bg-red-700 active:scale-95 focus:outline-none focus:ring-4 transition transform cursor-pointer"
+              aria-label="Sair"
+            >
+              <LogOut />
+
+              <span>Sair</span>
+            </button>
+
         </nav>
       </nav>
       
@@ -124,8 +129,12 @@ export function Sidebar() {
   <SearchSidebar />
   
   <div className="flex items-center gap-4">
-    { /* Botão para adicionar nova tarefa */ }
-   <ButtonNewTask />
+
+   {(location.pathname === "/board-v2") && <BtnNewProject />}
+   {location.pathname === "/board-v2" && <ButtonNewBoard />}
+   {location.pathname === "/board-v2" && <ButtonNewTask />}
+
+   {(location.pathname === "/projects") && <BtnNewProject />}
 
    <IconsTopSidebar>
         <NotificationDropdown />

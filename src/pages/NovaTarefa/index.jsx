@@ -3,8 +3,17 @@ import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2 
 import { useAtom } from "jotai";
 import { projectWS, roomWS, socketIORef } from "../../services/globals";
 import { Socket } from "socket.io-client";
+import { useState, ChangeEvent } from "react";
+import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft } from "lucide-react";
+import { useKanbanMember } from '../../hooks/useKanbanMember';
+import { FilterBoardMember } from "../../components/FilterBoardMember";
+import { FilterSectorMember } from "../../components/FilterSectorMember";
+import { createTask } from '../../services/tasks';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function NovaTarefa() {
+  const { user } = useAuth();
+
   const [form, setForm] = useState({
     titulo: "",
     descricao: "",
@@ -12,16 +21,19 @@ export default function NovaTarefa() {
     prioridade: "Média",
     dataInicio: "",
     dataFim: "",
-    setor: "",
+    projeto: "",
+    quadro: "",
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState({});
 
-  const [columns, ] = useAtom(projectWS);
-  const [socketioref, ] = useAtom(socketIORef);
-  const [room, ] = useAtom(roomWS);
-  const socketRef = useRef<Socket | null>(null);
+  const { dispatch } = useKanbanMember();
+
+  const [columns,] = useAtom(projectWS);
+  const [socketioref,] = useAtom(socketIORef);
+  const [room,] = useAtom(roomWS);
+  const socketRef = useRef(null);
 
   const setores = ["Marketing", "Design", "Atendimento", "TI"];
   const prioridades = ["Baixa", "Média", "Alta"];
@@ -32,10 +44,10 @@ export default function NovaTarefa() {
     Alta: "bg-red-100 text-red-700 border-red-300 dark:bg-red-900 dark:text-red-200 dark:border-red-700",
   };
 
-  function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -46,13 +58,13 @@ export default function NovaTarefa() {
   }
 
   function validateForm() {
-    const newErrors: Record<string, string> = {};
+    const newErrors = {};
 
     if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
     if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
     if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
     if (!form.setor) newErrors.setor = "Selecione um setor";
-    
+
     if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
       newErrors.dataFim = "A data de término deve ser posterior à data de início";
     }
@@ -61,7 +73,7 @@ export default function NovaTarefa() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function insertTask(newTask: any) {
+  function insertTask(newTask) {
     const socket = socketRef.current;
     if (!socket) {
       console.error("Socket não inicializado");
@@ -69,7 +81,7 @@ export default function NovaTarefa() {
     }
 
     // procura coluna 'todo' (id === 'todo') — fallback: coluna com name 'Fazer'
-    let todoCol: any = columns?.find((c: any) => c?.id === "todo" || c?.name?.toLowerCase() === "fazer");
+    let todoCol = columns?.find((c) => c?.id === "todo" || c?.name?.toLowerCase() === "fazer");
 
     if (!todoCol) {
       return;
@@ -123,30 +135,62 @@ export default function NovaTarefa() {
     };
   }
 
-  function handleSubmit() {
+
+
+  async function handleSubmit() {
     socketRef.current = socketioref;
 
-    if (!validateForm()) {
-      return;
+    if (!validateForm()) return;
+
+    try {
+      const idCriador = user.idUsuario;
+      const idQuadro = Number(form.quadro);
+
+      const novaTarefa = await createTask({
+        titulo: form.titulo,
+        descricao: form.descricao,
+        idQuadro,
+        idCriador,
+      });
+
+      // Atualiza o estado local ou global, ex:
+      dispatch({ type: "ADD_TASK", payload: novaTarefa });
+
+      const newTask = buildTaskFromForm();
+      insertTask(newTask);
+
+      // setShowSuccess(true);
+
+      // setTimeout(() => {
+      //   setForm({
+      //     titulo: "",
+      //     descricao: "",
+      //     responsavel: "",
+      //     prioridade: "Média",
+      //     dataInicio: "",
+      //     dataFim: "",
+      //     setor: "",
+      //   });
+      //   setShowSuccess(false);
+      // }, 2000);
+      // navigate("/board-v2");
+
+      setTimeout(() => {
+        setForm({
+          titulo: "",
+          descricao: "",
+          responsavel: "",
+          prioridade: "Média",
+          dataInicio: "",
+          dataFim: "",
+          projeto: "",
+          quadro: "",
+        });
+        setShowSuccess(false);
+      }, 2000);
+    } catch (e) {
+      console.error("Erro ao criar tarefa:", e);
     }
-
-    const newTask = buildTaskFromForm();
-    insertTask(newTask);
-
-    // setShowSuccess(true);
-
-    // setTimeout(() => {
-    //   setForm({
-    //     titulo: "",
-    //     descricao: "",
-    //     responsavel: "",
-    //     prioridade: "Média",
-    //     dataInicio: "",
-    //     dataFim: "",
-    //     setor: "",
-    //   });
-    //   setShowSuccess(false);
-    // }, 2000);
   }
 
   return (
@@ -187,9 +231,8 @@ export default function NovaTarefa() {
               <input
                 type="text"
                 name="titulo"
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                  errors.titulo ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                }`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.titulo ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
                 placeholder="Ex: Criar post para Instagram"
                 value={form.titulo}
                 onChange={handleChange}
@@ -210,9 +253,8 @@ export default function NovaTarefa() {
               </label>
               <textarea
                 name="descricao"
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white min-h-[120px] resize-none ${
-                  errors.descricao ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                }`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white min-h-[120px] resize-none ${errors.descricao ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
                 placeholder="Detalhe os objetivos e requisitos da tarefa..."
                 value={form.descricao}
                 onChange={handleChange}
@@ -225,8 +267,7 @@ export default function NovaTarefa() {
               )}
             </div>
 
-            {/* Responsável e Setor */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                   <User className="w-4 h-4 mr-2 text-cyan-500" />
@@ -235,9 +276,8 @@ export default function NovaTarefa() {
                 <input
                   type="text"
                   name="responsavel"
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                    errors.responsavel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.responsavel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    }`}
                   placeholder="Nome do responsável"
                   value={form.responsavel}
                   onChange={handleChange}
@@ -253,23 +293,44 @@ export default function NovaTarefa() {
               <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                   <Layers className="w-4 h-4 mr-2 text-cyan-500" />
-                  Setor *
+                  Projeto
                 </label>
-                <select
-                  name="setor"
-                  value={form.setor}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                    errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
-                >
-                  <option value="">Selecione um setor</option>
-                  {setores.map((setor) => (
-                    <option key={setor} value={setor}>
-                      {setor}
-                    </option>
-                  ))}
-                </select>
+
+                <FilterSectorMember
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
+                  dark:bg-gray-700 dark:border-gray-600 dark:text-white 
+                  ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
+                `}
+                  onFilter={(value) => {
+                    dispatch({ type: "SET_SETOR_FILTER", payload: value });
+                    setForm(prev => ({ ...prev, setor: value }));
+                  }}
+                />
+
+                {errors.setor && (
+                  <p className="mt-1 text-sm text-red-500 flex items-center">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    {errors.setor}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <Columns className="w-4 h-4 mr-2 text-cyan-500" />
+                  Quadro
+                </label>
+                <FilterBoardMember
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
+                  dark:bg-gray-700 dark:border-gray-600 dark:text-white 
+                  ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
+                `}
+                  onFilter={(value) => {
+                    dispatch({ type: "SET_SETOR_FILTER", payload: value });
+                    setForm(prev => ({ ...prev, quadro: value }));
+                  }}
+                />
+
                 {errors.setor && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
                     <AlertCircle className="w-4 h-4 mr-1" />
@@ -291,11 +352,10 @@ export default function NovaTarefa() {
                     key={p}
                     type="button"
                     onClick={() => setForm((prev) => ({ ...prev, prioridade: p }))}
-                    className={`px-4 py-3 rounded-lg font-semibold border-2 transition-all ${
-                      form.prioridade === p
-                        ? prioridadeColors[p as keyof typeof prioridadeColors] + " scale-105 shadow-md"
-                        : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-650"
-                    }`}
+                    className={`px-4 py-3 rounded-lg font-semibold border-2 transition-all ${form.prioridade === p
+                      ? prioridadeColors[p] + " scale-105 shadow-md"
+                      : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-650"
+                      }`}
                   >
                     {p}
                   </button>
@@ -329,9 +389,8 @@ export default function NovaTarefa() {
                   name="dataFim"
                   value={form.dataFim}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white ${
-                    errors.dataFim ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white ${errors.dataFim ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    }`}
                 />
                 {errors.dataFim && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
@@ -342,8 +401,18 @@ export default function NovaTarefa() {
               </div>
             </div>
 
-            {/* Botão de Submit */}
-            <div className="flex justify-end pt-4">
+            <div className="flex justify-end pt-4 gap-4">
+              {/* Botão Voltar */}
+              <button
+                type="button"
+                onClick={() => window.history.back()} // ou useNavigate() se estiver com React Router
+                className="flex items-center gap-2 px-8 py-4 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                Voltar
+              </button>
+
+              {/* Botão Criar Tarefa */}
               <button
                 type="button"
                 onClick={handleSubmit}
@@ -353,6 +422,7 @@ export default function NovaTarefa() {
                 Criar Tarefa
               </button>
             </div>
+
           </div>
         </div>
 
@@ -363,4 +433,4 @@ export default function NovaTarefa() {
       </div>
     </div>
   );
-} 
+}
