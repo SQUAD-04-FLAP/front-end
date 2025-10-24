@@ -10,7 +10,8 @@ export function Column({ data, onCardClick }) {
           {data.name}
         </h3>
         <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
-          {data.count}
+          {/* {data.count} */}
+          {data.tasks.length}
         </span>
       </header>
 
@@ -44,9 +45,9 @@ export function Column({ data, onCardClick }) {
         )}
       </Droppable>
 
-      <button className="mt-4 w-full text-center text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 transition">
+      {/* <button className="mt-4 w-full text-center text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 transition">
         Novo Card
-      </button>
+      </button> */}
     </section>
   );
 }
