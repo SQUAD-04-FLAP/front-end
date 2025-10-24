@@ -1,9 +1,6 @@
-import { useState, ChangeEvent, useRef, useEffect } from "react";
-import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2 } from "lucide-react";
+import { useState, useRef } from "react";
 import { useAtom } from "jotai";
 import { projectWS, roomWS, socketIORef } from "../../services/globals";
-import { Socket } from "socket.io-client";
-import { useState, ChangeEvent } from "react";
 import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft } from "lucide-react";
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterBoardMember } from "../../components/FilterBoardMember";
