@@ -16,6 +16,6 @@ export function SetterAtom(setAtom, value) {
 
 export const projectWS = atom([]);
 
-export const socketIORef = atom(null)
+export const socketIORef = atom(null);
 
 export const roomWS = atom("sala1");
