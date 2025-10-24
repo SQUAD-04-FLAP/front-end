@@ -1,4 +1,6 @@
-import { useState, ChangeEvent } from "react";
+import { useState, useRef } from "react";
+import { useAtom } from "jotai";
+import { projectWS, roomWS, socketIORef } from "../../services/globals";
 import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft } from "lucide-react";
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterBoardMember } from "../../components/FilterBoardMember";
@@ -8,7 +10,7 @@ import { useAuth } from '../../hooks/useAuth';
 
 export default function NovaTarefa() {
   const { user } = useAuth();
-  
+
   const [form, setForm] = useState({
     titulo: "",
     descricao: "",
@@ -25,6 +27,12 @@ export default function NovaTarefa() {
 
   const { dispatch } = useKanbanMember();
 
+  const [columns,] = useAtom(projectWS);
+  const [socketioref,] = useAtom(socketIORef);
+  const [room,] = useAtom(roomWS);
+  const socketRef = useRef(null);
+
+  const setores = ["Marketing", "Design", "Atendimento", "TI"];
   const prioridades = ["Baixa", "Média", "Alta"];
 
   const prioridadeColors = {
@@ -36,7 +44,7 @@ export default function NovaTarefa() {
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -53,7 +61,7 @@ export default function NovaTarefa() {
     if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
     if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
     if (!form.setor) newErrors.setor = "Selecione um setor";
-    
+
     if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
       newErrors.dataFim = "A data de término deve ser posterior à data de início";
     }
@@ -62,44 +70,125 @@ export default function NovaTarefa() {
     return Object.keys(newErrors).length === 0;
   }
 
-  async function handleSubmit() {
-  if (!validateForm()) return;
+  function insertTask(newTask) {
+    const socket = socketRef.current;
+    if (!socket) {
+      console.error("Socket não inicializado");
+      return;
+    }
 
-  try {
-    const idCriador = user.idUsuario;
-    const idQuadro = Number(form.quadro);
+    // procura coluna 'todo' (id === 'todo') — fallback: coluna com name 'Fazer'
+    let todoCol = columns?.find((c) => c?.id === "todo" || c?.name?.toLowerCase() === "fazer");
 
-    const novaTarefa = await createTask({
-      titulo: form.titulo,
-      descricao: form.descricao,
-      idQuadro,
-      idCriador,
-    });
+    if (!todoCol) {
+      return;
+    }
 
-    // Atualiza o estado local ou global, ex:
-    dispatch({ type: "ADD_TASK", payload: novaTarefa });
+    // insere a nova tarefa no topo
+    todoCol.tasks = [newTask, ...(todoCol.tasks || [])];
+    todoCol.count = (todoCol.tasks || []).length;
 
+    // atualiza também counts de outras colunas (opcional)
+    // if (columns && Array.isArray(columns)) {
+    //   columns = columns.map((c: any) => {
+    //     return { ...c, count: (c.tasks || []).length };
+    //   });
+    // }
+
+    // emite updateProject com o JSON inteiro conforme backend espera
+    socket.emit("updateProject", { room, todoCol });
+
+    // show success + limpar form
     setShowSuccess(true);
-
-    // navigate("/board-v2");
-
     setTimeout(() => {
-      setForm({
-        titulo: "",
-        descricao: "",
-        responsavel: "",
-        prioridade: "Média",
-        dataInicio: "",
-        dataFim: "",
-        projeto: "",
-        quadro: "",
-      });
       setShowSuccess(false);
     }, 2000);
-  } catch (e) {
-    console.error("Erro ao criar tarefa:", e);
+
+    setForm({
+      titulo: "",
+      descricao: "",
+      responsavel: "",
+      prioridade: "Média",
+      dataInicio: "",
+      dataFim: "",
+      setor: "",
+    });
   }
-}
+
+  function buildTaskFromForm() {
+    return {
+      id: `t_${Date.now()}_${Math.floor(Math.random() * 10000)}`,
+      title: form.titulo,
+      description: form.descricao,
+      date: form.dataFim ? new Date(form.dataFim).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }) : "",
+      comments: 0,
+      attachments: 0,
+      assigneeAvatar: undefined,
+      priority: form.prioridade,
+      responsavel: form.responsavel,
+      setor: form.setor,
+      dataInicio: form.dataInicio,
+      dataFim: form.dataFim,
+    };
+  }
+
+
+
+  async function handleSubmit() {
+    socketRef.current = socketioref;
+
+    if (!validateForm()) return;
+
+    try {
+      const idCriador = user.idUsuario;
+      const idQuadro = Number(form.quadro);
+
+      const novaTarefa = await createTask({
+        titulo: form.titulo,
+        descricao: form.descricao,
+        idQuadro,
+        idCriador,
+      });
+
+      // Atualiza o estado local ou global, ex:
+      dispatch({ type: "ADD_TASK", payload: novaTarefa });
+
+      const newTask = buildTaskFromForm();
+      insertTask(newTask);
+
+      // setShowSuccess(true);
+
+      // setTimeout(() => {
+      //   setForm({
+      //     titulo: "",
+      //     descricao: "",
+      //     responsavel: "",
+      //     prioridade: "Média",
+      //     dataInicio: "",
+      //     dataFim: "",
+      //     setor: "",
+      //   });
+      //   setShowSuccess(false);
+      // }, 2000);
+      // navigate("/board-v2");
+
+      setTimeout(() => {
+        setForm({
+          titulo: "",
+          descricao: "",
+          responsavel: "",
+          prioridade: "Média",
+          dataInicio: "",
+          dataFim: "",
+          projeto: "",
+          quadro: "",
+        });
+        setShowSuccess(false);
+      }, 2000);
+    } catch (e) {
+      console.error("Erro ao criar tarefa:", e);
+    }
+  }
 
   return (
     <div className="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-screen transition-colors">
@@ -139,9 +228,8 @@ export default function NovaTarefa() {
               <input
                 type="text"
                 name="titulo"
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                  errors.titulo ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                }`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.titulo ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
                 placeholder="Ex: Criar post para Instagram"
                 value={form.titulo}
                 onChange={handleChange}
@@ -162,9 +250,8 @@ export default function NovaTarefa() {
               </label>
               <textarea
                 name="descricao"
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white min-h-[120px] resize-none ${
-                  errors.descricao ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                }`}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white min-h-[120px] resize-none ${errors.descricao ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
                 placeholder="Detalhe os objetivos e requisitos da tarefa..."
                 value={form.descricao}
                 onChange={handleChange}
@@ -186,9 +273,8 @@ export default function NovaTarefa() {
                 <input
                   type="text"
                   name="responsavel"
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                    errors.responsavel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.responsavel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    }`}
                   placeholder="Nome do responsável"
                   value={form.responsavel}
                   onChange={handleChange}
@@ -208,15 +294,15 @@ export default function NovaTarefa() {
                 </label>
 
                 <FilterSectorMember
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
                   dark:bg-gray-700 dark:border-gray-600 dark:text-white 
                   ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
                 `}
-                onFilter={(value) => {
-                  dispatch({ type: "SET_SETOR_FILTER", payload: value });
-                  setForm(prev => ({ ...prev, setor: value }));
-                }}
-              />
+                  onFilter={(value) => {
+                    dispatch({ type: "SET_SETOR_FILTER", payload: value });
+                    setForm(prev => ({ ...prev, setor: value }));
+                  }}
+                />
 
                 {errors.setor && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
@@ -231,16 +317,16 @@ export default function NovaTarefa() {
                   <Columns className="w-4 h-4 mr-2 text-cyan-500" />
                   Quadro
                 </label>
-               <FilterBoardMember
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
+                <FilterBoardMember
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
                   dark:bg-gray-700 dark:border-gray-600 dark:text-white 
                   ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
                 `}
-                onFilter={(value) => {
-                  dispatch({ type: "SET_SETOR_FILTER", payload: value });
-                  setForm(prev => ({ ...prev, quadro: value }));
-                }}
-              />
+                  onFilter={(value) => {
+                    dispatch({ type: "SET_SETOR_FILTER", payload: value });
+                    setForm(prev => ({ ...prev, quadro: value }));
+                  }}
+                />
 
                 {errors.setor && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
@@ -251,7 +337,7 @@ export default function NovaTarefa() {
               </div>
             </div>
 
-             {/* Prioridade com visual melhorado */}
+            {/* Prioridade com visual melhorado */}
             <div>
               <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
                 <AlertCircle className="w-4 h-4 mr-2 text-cyan-500" />
@@ -263,11 +349,10 @@ export default function NovaTarefa() {
                     key={p}
                     type="button"
                     onClick={() => setForm((prev) => ({ ...prev, prioridade: p }))}
-                    className={`px-4 py-3 rounded-lg font-semibold border-2 transition-all ${
-                      form.prioridade === p
-                        ? prioridadeColors[p] + " scale-105 shadow-md"
-                        : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-650"
-                    }`}
+                    className={`px-4 py-3 rounded-lg font-semibold border-2 transition-all ${form.prioridade === p
+                      ? prioridadeColors[p] + " scale-105 shadow-md"
+                      : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-650"
+                      }`}
                   >
                     {p}
                   </button>
@@ -301,9 +386,8 @@ export default function NovaTarefa() {
                   name="dataFim"
                   value={form.dataFim}
                   onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white ${
-                    errors.dataFim ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white ${errors.dataFim ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    }`}
                 />
                 {errors.dataFim && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
@@ -324,7 +408,7 @@ export default function NovaTarefa() {
                 <ArrowLeft className="w-5 h-5" />
                 Voltar
               </button>
-              
+
               {/* Botão Criar Tarefa */}
               <button
                 type="button"
@@ -346,4 +430,4 @@ export default function NovaTarefa() {
       </div>
     </div>
   );
-} 
+}

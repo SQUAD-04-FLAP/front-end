@@ -4,7 +4,8 @@ import { Dashboard } from "../../pages/Dashboard";
 import { Board } from "../../pages/Board";
 import { Calendar } from "../../pages/Calendar";
 import { Report } from "../../pages/Report";
-import BoardV2 from "../../pages/BoardV2/BoardV2js";
+// import BoardV2 from "../../pages/BoardV2/BoardV2js"; // a adaptação do quadro kanban
+import BoardV2 from "../../pages/BoardV2/index"; // o original quadro kanban
 import Configuracoes from "../../pages/Configuracoes";
 import AdminEmpresas from '../../pages/Admin/empresas';
 import AdminKanban from "../../pages/Admin/Kanban";
