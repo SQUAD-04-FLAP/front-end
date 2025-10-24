@@ -1,5 +1,8 @@
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useRef, useEffect } from "react";
 import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2 } from "lucide-react";
+import { useAtom } from "jotai";
+import { projectWS, roomWS, socketIORef } from "../../services/globals";
+import { Socket } from "socket.io-client";
 
 export default function NovaTarefa() {
   const [form, setForm] = useState({
@@ -14,6 +17,11 @@ export default function NovaTarefa() {
 
   const [showSuccess, setShowSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const [columns, ] = useAtom(projectWS);
+  const [socketioref, ] = useAtom(socketIORef);
+  const [room, ] = useAtom(roomWS);
+  const socketRef = useRef<Socket | null>(null);
 
   const setores = ["Marketing", "Design", "Atendimento", "TI"];
   const prioridades = ["Baixa", "Média", "Alta"];
@@ -53,25 +61,92 @@ export default function NovaTarefa() {
     return Object.keys(newErrors).length === 0;
   }
 
+  function insertTask(newTask: any) {
+    const socket = socketRef.current;
+    if (!socket) {
+      console.error("Socket não inicializado");
+      return;
+    }
+
+    // procura coluna 'todo' (id === 'todo') — fallback: coluna com name 'Fazer'
+    let todoCol: any = columns?.find((c: any) => c?.id === "todo" || c?.name?.toLowerCase() === "fazer");
+
+    if (!todoCol) {
+      return;
+    }
+
+    // insere a nova tarefa no topo
+    todoCol.tasks = [newTask, ...(todoCol.tasks || [])];
+    todoCol.count = (todoCol.tasks || []).length;
+
+    // atualiza também counts de outras colunas (opcional)
+    // if (columns && Array.isArray(columns)) {
+    //   columns = columns.map((c: any) => {
+    //     return { ...c, count: (c.tasks || []).length };
+    //   });
+    // }
+
+    // emite updateProject com o JSON inteiro conforme backend espera
+    socket.emit("updateProject", { room, todoCol });
+
+    // show success + limpar form
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 2000);
+
+    setForm({
+      titulo: "",
+      descricao: "",
+      responsavel: "",
+      prioridade: "Média",
+      dataInicio: "",
+      dataFim: "",
+      setor: "",
+    });
+  }
+
+  function buildTaskFromForm() {
+    return {
+      id: `t_${Date.now()}_${Math.floor(Math.random() * 10000)}`,
+      title: form.titulo,
+      description: form.descricao,
+      date: form.dataFim ? new Date(form.dataFim).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }) : "",
+      comments: 0,
+      attachments: 0,
+      assigneeAvatar: undefined,
+      priority: form.prioridade,
+      responsavel: form.responsavel,
+      setor: form.setor,
+      dataInicio: form.dataInicio,
+      dataFim: form.dataFim,
+    };
+  }
+
   function handleSubmit() {
+    socketRef.current = socketioref;
+
     if (!validateForm()) {
       return;
     }
 
-    setShowSuccess(true);
+    const newTask = buildTaskFromForm();
+    insertTask(newTask);
 
-    setTimeout(() => {
-      setForm({
-        titulo: "",
-        descricao: "",
-        responsavel: "",
-        prioridade: "Média",
-        dataInicio: "",
-        dataFim: "",
-        setor: "",
-      });
-      setShowSuccess(false);
-    }, 2000);
+    // setShowSuccess(true);
+
+    // setTimeout(() => {
+    //   setForm({
+    //     titulo: "",
+    //     descricao: "",
+    //     responsavel: "",
+    //     prioridade: "Média",
+    //     dataInicio: "",
+    //     dataFim: "",
+    //     setor: "",
+    //   });
+    //   setShowSuccess(false);
+    // }, 2000);
   }
 
   return (
