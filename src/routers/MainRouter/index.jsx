@@ -16,6 +16,7 @@ import { SpinnerLoading } from "../../components/SpinnerLoading";
 import NovaTarefa from "../../pages/NovaTarefa";
 import {PrivateRoute} from '../../components/PrivateRoute';
 import { Projects } from "../../pages/Projects";
+import ProjectPage from "../../pages/Projects/ProjectPage";
 
 export function MainRouter() {
   return (
@@ -39,6 +40,7 @@ export function MainRouter() {
           <Route path="/board" element={<Board />} />
           <Route path="/board-v2" element={<BoardV2 />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/projects/:id" element={<ProjectPage />} />
           <Route path="/configuracoes" element={<Configuracoes />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/reports" element={<Report />} />
