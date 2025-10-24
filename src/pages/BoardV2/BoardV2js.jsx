@@ -21,29 +21,6 @@ export default function BoardV2() {
   const socketRef = useRef(null);
   const emitTimer = useRef(undefined);
 
-  // useEffect(() => {
-  //   // const socket = io(SERVER_URL);
-
-  //   // socketRef.current = socket;
-
-  //   // socket.on("connect", () => {
-  //   //   console.log("Conectado:", socket.id);
-  //   //   socket.emit("joinRoom", room, (board) => {
-  //   //     // setColumns(board.columns || []);
-  //   //   });
-  //   // });
-
-  //   // socket.on("project", (proj) => {
-  //   //   // console.log("projeto:", proj);
-  //   //   setColumns(proj.columns || []);
-  //   // });
-
-  //   // return () => {
-  //   //   socket.disconnect();
-  //   //   socketRef.current = null;
-  //   // };
-  // }, [room]);
-
   useEffect(() => {
     socketRef.current = sockeioref;
   }, []);
