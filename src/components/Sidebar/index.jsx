@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus, Layers } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus, Layers, LogOut } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
@@ -14,12 +14,15 @@ import { RouterLinks } from "../RouterLinks";
 import {ButtonNewBoard} from '../../components/ButtonNewBoard';
 import { BtnNewProject } from "../BtnNewProject";
 import { useLocation } from "react-router-dom";
+import { useAuth } from '../../hooks/useAuth';
 
 export function Sidebar() {
   const [sideBar, setSideBar] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
+
+  const { logout } = useAuth();
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -84,6 +87,18 @@ export function Sidebar() {
                 <span>Ajuda</span>
               </ContainerLinks>
             </IconSidebar>
+
+            <button
+            onClick={logout}
+              type="button"
+              class="inline-flex items-center gap-3 px-6 py-3 mt-20 rounded-2xl  text-white text-lg font-semibold shadow-lg hover:bg-red-700 active:scale-95 focus:outline-none focus:ring-4 transition transform cursor-pointer"
+              aria-label="Sair"
+            >
+              <LogOut />
+
+              <span>Sair</span>
+            </button>
+
         </nav>
       </nav>
       

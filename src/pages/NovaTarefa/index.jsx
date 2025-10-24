@@ -177,7 +177,6 @@ export default function NovaTarefa() {
               )}
             </div>
 
-            {/* Responsável e Setor */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
@@ -249,6 +248,30 @@ export default function NovaTarefa() {
                     {errors.setor}
                   </p>
                 )}
+              </div>
+            </div>
+
+             {/* Prioridade com visual melhorado */}
+            <div>
+              <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
+                <AlertCircle className="w-4 h-4 mr-2 text-cyan-500" />
+                Prioridade
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                {prioridades.map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setForm((prev) => ({ ...prev, prioridade: p }))}
+                    className={`px-4 py-3 rounded-lg font-semibold border-2 transition-all ${
+                      form.prioridade === p
+                        ? prioridadeColors[p] + " scale-105 shadow-md"
+                        : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-650"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
               </div>
             </div>
 

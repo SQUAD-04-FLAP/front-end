@@ -117,7 +117,7 @@ export function AdminSidebar() {
             >
                <ContainerLinks bgColor="bg-[#324D9F]" textColor="text-white">
                 <Plus />
-                <span>Adicionar Setor</span>
+                <span>Adicionar Projeto</span>
               </ContainerLinks>
             </button>
 
