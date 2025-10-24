@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../hooks/useTheme";
 import { ContainerLinks } from "../ContainerLinks";
-import { AdicionarSetorModal } from "../AdicionarSetorModal";
+import { AdicionarProjetoModal } from "../../components/AdicionarProjetoModal";
 import { BorderSidebar } from "../../components/BorderSidebar";
 import { SectionSidebar } from "../../components/SectionSidebar";
 import { IconSidebar } from "../../components/IconSidebar";
@@ -117,7 +117,7 @@ export function AdminSidebar() {
             >
                <ContainerLinks bgColor="bg-[#324D9F]" textColor="text-white">
                 <Plus />
-                <span>Adicionar Setor</span>
+                <span>Adicionar Projeto</span>
               </ContainerLinks>
             </button>
 
@@ -132,7 +132,7 @@ export function AdminSidebar() {
           </ContainerLinks>
         </button>
 
-            <BorderSidebar />
+        <BorderSidebar />
 
         {/* Botão Nova Tarefa */}
         <div className="px-4 mt-8">
@@ -229,7 +229,7 @@ export function AdminSidebar() {
       )}
 
       {/* Modal Adicionar Setor */}
-      <AdicionarSetorModal 
+      <AdicionarProjetoModal 
         isOpen={modalSetorOpen}
         onClose={() => setModalSetorOpen(false)}
       />

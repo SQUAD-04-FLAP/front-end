@@ -4,6 +4,7 @@ import { list_sectors } from '../../services/sectorsService';
 import { SectorContext } from './SectorContext';
 
 import { create_sector } from '../../services/sectorsService';
+import { delete_sector } from '../../services/sectorsService';
 
 
 export function SectorProvider({ children }) {
@@ -32,6 +33,15 @@ export function SectorProvider({ children }) {
   }
 }
 
+const removeSector = async (idSetor) => {
+  try {
+    await delete_sector(idSetor);
+    dispatch({ type: "DELETE_SECTOR_SUCCESS", payload: idSetor });
+  } catch (e) {
+    dispatch({ type: "DELETE_SECTOR_FAILURE", payload: e.message });
+  }
+};
+
 
   useEffect(() => {
     fetchSectors();
@@ -43,7 +53,10 @@ export function SectorProvider({ children }) {
       loading: state.loading,
       error: state.error,
       fetchSectors,
-      createSector
+      createSector,
+      state,
+      dispatch,
+      removeSector
      }}>
       {children}
     </SectorContext.Provider>

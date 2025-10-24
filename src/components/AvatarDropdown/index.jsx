@@ -9,8 +9,6 @@ export default function AvatarDropdown() {
   const dropdownRef = useRef(null);
   const { user } = useAuth();
 
-  console.log(user);
-
   const { logout } = useAuth();
   const location = useLocation();
 

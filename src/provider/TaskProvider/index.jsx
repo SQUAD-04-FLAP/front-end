@@ -20,7 +20,8 @@ export function TaskProvider({ children }) {
     return(
         <TaskContext.Provider value={{
             state,
-            loadTasks
+            loadTasks,
+            dispatch,
         }}>
             {children}
         </TaskContext.Provider>
