@@ -1,10 +1,11 @@
+// //BoardV2js.jsx
 // import { useEffect, useRef, useState } from "react";
-// import { io, Socket } from "socket.io-client";
+// import { io } from "socket.io-client";
 // import { Column } from "../../components/Column";
 // import { CardModal } from "../../components/CardModal";
 // import { DragDropContext } from "@hello-pangea/dnd";
 
-// // const SERVER_URL = "http://localhost:3000";
+// //const SERVER_URL = "http://localhost:3000";
 // const SERVER_URL = "https://api.flapkanban.top";
 
 // export default function BoardV2() {
@@ -101,7 +102,7 @@
 //           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
 //             Quadro Kanban
 //           </h1>
-          
+
 //           <div className="flex items-center gap-2">
 //             <button className="px-3 py-1.5 rounded-lg text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200/70 dark:hover:bg-gray-700 transition">
 //               Filtrar
@@ -135,56 +136,3 @@
 //     </section>
 //   );
 // }
-
-
-import { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
-import { BoardKanbanMember } from "../../components/BoardKanbanMember";
-
-const SERVER_URL = "https://api.flapkanban.top";
-
-export default function BoardV2() {
-  const [columns, setColumns] = useState([]);
-  const [room] = useState("sala1");
-
-  const socketRef = useRef(null);
-  const emitTimer = useRef(undefined);
-
-  // Conexão com socket
-  useEffect(() => {
-    const socket = io(SERVER_URL);
-    socketRef.current = socket;
-
-    socket.on("connect", () => {
-      console.log("Conectado:", socket.id);
-      socket.emit("joinRoom", room, (board) => {
-        setColumns(board.columns || []);
-      });
-    });
-
-    socket.on("project", (proj) => {
-      setColumns(proj.columns || []);
-    });
-
-    return () => {
-      socket.disconnect();
-      socketRef.current = null;
-    };
-  }, [room]);
-
-  // Função para emitir atualização
-  function emitUpdate(newProj) {
-    if (!socketRef.current) return;
-    if (emitTimer.current) window.clearTimeout(emitTimer.current);
-    emitTimer.current = window.setTimeout(() => {
-      socketRef.current?.emit("updateProject", { room, project: newProj });
-    }, 300);
-  }
-
-  return (
-    <BoardKanbanMember 
-      columns={columns} 
-      emitUpdate={emitUpdate} 
-    />
-  );
-}
