@@ -5,12 +5,12 @@ import { SectorContext } from './SectorContext';
 
 import { create_sector } from '../../services/sectorsService';
 import { delete_sector } from '../../services/sectorsService';
+import { update_sector } from '../../services/sectorsService';
 
 
 export function SectorProvider({ children }) {
     const [ state, dispatch ] = useReducer(sectorReducer, initialSectorState);
 
-    // função para carregar setores
     const fetchSectors = async() => {
         dispatch({ type: "FETCH_SECTORS_REQUEST" });
 
@@ -42,6 +42,15 @@ const removeSector = async (idSetor) => {
   }
 };
 
+const updateSector = async (idSetor, updatedData) => {
+  try {
+    const updatedSector = await update_sector(idSetor, updatedData);
+    dispatch({ type: "UPDATE_SECTOR_SUCCESS", payload: updatedSector });
+  } catch (e) {
+    dispatch({ type: "UPDATE_SECTOR_FAILURE", payload: e.message });
+  }
+};
+
 
   useEffect(() => {
     fetchSectors();
@@ -56,7 +65,8 @@ const removeSector = async (idSetor) => {
       createSector,
       state,
       dispatch,
-      removeSector
+      removeSector,
+      updateSector
      }}>
       {children}
     </SectorContext.Provider>

@@ -57,3 +57,23 @@ export const delete_sector = async (idSetor) => {
   return true;
 };
 
+export const update_sector = async (idSetor, data) => {
+  try {
+    const res = await fetch(`${API_URL}/${idSetor}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error("Não foi possível atualizar o projeto.");
+    return await res.json();
+  } catch (e) {
+    console.error("Erro ao atualizar setor:", e);
+    throw e;
+  }
+};
+
+
