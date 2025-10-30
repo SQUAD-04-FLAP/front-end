@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Plus, BarChart3, Eye, Edit, Trash2, Folder } from 'lucide-react';
 import { useSectors } from '../../hooks/useSectors';
 import { toast } from 'react-toastify';
@@ -8,6 +7,7 @@ import {delete_sector} from '../../services/sectorsService'
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BtnNewProject } from '../../components/BtnNewProject';
+import { ButtonEditProject } from '../../components/ButtonEditProject';
 
 export function Projects() {
 
@@ -33,53 +33,6 @@ useEffect(() => {
   }
   previousSectorsLength.current = state.sectors.length;
 }, [state.sectors]);
-
-
-    const [projetos] = useState([
-    {
-      id: 1,
-      nome: 'Projeto Impulso Digital',
-      cliente: 'Agência Impulso',
-      descricao: 'Desenvolvimento de campanha de marketing digital com foco em redes sociais.',
-      status: 'Ativo',
-      progresso: 75
-    },
-    {
-      id: 2,
-      nome: 'Construção Horizonte',
-      cliente: 'Construtora Horizonte',
-      descricao: 'Gerenciamento de obras residenciais e comerciais de alto padrão.',
-      status: 'Ativo',
-      progresso: 50
-    },
-    {
-      id: 3,
-      nome: 'Tech Solutions App',
-      cliente: 'Tech Solutions Brasil',
-      descricao: 'Desenvolvimento de aplicativo financeiro para o setor bancário.',
-      status: 'Em análise',
-      progresso: 20
-    },
-    {
-      id: 4,
-      nome: 'Supermercados Sistema',
-      cliente: 'Supermercados Economia',
-      descricao: 'Implementação de sistema interno de estoque e vendas.',
-      status: 'Ativo',
-      progresso: 90
-    }
-  ]);
-
-//   const getStatusColor = (status) => {
-//     switch (status) {
-//       case 'Ativo':
-//         return 'bg-green-100 text-green-800 dark:bg-green-500/15 dark:text-green-300';
-//       case 'Em análise':
-//         return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/15 dark:text-yellow-300';
-//       default:
-//         return 'bg-gray-100 text-gray-800 dark:bg-gray-500/15 dark:text-gray-300';
-//     }
-//   };
 
     return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
@@ -161,9 +114,7 @@ useEffect(() => {
                       Visualizar
                     </button>
 
-                    <button className="flex items-center justify-center px-3 py-2 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-lg transition cursor-pointer">
-                      <Edit className="w-4 h-4" />
-                    </button>
+                    <ButtonEditProject project={projeto} />
 
                   <button
                     onClick={() => {
@@ -214,19 +165,19 @@ useEffect(() => {
                   📊 Resumo Geral
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {sectors.length} projetos cadastrados • {projetos.reduce((total, projeto) => total + projeto.progresso, 0)}% de progresso total
+                  {sectors.length} projetos cadastrados
                 </p>
               </div>
               <div className="flex gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    {projetos.filter(p => p.status === 'Ativo').length}
+                    {sectors.filter(p => p.status === 'Ativo').length}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Ativos</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                    {projetos.filter(p => p.status === 'Em análise').length}
+                    {sectors.filter(p => p.status === 'Em análise').length}
                   </div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">Em análise</div>
                 </div>
