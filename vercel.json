@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://api.flapkanban.top/:path*"
+      "destination": "http://ec2-54-226-167-245.compute-1.amazonaws.com:8080/:path*"
     },
     {
       "source": "/(.*)",

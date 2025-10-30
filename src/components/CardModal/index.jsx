@@ -4,6 +4,9 @@ import { X, Upload, Trash2 } from 'lucide-react';
 import { CommentsTask } from '../../components/CommentsTask';
 import { CreateComment } from '../CreateComment';
 import { useAuth } from '../../hooks/useAuth';
+import { DeleteButtonTask } from '../DeleteButtonTask';
+import { useKanbanMember } from '../../hooks/useKanbanMember';
+import { showMessage } from '../../adapters/showMessage';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [comment, setComment] = useState('');
@@ -11,8 +14,7 @@ export function CardModal({ isOpen, onClose, task }) {
 
   const { user } = useAuth();
 
-  console.log(task);
-
+  const { deleteTask } = useKanbanMember();
   
   // Estados editáveis
   const [editedTitle, setEditedTitle] = useState('');
@@ -670,12 +672,16 @@ export function CardModal({ isOpen, onClose, task }) {
       {/* Footer com botões */}
       <div className="flex-shrink-0 px-8 py-6 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-end gap-4">
-          <button 
-            onClick={onClose}
-            className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition order-last sm:order-none"
-          >
-            Excluir
-          </button>
+
+      <DeleteButtonTask
+      onDelete={async () => {
+        await deleteTask(task.id);
+        showMessage.success("Tarefa excluída com sucesso!", true);
+      }}
+      onDeleteSuccess={onClose} // fecha modal e remove card
+  />
+
+
           <button 
             onClick={onClose}
             className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition"
