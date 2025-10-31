@@ -24,6 +24,18 @@ export function kanbanReducer(state, action) {
       };
     case 'SET_BOARDS':
       return { ...state, boards: action.payload }
+   case "DELETE_BOARD_REQUEST":
+  return { ...state, loading: true, error: null };
+
+case "DELETE_BOARD_SUCCESS":
+  return {
+    ...state,
+    loading: false,
+    boards: state.boards.filter((b) => b.idQuadro !== action.payload),
+  };
+
+case "DELETE_BOARD_FAILURE":
+  return { ...state, loading: false, error: action.payload };
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
     case 'SET_ERROR':

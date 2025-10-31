@@ -1,7 +1,7 @@
 import { useReducer, useEffect } from 'react';
 import { initialStateKanban, kanbanReducer } from '../../reducer/kanbanMemberReducer';
 import { KanbanMemberContext } from './KanbanMemberContext';
-import { listFramersBySector } from '../../services/framerService';
+import { delete_framer, listFramersBySector } from '../../services/framerService';
 import { fetchTasksByBoardID } from '../../services/tasks';
 import { deleteTaskById } from '../../services/tasks';
 import {createTask} from '../../services/tasks';
@@ -54,6 +54,18 @@ export function KanbanMemberProvider({ children }) {
     }
   }
 
+ const deleteBoard = async (idBoard) => {
+    dispatch({ type: "DELETE_BOARD_REQUEST" });
+
+    try {
+      await delete_framer(idBoard);
+      dispatch({ type: "DELETE_BOARD_SUCCESS", payload: idBoard });
+    } catch (e) {
+      dispatch({ type: "DELETE_BOARD_FAILURE", payload: e.message });
+    }
+  };
+
+
   useEffect(() => {
     if (!state.selectedBoard) return;
 
@@ -100,7 +112,7 @@ export function KanbanMemberProvider({ children }) {
   }, [state.columns, state.quadroSelecionado, state.setorSelecionado]);
 
   return (
-    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask }}>
+    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard }}>
       {children}
     </KanbanMemberContext.Provider>
   );

@@ -1,9 +1,10 @@
-import { Edit, Trash2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSectors } from "../../../hooks/useSectors";
 import { useKanbanMember } from "../../../hooks/useKanbanMember";
 import { useEffect } from "react";
 import { formatDate } from "../../../utils/formatDate";
+import { DeleteFramerButton } from "../../../components/DeleteFramerButton";
 
 export default function ProjectDetails() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function ProjectDetails() {
   const projeto = sectors.find((p) => p.idSetor === parseInt(id));
 
   const { state, dispatch } = useKanbanMember();
+  
   useEffect(() => {
     if (id) {
       dispatch({ type: "SET_SETOR_FILTER", payload: id });
@@ -69,9 +71,7 @@ export default function ProjectDetails() {
             <button className="p-1 text-blue-500 hover:text-blue-400">
               <Edit size={18} />
             </button>
-            <button className="p-1 text-red-500 hover:text-red-400">
-              <Trash2 size={18} />
-            </button>
+            <DeleteFramerButton id={board.idQuadro} />
           </div>
 
           <h3 className="font-bold text-lg mb-1">{board.nome}</h3>
