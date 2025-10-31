@@ -20,10 +20,10 @@ export function DeleteFramerButton({ id }) {
         if (confirmation) {
           try {
             await deleteBoard(id);
-            showMessage.success("Quadro deletado com sucesso!", true);
+            showMessage.success("Quadro apagar com sucesso!", true);
           } catch (error) {
             console.error(error);
-            showMessage.error("Erro ao deletar quadro. Tente novamente.", true);
+            showMessage.error("Erro ao apagar quadro. Tente novamente.", true);
           }
         }
       },
