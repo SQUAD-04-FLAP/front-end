@@ -23,7 +23,7 @@ export function FramerProvider({ children }) {
                 framers: state.framers,
                 loading: state.loading,
                 error: state.error,
-                createFramer
+                createFramer,
             }}
         >
             {children}

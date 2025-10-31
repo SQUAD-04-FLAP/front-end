@@ -28,7 +28,7 @@ export function ModalRegisterFramer({ isOpen, onClose }) {
       setNomeQuadro("");
       setIdSetor("");
 
-      showMessage.success("Quadro criado com sucesso!");
+      showMessage.success("Quadro criado com sucesso!", true);
       onClose();
     } catch(e) {
       showMessage.error("Ocorreu um erro ao criar o quadro.")

@@ -44,3 +44,24 @@ export async function listFramersBySector(idSector) {
     throw error;
   }
 }
+
+export async function delete_framer(idQuadro) {
+  try {
+    const res = await fetch(`${API_URL}/${idQuadro}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao deletar o quadro com ID ${idQuadro}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("[QuadroService] Erro ao deletar quadro:", error);
+    throw error;
+  }
+}
