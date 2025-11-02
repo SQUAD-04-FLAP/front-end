@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAtom } from "jotai";
 import { projectWS, roomWS, socketIORef } from "../../services/globals";
 import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft } from "lucide-react";
@@ -27,9 +27,11 @@ export default function NovaTarefa() {
 
   const { dispatch } = useKanbanMember();
 
-  const [columns,] = useAtom(projectWS);
+  const [columns, setColumns] = useAtom(projectWS);
   const [socketioref,] = useAtom(socketIORef);
   const [room,] = useAtom(roomWS);
+
+  const emitTimer = useRef(undefined);
   const socketRef = useRef(null);
 
   const setores = ["Marketing", "Design", "Atendimento", "TI"];
@@ -70,49 +72,75 @@ export default function NovaTarefa() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function insertTask(newTask) {
-    const socket = socketRef.current;
-    if (!socket) {
-      console.error("Socket não inicializado");
-      return;
+  useEffect(() => {
+    socketRef.current = socketioref;
+  }, []);
+
+  function emitUpdate(newProj) {
+    if (!socketRef.current) return;
+    if (emitTimer.current) window.clearTimeout(emitTimer.current);
+    emitTimer.current = window.setTimeout(() => {
+      socketRef.current?.emit("updateProject", { room, project: newProj });
+
+      // setColumns(newProj);
+      // show success + limpar form
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+      }, 2000);
+
+      setForm({
+        titulo: "",
+        descricao: "",
+        responsavel: "",
+        prioridade: "Média",
+        dataInicio: "",
+        dataFim: "",
+        setor: "",
+      });
+    }, 300);
+  }
+
+  function insertTask() {
+    if (!validateForm()) return;
+    if (!socketRef.current) return;
+
+    // formata a nova task
+    const newTask = buildTaskFromForm();
+
+    // Recupera as columns atuais do project (suporta project = { columns: [...] } ou project = columnsArray)
+    const currentColumns = columns
+      ? columns.columns ?? (Array.isArray(columns) ? columns : undefined)
+      : undefined;
+
+    // copia segura das colunas
+    const newColumns = Array.isArray(currentColumns) ? currentColumns.map((c) => ({ ...c, tasks: [...(c.tasks || [])] })) : [];
+
+    // encontra coluna 'todo' (id 'todo' conforme seu DEFAULT_PROJECT)
+    let fazerCol = newColumns.find((col) => col.id === "todo");
+
+    if (!fazerCol) {
+      // se não existir, cria a coluna "Fazer" no começo
+      fazerCol = {
+        id: "todo",
+        name: "Fazer",
+        count: 0,
+        colorDot: "bg-amber-500",
+        tasks: [],
+      };
+      newColumns.unshift(fazerCol);
     }
 
-    // procura coluna 'todo' (id === 'todo') — fallback: coluna com name 'Fazer'
-    let todoCol = columns?.find((c) => c?.id === "todo" || c?.name?.toLowerCase() === "fazer");
+    // adiciona a nova tarefa no final (ou altere para unshift para adicionar no topo)
+    fazerCol.tasks = [...fazerCol.tasks, newTask];
+    fazerCol.count = fazerCol.tasks.length;
 
-    if (!todoCol) {
-      return;
-    }
+    // monta o projeto inteiro a ser salvo/enviado
+    const newProject = columns && typeof columns === "object" && columns.columns ? { ...columns, columns: newColumns } : { columns: newColumns };
 
-    // insere a nova tarefa no topo
-    todoCol.tasks = [newTask, ...(todoCol.tasks || [])];
-    todoCol.count = (todoCol.tasks || []).length;
-
-    // atualiza também counts de outras colunas (opcional)
-    // if (columns && Array.isArray(columns)) {
-    //   columns = columns.map((c: any) => {
-    //     return { ...c, count: (c.tasks || []).length };
-    //   });
-    // }
-
+    // console.log(newProject.columns)
     // emite updateProject com o JSON inteiro conforme backend espera
-    socket.emit("updateProject", { room, todoCol });
-
-    // show success + limpar form
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-    }, 2000);
-
-    setForm({
-      titulo: "",
-      descricao: "",
-      responsavel: "",
-      prioridade: "Média",
-      dataInicio: "",
-      dataFim: "",
-      setor: "",
-    });
+    emitUpdate(newProject.columns);
   }
 
   function buildTaskFromForm() {
@@ -140,18 +168,18 @@ export default function NovaTarefa() {
     if (!validateForm()) return;
 
     try {
-      const idCriador = user.idUsuario;
-      const idQuadro = Number(form.quadro);
+      // const idCriador = user.idUsuario;
+      // const idQuadro = Number(form.quadro);
 
-      const novaTarefa = await createTask({
-        titulo: form.titulo,
-        descricao: form.descricao,
-        idQuadro,
-        idCriador,
-      });
+      // const novaTarefa = await createTask({
+      //   titulo: form.titulo,
+      //   descricao: form.descricao,
+      //   idQuadro,
+      //   idCriador,
+      // });
 
       // Atualiza o estado local ou global, ex:
-      dispatch({ type: "ADD_TASK", payload: novaTarefa });
+      // dispatch({ type: "ADD_TASK", payload: novaTarefa });
 
       const newTask = buildTaskFromForm();
       insertTask(newTask);
@@ -172,19 +200,19 @@ export default function NovaTarefa() {
       // }, 2000);
       // navigate("/board-v2");
 
-      setTimeout(() => {
-        setForm({
-          titulo: "",
-          descricao: "",
-          responsavel: "",
-          prioridade: "Média",
-          dataInicio: "",
-          dataFim: "",
-          projeto: "",
-          quadro: "",
-        });
-        setShowSuccess(false);
-      }, 2000);
+      // setTimeout(() => {
+      //   setForm({
+      //     titulo: "",
+      //     descricao: "",
+      //     responsavel: "",
+      //     prioridade: "Média",
+      //     dataInicio: "",
+      //     dataFim: "",
+      //     projeto: "",
+      //     quadro: "",
+      //   });
+      //   setShowSuccess(false);
+      // }, 2000);
     } catch (e) {
       console.error("Erro ao criar tarefa:", e);
     }
@@ -412,7 +440,8 @@ export default function NovaTarefa() {
               {/* Botão Criar Tarefa */}
               <button
                 type="button"
-                onClick={handleSubmit}
+                // onClick={handleSubmit}
+                onClick={insertTask}
                 className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Plus className="w-5 h-5" />

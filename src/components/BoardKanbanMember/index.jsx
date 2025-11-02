@@ -55,13 +55,13 @@ export function BoardKanbanMember() {
     const taskId = parseInt(draggableId);
 
     // 1 Buscar tarefa localmente
-    const task = state.tasks.find(t => t.idTarefa === taskId);
-    if (!task) return;
+    // const task = state.tasks.find(t => t.idTarefa === taskId);
+    // if (!task) return;
 
-    if (!task || task.idQuadro.toString() !== state.selectedBoard) {
-      console.warn('Tentativa de mover tarefa para outro quadro — bloqueado.');
-      return;
-    }
+    // if (!task || task.idQuadro.toString() !== state.selectedBoard) {
+    //   console.warn('Tentativa de mover tarefa para outro quadro — bloqueado.');
+    //   return;
+    // }
 
     function emitUpdate(newProj) {
       if (!socketRef.current) return;
