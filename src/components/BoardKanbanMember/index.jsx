@@ -2,30 +2,34 @@ import { useEffect, useState } from 'react';
 import { Column } from '../../components/Column';
 import { CardModal } from '../../components/CardModal';
 import { DragDropContext } from '@hello-pangea/dnd';
-import { FilterSectorMember } from '../../components/FilterSectorMember';
 import { FilterBoardMember } from '../../components/FilterBoardMember';
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterButton } from '../FilterButton';
-import {moveTask} from '../../services/tasks';
+import { moveTask } from '../../services/tasks';
 import { useAuth } from '../../hooks/useAuth';
 
 export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
-  if (state.tasks.length > 0 && state.selectedBoardStatus?.length > 0) {
-    const grouped = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
-    setColumns(grouped);
-  } else {
-    setColumns([]);
-  }
-}, [state.tasks, state.selectedBoardStatus]);
-
+    // Quando tasks ou status mudarem, recria as colunas
+    if (state.tasks.length > 0 && state.selectedBoardStatus?.length > 0) {
+      setLoading(true);
+      const grouped = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
+      setColumns(grouped);
+      // pequeno delay para evitar flicker visual
+      setTimeout(() => setLoading(false), 300);
+    } else {
+      setColumns([]);
+      setLoading(false);
+    }
+  }, [state.tasks, state.selectedBoardStatus]);
 
   const handleCardClick = (task) => {
     setSelectedTask(task);
@@ -37,102 +41,105 @@ export function BoardKanbanMember() {
     setSelectedTask(null);
   };
 
-const handleDragEnd = async (result) => {
-  const { source, destination, draggableId } = result;
-  if (!destination) return;
-  if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+  const handleDragEnd = async (result) => {
+    const { source, destination, draggableId } = result;
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
-  const taskId = parseInt(draggableId);
+    const taskId = parseInt(draggableId);
+    const task = state.tasks.find((t) => t.idTarefa === taskId);
+    if (!task) return;
 
-  // Busca tarefa localmente
-  const task = state.tasks.find((t) => t.idTarefa === taskId);
-  if (!task) return;
+    if (task.idQuadro.toString() !== state.selectedBoard) {
+      console.warn("Tentativa de mover tarefa para outro quadro — bloqueado.");
+      return;
+    }
 
-  // Impede mover tarefa entre quadros diferentes
-  if (task.idQuadro.toString() !== state.selectedBoard) {
-    console.warn("Tentativa de mover tarefa para outro quadro — bloqueado.");
-    return;
-  }
+    // Atualiza localmente para feedback rápido
+    setColumns((prevColumns) => {
+      const newColumns = prevColumns.map((c) => ({ ...c, tasks: [...c.tasks] }));
+      const sourceCol = newColumns.find((c) => c.id === source.droppableId);
+      const destCol = newColumns.find((c) => c.id === destination.droppableId);
+      if (!sourceCol || !destCol) return prevColumns;
 
-  // Atualiza localmente para feedback instantâneo
-  setColumns((prevColumns) => {
-    const newColumns = prevColumns.map((c) => ({ ...c, tasks: [...c.tasks] }));
-    const sourceCol = newColumns.find((c) => c.id === source.droppableId);
-    const destCol = newColumns.find((c) => c.id === destination.droppableId);
-    if (!sourceCol || !destCol) return prevColumns;
-
-    const [movedCard] = sourceCol.tasks.splice(source.index, 1);
-    destCol.tasks.splice(destination.index, 0, movedCard);
-    return newColumns;
-  });
-
-  // 🔹 Pega o status real do backend com base no droppableId
-  const destinationStatus = state.selectedBoardStatus.find(
-    (s) => s.id.toString() === destination.droppableId
-  );
-
-  if (!destinationStatus) {
-    console.error("Status de destino não encontrado:", destination.droppableId);
-    return;
-  }
-
-  const newStatusId = destinationStatus.id;
-
-  try {
-    // Atualiza no backend
-    await moveTask(taskId, newStatusId, user.idUsuario);
-
-    // Atualiza no estado global
-    dispatch({
-      type: "UPDATE_TASK_STATUS",
-      payload: {
-        id: taskId,
-        statusId: newStatusId,
-        statusName: destinationStatus.nome,
-      },
+      const [movedCard] = sourceCol.tasks.splice(source.index, 1);
+      destCol.tasks.splice(destination.index, 0, movedCard);
+      return newColumns;
     });
-  } catch (error) {
-    console.error("Falha ao mover tarefa:", error);
-  }
-};
 
+    const destinationStatus = state.selectedBoardStatus.find(
+      (s) => s.id.toString() === destination.droppableId
+    );
+    if (!destinationStatus) return;
 
+    try {
+      await moveTask(taskId, destinationStatus.id, user.idUsuario);
+      dispatch({
+        type: "UPDATE_TASK_STATUS",
+        payload: {
+          id: taskId,
+          statusId: destinationStatus.id,
+          statusName: destinationStatus.nome,
+        },
+      });
+    } catch (error) {
+      console.error("Falha ao mover tarefa:", error);
+    }
+  };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       <main className="px-6 py-6">
+        {/* Header e filtros */}
         <div className="flex flex-wrap items-center justify-center md:justify-around gap-4 md:gap-0 mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {state.selectedBoardName
-              ? `${state.selectedBoardName}`
-              : "Quadro Kanban"}
-           </h1>
-
-            <div className='flex gap-4'>
-                <FilterBoardMember
-                  onFilter={(value) =>
-                    dispatch({ type: "SET_QUADRO_FILTER", payload: value })
-                  }
-                />
-              <FilterButton />
-            </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {state.selectedBoardName || "Quadro Kanban"}
+          </h1>
+          <div className='flex gap-4'>
+            <FilterBoardMember
+              onFilter={(value) =>
+                dispatch({ type: "SET_QUADRO_FILTER", payload: value })
+              }
+            />
+            <FilterButton />
+          </div>
         </div>
 
+        {/* Corpo principal */}
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="overflow-x-auto">
             <div className="flex justify-center gap-4 min-w-max pb-4">
-              {columns.length === 0 || columns.every(col => col.tasks.length === 0) ? (
+              
+              {/* 🔹 Loading */}
+              {loading ? (
                 <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
-                  Selecione um quadro ou setor para exibir as tarefas.
+                  Carregando colunas...
+                </div>
+              ) : columns.length === 0 || columns.every(col => col.tasks.length === 0) ? (
+                <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
+                  Não foi encontrada nenhuma tarefa.
                 </div>
               ) : (
-                columns.map((column) => (
-                  <Column
-                    key={column.id}
-                    data={column}
-                    onCardClick={handleCardClick}
-                  />
-                ))
+                <>
+                  {columns.map((column) => (
+                    <Column
+                      key={column.id}
+                      data={column}
+                      onCardClick={handleCardClick}
+                    />
+                  ))}
+                  <button
+                    onClick={() => alert("Abrir modal para adicionar nova coluna")}
+                    className="flex flex-col items-center justify-center min-w-[250px] h-[200px]
+                      border-2 border-dashed border-gray-400 dark:border-gray-600
+                      rounded-2xl text-gray-500 dark:text-gray-300
+                      hover:border-indigo-500 hover:text-indigo-500
+                      transition-all duration-200"
+                  >
+                    <span className="text-2xl font-bold">+</span>
+                    <span className="text-sm">Adicionar nova lista</span>
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -148,13 +155,11 @@ const handleDragEnd = async (result) => {
   );
 }
 
+// 🔹 Agrupa tarefas por status
 function groupTasksByStatus(tasks, boardStatus) {
   if (!boardStatus || boardStatus.length === 0) return [];
 
-  // Ordena os status pela ordem definida no backend
   const orderedStatus = [...boardStatus].sort((a, b) => a.ordem - b.ordem);
-
-  // Cria colunas dinamicamente com base nos status
   return orderedStatus.map((s) => ({
     id: s.id.toString(),
     name: s.nome,
@@ -174,7 +179,6 @@ function groupTasksByStatus(tasks, boardStatus) {
   }));
 }
 
-// Mapeamento opcional de cor por nome de status
 function getStatusColor(nome) {
   const lower = nome.toLowerCase();
   if (lower.includes("backlog")) return "bg-amber-500";
