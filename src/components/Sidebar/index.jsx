@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus, Layers, LogOut } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus, Layers, LogOut, Users, Briefcase } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
@@ -37,14 +37,8 @@ export function Sidebar() {
 
         <nav className="text-sm font-medium text-gray-600 dark:text-gray-300" aria-label="Main Navigation">
             <SectionSidebar>Navegação</SectionSidebar>
-            <IconSidebar href="/">
-              <ContainerLinks>
-                <LayoutDashboard />
-                <span>Dashboard</span>
-              </ContainerLinks>
-            </IconSidebar>
 
-            <IconSidebar href="/board-v2">
+            <IconSidebar href="/">
               <ContainerLinks>
                 <Columns />
                 <span>Quadro Kanban</span>
@@ -53,22 +47,15 @@ export function Sidebar() {
 
             <IconSidebar href="/projects">
               <ContainerLinks>
-                <Layers />
-                <span>Projetos</span>
+                <Briefcase />
+                <span>Empresas</span>
               </ContainerLinks>
             </IconSidebar>
 
-            <IconSidebar href="/calendar">
+            <IconSidebar href="/projects">
               <ContainerLinks>
-                <Calendar />
-                <span>Calendário</span>
-              </ContainerLinks>
-            </IconSidebar>
-
-             <IconSidebar href="/reports">
-              <ContainerLinks>
-                <BarChart />
-                <span>Relatórios</span>
+                <Users />
+                <span>Gerenciamento de Usuários</span>
               </ContainerLinks>
             </IconSidebar>
 
@@ -78,13 +65,6 @@ export function Sidebar() {
               <ContainerLinks>
                 <Settings />
                 <span>Configurações</span>
-              </ContainerLinks>
-            </IconSidebar>
-
-             <IconSidebar href="/">
-              <ContainerLinks>
-                <HelpCircle />
-                <span>Ajuda</span>
               </ContainerLinks>
             </IconSidebar>
 

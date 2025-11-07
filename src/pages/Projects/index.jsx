@@ -42,10 +42,10 @@ useEffect(() => {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                Gestão de Projetos
+                Gestão de Empresas
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Gerencie todos os projetos cadastrados no sistema
+                Gerencie todos as empresas cadastradoa no sistema
               </p>
             </div>
             <BtnNewProject className="flex items-center gap-2 px-6 py-3 bg-cyan-400 hover:bg-cyan-300 text-blue-900 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer" />

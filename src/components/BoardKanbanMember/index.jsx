@@ -5,9 +5,10 @@ import { DragDropContext } from '@hello-pangea/dnd';
 import { FilterSectorMember } from '../../components/FilterSectorMember';
 import { FilterBoardMember } from '../../components/FilterBoardMember';
 import { useKanbanMember } from '../../hooks/useKanbanMember';
+import { FilterButton } from '../FilterButton';
 
 export function BoardKanbanMember() {
-  const { state, dispatch } = useKanbanMember();
+  const { state } = useKanbanMember();
   const [columns, setColumns] = useState([]);
 
   console.log(state);
@@ -88,10 +89,15 @@ export function BoardKanbanMember() {
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       <main className="px-6 py-6">
         <div className="flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-0 mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Quadro Kanban
-          </h1>
-          <div className="flex items-center gap-2">
+          
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Quadro Kanban
+            </h1>
+
+          <FilterButton />
+
+
+          {/* <div className="flex items-center gap-2">
             <FilterSectorMember
               onFilter={(value) =>
                 dispatch({ type: "SET_SETOR_FILTER", payload: value })
@@ -102,7 +108,7 @@ export function BoardKanbanMember() {
                 dispatch({ type: "SET_QUADRO_FILTER", payload: value })
               }
             />
-          </div>
+          </div> */}
         </div>
 
         <DragDropContext onDragEnd={handleDragEnd}>
