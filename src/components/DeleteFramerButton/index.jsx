@@ -33,7 +33,7 @@ export function DeleteFramerButton({ id }) {
   return (
     <button
       onClick={handleDelete}
-      className="p-1 text-red-500 hover:text-red-400"
+      className="p-1 text-red-500 hover:text-red-400 cursor-pointer"
       title="Excluir quadro"
     >
       <Trash2 size={18} />

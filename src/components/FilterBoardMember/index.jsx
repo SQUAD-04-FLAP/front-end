@@ -7,8 +7,6 @@ export function FilterBoardMember({ ...props }) {
   const { framers, isLoading } = useFramer();
   const { dispatch } = useKanbanMember();
 
-  console.log(framers);
-
   const [quadroSelecionado, setQuadroSelecionado] = useState("");
   const [status, setStatus] = useState("loading");
 

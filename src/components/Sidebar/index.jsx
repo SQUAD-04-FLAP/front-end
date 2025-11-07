@@ -24,8 +24,6 @@ export function Sidebar() {
 
   const { user, logout } = useAuth();
 
-  console.log(user);
-
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
       <nav
@@ -54,21 +52,21 @@ export function Sidebar() {
               </ContainerLinks>
             </IconSidebar>
 
-            {user.permissao === "ADMIN" && (
-               <IconSidebar href="/users">
-              <ContainerLinks>
-                <Users />
-                <span>Colaboradores</span>
-              </ContainerLinks>
-              </IconSidebar>
-            )}
-
-               <IconSidebar href="/projects">
+             <IconSidebar href="/framers">
               <ContainerLinks>
                 <Columns />
                 <span>Quadros</span>
               </ContainerLinks>
               </IconSidebar>
+
+            {user.permissao === "ADMIN" && (
+               <IconSidebar href="/users">
+              <ContainerLinks>
+                <Users />
+                <span>Usuários</span>
+              </ContainerLinks>
+              </IconSidebar>
+            )}
 
             <BorderSidebar />
 
