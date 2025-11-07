@@ -22,7 +22,9 @@ export function Sidebar() {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
 
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+
+  console.log(user);
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -52,21 +54,23 @@ export function Sidebar() {
               </ContainerLinks>
             </IconSidebar>
 
-            <IconSidebar href="/projects">
+            {user.permissao === "ADMIN" && (
+               <IconSidebar href="/projects">
               <ContainerLinks>
                 <Users />
                 <span>Gerenciamento de Usuários</span>
               </ContainerLinks>
-            </IconSidebar>
+              </IconSidebar>
+            )}
 
             <BorderSidebar />
 
-            <IconSidebar href="/configuracoes">
+            {/* <IconSidebar href="/configuracoes">
               <ContainerLinks>
                 <Settings />
                 <span>Configurações</span>
               </ContainerLinks>
-            </IconSidebar>
+            </IconSidebar> */}
 
             <button
             onClick={logout}
@@ -114,7 +118,7 @@ export function Sidebar() {
    {location.pathname === "/" && <ButtonNewBoard />}
    {location.pathname === "/" && <ButtonNewTask />}
 
-   {(location.pathname === "/projects") && <BtnNewProject />}
+   {(location.pathname === "/projects") && <BtnNewProject /> && user.permissao === "ADMIN"}
 
    <IconsTopSidebar>
         <NotificationDropdown />
