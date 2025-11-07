@@ -39,12 +39,14 @@ export function MainRouter() {
           <Route path="/" element={<BoardV2 />} />
           <Route path="/configuracoes" element={<Configuracoes />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/nova-tarefa" element={<NovaTarefa />} />
+          
           {/* <Route path="/board" element={<Board />} />
           <Route path="/board-v2" element={<BoardV2 />} />
           <Route path="/projects/:id" element={<ProjectPage />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/reports" element={<Report />} />
-          <Route path="/nova-tarefa" element={<NovaTarefa />} /> */}
+      */}
         </Route>
 
         {/* Rotas privadas para admin */}

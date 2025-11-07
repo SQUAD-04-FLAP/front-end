@@ -111,8 +111,8 @@ export function Sidebar() {
   <div className="flex items-center gap-4">
 
    {(location.pathname === "/board-v2") && <BtnNewProject />}
-   {location.pathname === "/board-v2" && <ButtonNewBoard />}
-   {location.pathname === "/board-v2" && <ButtonNewTask />}
+   {location.pathname === "/" && <ButtonNewBoard />}
+   {location.pathname === "/" && <ButtonNewTask />}
 
    {(location.pathname === "/projects") && <BtnNewProject />}
 

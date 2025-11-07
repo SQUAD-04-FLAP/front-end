@@ -2,7 +2,6 @@ import { useState, ChangeEvent } from "react";
 import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft } from "lucide-react";
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterBoardMember } from "../../components/FilterBoardMember";
-import { FilterSectorMember } from "../../components/FilterSectorMember";
 import { createTask } from '../../services/tasks';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -197,31 +196,6 @@ export default function NovaTarefa() {
                   <p className="mt-1 text-sm text-red-500 flex items-center">
                     <AlertCircle className="w-4 h-4 mr-1" />
                     {errors.responsavel}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Layers className="w-4 h-4 mr-2 text-cyan-500" />
-                  Projeto
-                </label>
-
-                <FilterSectorMember
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
-                  dark:bg-gray-700 dark:border-gray-600 dark:text-white 
-                  ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
-                `}
-                onFilter={(value) => {
-                  dispatch({ type: "SET_SETOR_FILTER", payload: value });
-                  setForm(prev => ({ ...prev, setor: value }));
-                }}
-              />
-
-                {errors.setor && (
-                  <p className="mt-1 text-sm text-red-500 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.setor}
                   </p>
                 )}
               </div>
