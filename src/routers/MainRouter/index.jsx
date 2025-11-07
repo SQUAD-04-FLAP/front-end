@@ -17,6 +17,8 @@ import { Projects } from "../../pages/Projects";
 import { Usuarios } from '../../pages/Usuarios';
 import { Framers } from "../../pages/Framers";
 import ProjectPage from "../../pages/Projects/ProjectPage";
+import { RecoveryPassword } from '../../pages/RecoveryPassword';
+import { ForgotPassword } from '../../pages/ForgotPassword';
 
 export function MainRouter() {
   const { loading } = useAuth();
@@ -29,6 +31,8 @@ export function MainRouter() {
         <Route element={<PublicLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+           <Route path="/recovery-code" element={<RecoveryPassword />} />
         </Route>
 
         <Route
