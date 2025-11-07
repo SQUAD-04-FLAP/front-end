@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Bell, Settings, Shield, Palette, Users, HelpCircle } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function Configuracoes() {
+  const { user } = useAuth();
+
   // Estados para os controles
   const [notificacoes, setNotificacoes] = useState({
     email: true,
@@ -164,99 +167,113 @@ export default function Configuracoes() {
                 </div>
               </div>
 
-              {/* Permissões de Usuário */}
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-purple-100 dark:bg-purple-500/15 rounded-lg">
-                    <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              {user.permissao === "ADMIN" && (
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                  {/* Cabeçalho da seção de permissões */}
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-purple-100 dark:bg-purple-500/15 rounded-lg">
+                      <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                      Permissões de Usuário
+                    </h2>
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                    Permissões de Usuário
-                  </h2>
+
+                  <div className="space-y-4">
+                    {/* Criação de Projetos */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                          Criação de Projetos
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Quem pode criar novos projetos
+                        </p>
+                      </div>
+                      <select
+                        value={permissoes.criacaoProjetos}
+                        onChange={(e) =>
+                          setPermissoes((prev) => ({ ...prev, criacaoProjetos: e.target.value }))
+                        }
+                        className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                      >
+                        <option>Administradores</option>
+                        <option>Gerentes e Administradores</option>
+                        <option>Todos os Usuários</option>
+                      </select>
+                    </div>
+
+                    {/* Edição de Tarefas */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                          Edição de Tarefas
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Quem pode editar tarefas existentes
+                        </p>
+                      </div>
+                      <select
+                        value={permissoes.edicaoTarefas}
+                        onChange={(e) =>
+                          setPermissoes((prev) => ({ ...prev, edicaoTarefas: e.target.value }))
+                        }
+                        className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                      >
+                        <option>Criador e Administradores</option>
+                        <option>Gerentes e Administradores</option>
+                        <option>Todos os Usuários</option>
+                      </select>
+                    </div>
+
+                    {/* Convites de Usuários */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                          Convites de Usuários
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Quem pode convidar novos usuários
+                        </p>
+                      </div>
+                      <select
+                        value={permissoes.conviteUsuarios}
+                        onChange={(e) =>
+                          setPermissoes((prev) => ({ ...prev, conviteUsuarios: e.target.value }))
+                        }
+                        className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                      >
+                        <option>Apenas Administradores</option>
+                        <option>Gerentes e Administradores</option>
+                        <option>Todos os Usuários</option>
+                      </select>
+                    </div>
+
+                    {/* Visualização de Relatórios */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                          Visualização de Relatórios
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Quem pode acessar relatórios analíticos
+                        </p>
+                      </div>
+                      <select
+                        value={permissoes.visualizacaoRelatorios}
+                        onChange={(e) =>
+                          setPermissoes((prev) => ({ ...prev, visualizacaoRelatorios: e.target.value }))
+                        }
+                        className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                      >
+                        <option>Gerentes e Administradores</option>
+                        <option>Apenas Administradores</option>
+                        <option>Todos os Usuários</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                        Criação de Projetos
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Quem pode criar novos projetos
-                      </p>
-                    </div>
-                    <select
-                      value={permissoes.criacaoProjetos}
-                      onChange={(e) => setPermissoes(prev => ({...prev, criacaoProjetos: e.target.value}))}
-                      className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
-                    >
-                      <option>Administradores</option>
-                      <option>Gerentes e Administradores</option>
-                      <option>Todos os Usuários</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                        Edição de Tarefas
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Quem pode editar tarefas existentes
-                      </p>
-                    </div>
-                    <select
-                      value={permissoes.edicaoTarefas}
-                      onChange={(e) => setPermissoes(prev => ({...prev, edicaoTarefas: e.target.value}))}
-                      className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
-                    >
-                      <option>Criador e Administradores</option>
-                      <option>Gerentes e Administradores</option>
-                      <option>Todos os Usuários</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                        Convites de Usuários
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Quem pode convidar novos usuários
-                      </p>
-                    </div>
-                    <select
-                      value={permissoes.conviteUsuarios}
-                      onChange={(e) => setPermissoes(prev => ({...prev, conviteUsuarios: e.target.value}))}
-                      className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
-                    >
-                      <option>Apenas Administradores</option>
-                      <option>Gerentes e Administradores</option>
-                      <option>Todos os Usuários</option>
-                    </select>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                        Visualização de Relatórios
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Quem pode acessar relatórios analíticos
-                      </p>
-                    </div>
-                    <select
-                      value={permissoes.visualizacaoRelatorios}
-                      onChange={(e) => setPermissoes(prev => ({...prev, visualizacaoRelatorios: e.target.value}))}
-                      className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
-                    >
-                      <option>Gerentes e Administradores</option>
-                      <option>Apenas Administradores</option>
-                      <option>Todos os Usuários</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
+              )}   
 
               {/* Aparência */}
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
