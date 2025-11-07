@@ -4,9 +4,13 @@ import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterBoardMember } from "../../components/FilterBoardMember";
 import { createTask } from '../../services/tasks';
 import { useAuth } from '../../hooks/useAuth';
+import { useFramer } from "../../hooks/useFramer";
 
 export default function NovaTarefa() {
   const { user } = useAuth();
+  const { framers } = useFramer();
+
+  console.log(framers);
   
   const [form, setForm] = useState({
     titulo: "",
@@ -51,7 +55,7 @@ export default function NovaTarefa() {
     if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
     if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
     if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
-    if (!form.setor) newErrors.setor = "Selecione um setor";
+    if (!form.quadro) newErrors.quadro = "Selecione um Quadro";
     
     if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
       newErrors.dataFim = "A data de término deve ser posterior à data de início";
@@ -200,29 +204,63 @@ export default function NovaTarefa() {
                 )}
               </div>
 
-              <div>
+              {/* <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Columns className="w-4 h-4 mr-2 text-cyan-500" />
-                  Quadro
+                  <Layers className="w-4 h-4 mr-2 text-cyan-500" />
+                  Quadro *
                 </label>
-               <FilterBoardMember
-                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
-                  dark:bg-gray-700 dark:border-gray-600 dark:text-white 
-                  ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
-                `}
-                onFilter={(value) => {
-                  dispatch({ type: "SET_SETOR_FILTER", payload: value });
-                  setForm(prev => ({ ...prev, quadro: value }));
-                }}
-              />
-
-                {errors.setor && (
+                <select
+                  name="framer"
+                  value={form.framer}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                    errors.framer ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
+                >
+                  <option value="">Selecione um quadro</option>
+                  {framers.map((framer) => (
+                    <option key={framer.idQuadro} value={framer.idQuadro}>
+                      {framer.nome}
+                    </option>
+                  ))}
+                </select>
+                {errors.framer && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
                     <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.setor}
+                    {errors.framer}
                   </p>
                 )}
-              </div>
+              </div> */}
+
+              <div>
+              <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                <Layers className="w-4 h-4 mr-2 text-cyan-500" />
+                Quadro *
+              </label>
+              <select
+                name="quadro"
+                value={form.quadro}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  errors.quadro ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                }`}
+              >
+                <option value="">Selecione um quadro</option>
+                {framers.map((framer) => (
+                  <option key={framer.idQuadro} value={framer.idQuadro}>
+                    {framer.nome}
+                  </option>
+                ))}
+              </select>
+              {errors.quadro && (
+                <p className="mt-1 text-sm text-red-500 flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-1" />
+                  {errors.quadro}
+                </p>
+              )}
+            </div>
+
+
             </div>
 
              {/* Prioridade com visual melhorado */}
