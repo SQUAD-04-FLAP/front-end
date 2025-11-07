@@ -156,7 +156,7 @@ useEffect(() => {
                   📊 Resumo Geral
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {sectors.length} projetos cadastrados
+                  {sectors.length} empresas cadastradas
                 </p>
               </div>
               <div className="flex gap-4">
