@@ -17,15 +17,6 @@ export function BoardKanbanMember() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
 
-
-  // Atualiza colunas quando tasks mudarem
-  // useEffect(() => {
-  //   if (state.tasks.length > 0) {
-  //     const grouped = groupTasksByStatus(state.tasks);
-  //     setColumns(grouped);
-  //   }
-  // }, [state.tasks]);
-
   useEffect(() => {
   if (state.tasks.length > 0 && state.selectedBoardStatus?.length > 0) {
     const grouped = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
@@ -110,8 +101,7 @@ const handleDragEnd = async (result) => {
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       <main className="px-6 py-6">
-        <div className="flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-0 mb-6">
-
+        <div className="flex flex-wrap items-center justify-center md:justify-around gap-4 md:gap-0 mb-6">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {state.selectedBoardName
               ? `${state.selectedBoardName}`
