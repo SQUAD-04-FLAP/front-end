@@ -8,10 +8,8 @@ import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterButton } from '../FilterButton';
 
 export function BoardKanbanMember() {
-  const { state } = useKanbanMember();
+  const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
-
-  console.log(state);
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,21 +92,14 @@ export function BoardKanbanMember() {
               Quadro Kanban
             </h1>
 
-          <FilterButton />
-
-
-          {/* <div className="flex items-center gap-2">
-            <FilterSectorMember
-              onFilter={(value) =>
-                dispatch({ type: "SET_SETOR_FILTER", payload: value })
-              }
-            />
-            <FilterBoardMember
-              onFilter={(value) =>
-                dispatch({ type: "SET_QUADRO_FILTER", payload: value })
-              }
-            />
-          </div> */}
+            <div className='flex gap-4'>
+                <FilterBoardMember
+                  onFilter={(value) =>
+                    dispatch({ type: "SET_QUADRO_FILTER", payload: value })
+                  }
+                />
+              <FilterButton />
+            </div>
         </div>
 
         <DragDropContext onDragEnd={handleDragEnd}>
