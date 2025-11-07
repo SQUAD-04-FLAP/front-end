@@ -68,12 +68,19 @@ export function Sidebar() {
               </IconSidebar>
             )}
 
+            <IconSidebar href="/configuracoes">
+              <ContainerLinks>
+                <Settings />
+                <span>Configurações</span>
+              </ContainerLinks>
+              </IconSidebar>
+
             <BorderSidebar />
 
             <button
             onClick={logout}
               type="button"
-              class="inline-flex items-center gap-3 px-6 py-3 mt-20 rounded-2xl  text-white text-lg font-semibold shadow-lg hover:bg-red-700 active:scale-95 focus:outline-none focus:ring-4 transition transform cursor-pointer"
+              class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl  text-black dark:text-white text-lg font-semibold active:scale-95 focus:outline-none focus:ring-4 transition transform cursor-pointer"
               aria-label="Sair"
             >
               <LogOut />
@@ -121,16 +128,6 @@ export function Sidebar() {
    <IconsTopSidebar>
         <NotificationDropdown />
    </IconsTopSidebar>
-
-   <IconsTopSidebar>
-        <Calendar />
-   </IconsTopSidebar>
-
-   <a href="/configuracoes">
-     <IconsTopSidebar>
-          <Settings />
-     </IconsTopSidebar>
-   </a>
 
    <button
     onClick={toggleTheme}

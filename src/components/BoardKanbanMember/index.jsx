@@ -20,7 +20,6 @@ export function BoardKanbanMember() {
   useEffect(() => {
     // Quando tasks ou status mudarem, recria as colunas
     if (state.tasks.length > 0 && state.selectedBoardStatus?.length > 0) {
-      setLoading(true);
       const grouped = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
       setColumns(grouped);
       // pequeno delay para evitar flicker visual
