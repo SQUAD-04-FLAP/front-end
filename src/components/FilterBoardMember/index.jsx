@@ -4,11 +4,13 @@ import { ChevronDown, Loader2, Inbox } from "lucide-react";
 import { useKanbanMember } from "../../hooks/useKanbanMember";
 
 export function FilterBoardMember({ ...props }) {
-  const { framers, isLoading } = useFramer(); // 👈 Adapte seu hook para retornar um estado de carregamento
+  const { framers, isLoading } = useFramer();
   const { dispatch } = useKanbanMember();
 
+  console.log(framers);
+
   const [quadroSelecionado, setQuadroSelecionado] = useState("");
-  const [status, setStatus] = useState("loading"); // "loading" | "empty" | "loaded"
+  const [status, setStatus] = useState("loading");
 
   useEffect(() => {
     if (framers && framers.length > 0) {
@@ -32,18 +34,23 @@ export function FilterBoardMember({ ...props }) {
   }, [dispatch]);
 
   const handleChange = (e) => {
-    const id = e.target.value;
-    const name = framers.find(f => f.idQuadro === parseInt(id))?.nome || "";
+  const id = e.target.value;
+  const quadro = framers.find(f => f.idQuadro === parseInt(id));
 
-    setQuadroSelecionado(id);
-    localStorage.setItem("selectedBoard", id);
-    localStorage.setItem("selectedBoardName", name);
+  const name = quadro?.nome || "";
+  const statusList = quadro?.status || [];
 
-    dispatch({
-      type: "SET_QUADRO_FILTER",
-      payload: { id, name },
-    });
-  };
+  setQuadroSelecionado(id);
+  localStorage.setItem("selectedBoard", id);
+  localStorage.setItem("selectedBoardName", name);
+  localStorage.setItem("selectedBoardStatus", JSON.stringify(statusList));
+
+  dispatch({
+    type: "SET_QUADRO_FILTER",
+    payload: { id, name, statusList },
+  });
+};
+
 
   return (
     <div className="relative inline-block">

@@ -6,6 +6,8 @@ import { FilterSectorMember } from '../../components/FilterSectorMember';
 import { FilterBoardMember } from '../../components/FilterBoardMember';
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterButton } from '../FilterButton';
+import {moveTask} from '../../services/tasks';
+import { useAuth } from '../../hooks/useAuth';
 
 export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
@@ -13,15 +15,26 @@ export function BoardKanbanMember() {
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuth();
 
 
   // Atualiza colunas quando tasks mudarem
+  // useEffect(() => {
+  //   if (state.tasks.length > 0) {
+  //     const grouped = groupTasksByStatus(state.tasks);
+  //     setColumns(grouped);
+  //   }
+  // }, [state.tasks]);
+
   useEffect(() => {
-    if (state.tasks.length > 0) {
-      const grouped = groupTasksByStatus(state.tasks);
-      setColumns(grouped);
-    }
-  }, [state.tasks]);
+  if (state.tasks.length > 0 && state.selectedBoardStatus?.length > 0) {
+    const grouped = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
+    setColumns(grouped);
+  } else {
+    setColumns([]);
+  }
+}, [state.tasks, state.selectedBoardStatus]);
+
 
   const handleCardClick = (task) => {
     setSelectedTask(task);
@@ -33,64 +46,71 @@ export function BoardKanbanMember() {
     setSelectedTask(null);
   };
 
-
-  const handleDragEnd = async (result) => {
+const handleDragEnd = async (result) => {
   const { source, destination, draggableId } = result;
   if (!destination) return;
   if (source.droppableId === destination.droppableId && source.index === destination.index) return;
 
   const taskId = parseInt(draggableId);
 
-  // 1 Buscar tarefa localmente
-  const task = state.tasks.find(t => t.idTarefa === taskId);
+  // Busca tarefa localmente
+  const task = state.tasks.find((t) => t.idTarefa === taskId);
   if (!task) return;
 
-  if (!task || task.idQuadro.toString() !== state.selectedBoard) {
-    console.warn('Tentativa de mover tarefa para outro quadro — bloqueado.');
+  // Impede mover tarefa entre quadros diferentes
+  if (task.idQuadro.toString() !== state.selectedBoard) {
+    console.warn("Tentativa de mover tarefa para outro quadro — bloqueado.");
     return;
   }
 
-  // Atualizar localmente
+  // Atualiza localmente para feedback instantâneo
   setColumns((prevColumns) => {
-    const newColumns = prevColumns.map(c => ({ ...c, tasks: [...c.tasks] }));
-    const sourceCol = newColumns.find(c => c.id === source.droppableId);
-    const destCol = newColumns.find(c => c.id === destination.droppableId);
+    const newColumns = prevColumns.map((c) => ({ ...c, tasks: [...c.tasks] }));
+    const sourceCol = newColumns.find((c) => c.id === source.droppableId);
+    const destCol = newColumns.find((c) => c.id === destination.droppableId);
+    if (!sourceCol || !destCol) return prevColumns;
+
     const [movedCard] = sourceCol.tasks.splice(source.index, 1);
     destCol.tasks.splice(destination.index, 0, movedCard);
     return newColumns;
   });
 
-  // Essa parte está comentada, mas será trabalhada melhor ainda
+  // 🔹 Pega o status real do backend com base no droppableId
+  const destinationStatus = state.selectedBoardStatus.find(
+    (s) => s.id.toString() === destination.droppableId
+  );
 
-  // const statusIdMap = {
-  //   todo: 1,
-  //   doing: 2,
-  //   review: 3,
-  //   done: 4,
-  // };
+  if (!destinationStatus) {
+    console.error("Status de destino não encontrado:", destination.droppableId);
+    return;
+  }
 
-  // const newStatusId = statusIdMap[destination.droppableId];
+  const newStatusId = destinationStatus.id;
 
-  // try {
-  //   await moveTask(taskId, newStatusId, user.idUsuario);
-  //   dispatch({
-  //     type: 'UPDATE_TASK_STATUS',
-  //     payload: { id: taskId, status: destination.droppableId },
-  //   });
-  // } catch (error) {
-  //   console.error('Falha ao mover tarefa:', error);
-  // }
+  try {
+    // Atualiza no backend
+    await moveTask(taskId, newStatusId, user.idUsuario);
+
+    // Atualiza no estado global
+    dispatch({
+      type: "UPDATE_TASK_STATUS",
+      payload: {
+        id: taskId,
+        statusId: newStatusId,
+        statusName: destinationStatus.nome,
+      },
+    });
+  } catch (error) {
+    console.error("Falha ao mover tarefa:", error);
+  }
 };
+
 
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       <main className="px-6 py-6">
         <div className="flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-0 mb-6">
-          
-            {/* <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Quadro Kanban
-            </h1> */}
 
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             {state.selectedBoardName
@@ -138,35 +158,38 @@ export function BoardKanbanMember() {
   );
 }
 
-// 🔸 Função auxiliar para agrupar tarefas por status
-function groupTasksByStatus(tasks) {
-  const statusMap = {
-    'A Fazer': 'todo',
-    'Em Andamento': 'doing',
-    'Em Revisão': 'review',
-    'Concluído': 'done',
-  };
+function groupTasksByStatus(tasks, boardStatus) {
+  if (!boardStatus || boardStatus.length === 0) return [];
 
-  const statusColumns = [
-    { id: 'todo', name: 'Fazer', colorDot: 'bg-amber-500' },
-    { id: 'doing', name: 'Em Andamento', colorDot: 'bg-sky-500' },
-    { id: 'review', name: 'Revisão', colorDot: 'bg-fuchsia-500' },
-    { id: 'done', name: 'Concluído', colorDot: 'bg-emerald-500' },
-  ];
+  // Ordena os status pela ordem definida no backend
+  const orderedStatus = [...boardStatus].sort((a, b) => a.ordem - b.ordem);
 
-  return statusColumns.map((col) => ({
-    ...col,
+  // Cria colunas dinamicamente com base nos status
+  return orderedStatus.map((s) => ({
+    id: s.id.toString(),
+    name: s.nome,
+    colorDot: getStatusColor(s.nome),
     tasks: tasks
-      .filter((t) => statusMap[t.nomeStatus] === col.id)
+      .filter((t) => t.idStatus === s.id)
       .map((t) => ({
         id: t.idTarefa.toString(),
         title: t.titulo,
-        description: t.descricao || '',
-        date: t.prazo ? new Date(t.prazo).toLocaleDateString('pt-BR') : '',
+        description: t.descricao || "",
+        date: t.prazo ? new Date(t.prazo).toLocaleDateString("pt-BR") : "",
         comments: t.comentarios?.length || 0,
         assigneeAvatar: t.assigneeAvatar || "img/profile-default.jpg",
-        priority: 'Média',
-        idQuadro: t.idQuadro, // importante p/ validação
+        priority: "Média",
+        idQuadro: t.idQuadro,
       })),
   }));
+}
+
+// Mapeamento opcional de cor por nome de status
+function getStatusColor(nome) {
+  const lower = nome.toLowerCase();
+  if (lower.includes("backlog")) return "bg-amber-500";
+  if (lower.includes("desenvolvimento")) return "bg-sky-500";
+  if (lower.includes("teste")) return "bg-fuchsia-500";
+  if (lower.includes("concluído")) return "bg-emerald-500";
+  return "bg-gray-400";
 }
