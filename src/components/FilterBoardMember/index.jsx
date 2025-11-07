@@ -18,18 +18,25 @@ export function FilterBoardMember({ ...props }) {
     }
   }, [framers, isLoading]);
 
-  useEffect(() => {
-    const savedBoard = localStorage.getItem("selectedBoard");
-    const savedBoardName = localStorage.getItem("selectedBoardName");
 
-    if (savedBoard) {
-      setQuadroSelecionado(savedBoard);
-      dispatch({
-        type: "SET_QUADRO_FILTER",
-        payload: { id: savedBoard, name: savedBoardName },
-      });
-    }
-  }, [dispatch]);
+  useEffect(() => {
+  const savedBoard = localStorage.getItem("selectedBoard");
+  const savedBoardName = localStorage.getItem("selectedBoardName");
+  const savedBoardStatus = localStorage.getItem("selectedBoardStatus");
+
+  if (status === "loaded" && framers.length > 0 && savedBoard) {
+    const quadro = framers.find(f => f.idQuadro === parseInt(savedBoard));
+    const name = quadro?.nome || savedBoardName;
+    const statusList = quadro?.status || JSON.parse(savedBoardStatus || "[]");
+
+    setQuadroSelecionado(savedBoard);
+
+    dispatch({
+      type: "SET_QUADRO_FILTER",
+      payload: { id: savedBoard, name, statusList },
+    });
+  }
+}, [framers, status, dispatch]);
 
   const handleChange = (e) => {
   const id = e.target.value;
