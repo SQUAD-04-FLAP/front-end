@@ -88,9 +88,15 @@ export function BoardKanbanMember() {
       <main className="px-6 py-6">
         <div className="flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-0 mb-6">
           
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {/* <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Quadro Kanban
-            </h1>
+            </h1> */}
+
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {state.selectedBoardName
+              ? `${state.selectedBoardName}`
+              : "Quadro Kanban"}
+           </h1>
 
             <div className='flex gap-4'>
                 <FilterBoardMember

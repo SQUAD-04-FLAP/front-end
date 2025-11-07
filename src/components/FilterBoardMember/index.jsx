@@ -1,57 +1,92 @@
 import { useState, useEffect } from "react";
 import { useFramer } from "../../hooks/useFramer";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2, Inbox } from "lucide-react";
+import { useKanbanMember } from "../../hooks/useKanbanMember";
 
-export function FilterBoardMember({ onFilter, ...props }) {
-  const { framers } = useFramer();
-
-  console.log(framers);
+export function FilterBoardMember({ ...props }) {
+  const { framers, isLoading } = useFramer(); // 👈 Adapte seu hook para retornar um estado de carregamento
+  const { dispatch } = useKanbanMember();
 
   const [quadroSelecionado, setQuadroSelecionado] = useState("");
+  const [status, setStatus] = useState("loading"); // "loading" | "empty" | "loaded"
+
+  useEffect(() => {
+    if (framers && framers.length > 0) {
+      setStatus("loaded");
+    } else if (!isLoading && framers?.length === 0) {
+      setStatus("empty");
+    }
+  }, [framers, isLoading]);
 
   useEffect(() => {
     const savedBoard = localStorage.getItem("selectedBoard");
+    const savedBoardName = localStorage.getItem("selectedBoardName");
+
     if (savedBoard) {
       setQuadroSelecionado(savedBoard);
-      onFilter(savedBoard);
+      dispatch({
+        type: "SET_QUADRO_FILTER",
+        payload: { id: savedBoard, name: savedBoardName },
+      });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   const handleChange = (e) => {
-    const value = e.target.value;
-    setQuadroSelecionado(value);
-    localStorage.setItem("selectedBoard", value);
-    onFilter(value);
+    const id = e.target.value;
+    const name = framers.find(f => f.idQuadro === parseInt(id))?.nome || "";
+
+    setQuadroSelecionado(id);
+    localStorage.setItem("selectedBoard", id);
+    localStorage.setItem("selectedBoardName", name);
+
+    dispatch({
+      type: "SET_QUADRO_FILTER",
+      payload: { id, name },
+    });
   };
 
   return (
     <div className="relative inline-block">
-      <select
-        value={quadroSelecionado}
-        onChange={handleChange}
-        className="appearance-none px-4 py-2 pr-10 rounded-xl text-sm font-medium 
-                   bg-white dark:bg-gray-800 
-                   text-gray-700 dark:text-gray-200 
-                   border border-gray-300 dark:border-gray-700 
-                   shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
-                   hover:border-blue-400 dark:hover:border-blue-400
-                   transition duration-200 ease-in-out cursor-pointer"
-        {...props}
-      >
-        <option value="">Selecionar quadro</option>
-        {framers.map((quadro) => (
-          <option key={quadro.idQuadro} value={quadro.idQuadro}>
-            {quadro.nome}
-          </option>
-        ))}
-      </select>
+      {status === "loading" ? (
+        <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+          <Loader2 className="animate-spin w-4 h-4" />
+          Carregando quadros...
+        </div>
+      ) : status === "empty" ? (
+        <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+          <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+          <span className="flex items-center gap-1">
+            Carregando...
+          </span>
+        </div>
+      ) : (
+        <>
+          <select
+            value={quadroSelecionado}
+            onChange={handleChange}
+            className="appearance-none px-4 py-2 pr-10 rounded-xl text-sm font-medium 
+                       bg-white dark:bg-gray-800 
+                       text-gray-700 dark:text-gray-200 
+                       border border-gray-300 dark:border-gray-700 
+                       shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                       hover:border-blue-400 dark:hover:border-blue-400
+                       transition duration-200 ease-in-out cursor-pointer"
+            {...props}
+          >
+            <option value="">Selecionar quadro</option>
+            {framers.map((quadro) => (
+              <option key={quadro.idQuadro} value={quadro.idQuadro}>
+                {quadro.nome}
+              </option>
+            ))}
+          </select>
 
-      {/* Ícone de seta */}
-      <ChevronDown
-        className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 
-                   text-gray-500 dark:text-gray-400 pointer-events-none"
-      />
+          <ChevronDown
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 
+                       text-gray-500 dark:text-gray-400 pointer-events-none"
+          />
+        </>
+      )}
     </div>
   );
 }

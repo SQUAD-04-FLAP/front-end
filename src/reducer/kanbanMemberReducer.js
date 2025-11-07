@@ -40,9 +40,10 @@ case "DELETE_BOARD_FAILURE":
       return { ...state, loading: action.payload };
     case 'SET_ERROR':
       return { ...state, error: action.payload, loading: false };
-    case 'SET_QUADRO_FILTER':
-      localStorage.setItem("selectedBoard", action.payload)
-      return { ...state, selectedBoard: action.payload };
+      case 'SET_QUADRO_FILTER':
+        localStorage.setItem("selectedBoard", action.payload.id);
+        localStorage.setItem("selectedBoardName", action.payload.name);
+        return { ...state, selectedBoard: action.payload.id, selectedBoardName: action.payload.name };
     case 'SET_SETOR_FILTER':
       localStorage.setItem('selectedSector', action.payload);
       return { ...state, selectedSector: action.payload };
