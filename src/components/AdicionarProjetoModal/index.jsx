@@ -348,7 +348,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
               <Briefcase className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              Adicionar Novo Projeto
+              Adicionar Nova Emmpresa
             </h2>
           </div>
           <button
@@ -362,13 +362,13 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
         {/* Conteúdo */}
         <div className="p-6 space-y-6">
           <p className="text-gray-600 dark:text-gray-400">
-            Crie um novo projeto para organizar suas tarefas e equipes. Ele ficará disponível no painel principal após ser criado.
+            Cadastre uma nova empresa para centralizar seus projetos, equipes e tarefas em um único espaço de gestão.
           </p>
 
           {/* Nome do Projeto */}
           <div>
             <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
-              Nome do Projeto
+              Nome da Empresa
             </label>
             <input
               type="text"
@@ -382,7 +382,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
           {/* Ícone do Projeto */}
           <div>
             <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-              Ícone do Projeto
+              Ícone da Empresa
             </label>
             <div className="grid grid-cols-6 gap-2">
               {icones.map((icone) => {
@@ -413,7 +413,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
           {/* Cor do Projeto */}
           <div>
             <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-              Cor do Projeto (opcional)
+              Cor do ícone da empresa (opcional)
             </label>
             <div className="flex flex-wrap gap-3">
               {cores.map((cor) => (
@@ -454,13 +454,6 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
               </span>
             </div>
           </div>
-
-          {/* <div>
-             <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-              Participantes
-            </label>
-            <DropdownUsers />
-          </div> */}
         </div>
 
         {/* Footer */}
@@ -483,7 +476,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
             {isLoading && (
               <span className="w-5 h-5 border-t-transparent rounded-full animate-spin" />
             )}
-            {isLoading ? 'Criando...' : 'Criar Projeto'}
+            {isLoading ? 'Criando...' : 'Criar Empresa'}
           </button>
         </div>
       </div>

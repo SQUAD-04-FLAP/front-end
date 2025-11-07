@@ -2,6 +2,7 @@ export const initialStateKanban = {
   columns: [],
   boards: [],
   tasks: [],
+  selectedBoardStatus: [],
   loading: true,
   error: null,
   selectedBoard: localStorage.getItem('selectedBoard') || '',
@@ -40,23 +41,33 @@ case "DELETE_BOARD_FAILURE":
       return { ...state, loading: action.payload };
     case 'SET_ERROR':
       return { ...state, error: action.payload, loading: false };
-    case 'SET_QUADRO_FILTER':
-      localStorage.setItem("selectedBoard", action.payload)
-      return { ...state, selectedBoard: action.payload };
+      case 'SET_QUADRO_FILTER':
+          localStorage.setItem("selectedBoard", action.payload.id);
+          localStorage.setItem("selectedBoardName", action.payload.name);
+          return {
+            ...state,
+            selectedBoard: action.payload.id,
+            selectedBoardName: action.payload.name,
+            selectedBoardStatus: action.payload.statusList || []
+          };
     case 'SET_SETOR_FILTER':
       localStorage.setItem('selectedSector', action.payload);
       return { ...state, selectedSector: action.payload };
     case 'SET_FILTERED_COLUMNS':
       return { ...state, filteredColumns: action.payload };
-    case 'UPDATE_TASK_STATUS':
-      return {
-        ...state,
-        tasks: state.tasks.map(task =>
-          task.idTarefa === action.payload.id
-            ? { ...task, nomeStatus: action.payload.status }
-            : task
-        ),
-      };
+    case "UPDATE_TASK_STATUS":
+  return {
+    ...state,
+    tasks: state.tasks.map((task) =>
+      task.idTarefa === action.payload.id
+        ? {
+            ...task,
+            idStatus: action.payload.statusId,
+            nomeStatus: action.payload.statusName,
+          }
+        : task
+    ),
+  };
     default:
       return state;
   }

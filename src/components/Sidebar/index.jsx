@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus, Layers, LogOut } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, LogOut, Users, Briefcase, KanbanSquare, Grid } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
@@ -22,7 +22,7 @@ export function Sidebar() {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
 
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 transition-colors">
@@ -37,61 +37,50 @@ export function Sidebar() {
 
         <nav className="text-sm font-medium text-gray-600 dark:text-gray-300" aria-label="Main Navigation">
             <SectionSidebar>Navegação</SectionSidebar>
+
             <IconSidebar href="/">
               <ContainerLinks>
-                <LayoutDashboard />
-                <span>Dashboard</span>
-              </ContainerLinks>
-            </IconSidebar>
-
-            <IconSidebar href="/board-v2">
-              <ContainerLinks>
-                <Columns />
-                <span>Quadro Kanban</span>
+                <Grid />
+                <span>Kanban</span>
               </ContainerLinks>
             </IconSidebar>
 
             <IconSidebar href="/projects">
               <ContainerLinks>
-                <Layers />
-                <span>Projetos</span>
+                <Briefcase />
+                <span>Empresas</span>
               </ContainerLinks>
             </IconSidebar>
 
-            <IconSidebar href="/calendar">
+             <IconSidebar href="/framers">
               <ContainerLinks>
-                <Calendar />
-                <span>Calendário</span>
+                <Columns />
+                <span>Quadros</span>
               </ContainerLinks>
-            </IconSidebar>
+              </IconSidebar>
 
-             <IconSidebar href="/reports">
+            {user.permissao === "ADMIN" && (
+               <IconSidebar href="/users">
               <ContainerLinks>
-                <BarChart />
-                <span>Relatórios</span>
+                <Users />
+                <span>Usuários</span>
               </ContainerLinks>
-            </IconSidebar>
-
-            <BorderSidebar />
+              </IconSidebar>
+            )}
 
             <IconSidebar href="/configuracoes">
               <ContainerLinks>
                 <Settings />
                 <span>Configurações</span>
               </ContainerLinks>
-            </IconSidebar>
+              </IconSidebar>
 
-             <IconSidebar href="/">
-              <ContainerLinks>
-                <HelpCircle />
-                <span>Ajuda</span>
-              </ContainerLinks>
-            </IconSidebar>
+            <BorderSidebar />
 
             <button
             onClick={logout}
               type="button"
-              class="inline-flex items-center gap-3 px-6 py-3 mt-20 rounded-2xl  text-white text-lg font-semibold shadow-lg hover:bg-red-700 active:scale-95 focus:outline-none focus:ring-4 transition transform cursor-pointer"
+              class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl  text-black dark:text-white text-lg font-semibold active:scale-95 focus:outline-none focus:ring-4 transition transform cursor-pointer"
               aria-label="Sair"
             >
               <LogOut />
@@ -131,24 +120,14 @@ export function Sidebar() {
   <div className="flex items-center gap-4">
 
    {(location.pathname === "/board-v2") && <BtnNewProject />}
-   {location.pathname === "/board-v2" && <ButtonNewBoard />}
-   {location.pathname === "/board-v2" && <ButtonNewTask />}
+   {location.pathname === "/" && <ButtonNewBoard />}
+   {location.pathname === "/" && <ButtonNewTask />}
 
-   {(location.pathname === "/projects") && <BtnNewProject />}
+   {(location.pathname === "/projects") && <BtnNewProject /> && user.permissao === "ADMIN"}
 
    <IconsTopSidebar>
         <NotificationDropdown />
    </IconsTopSidebar>
-
-   <IconsTopSidebar>
-        <Calendar />
-   </IconsTopSidebar>
-
-   <a href="/configuracoes">
-     <IconsTopSidebar>
-          <Settings />
-     </IconsTopSidebar>
-   </a>
 
    <button
     onClick={toggleTheme}
