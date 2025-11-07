@@ -65,3 +65,23 @@ export async function delete_framer(idQuadro) {
     throw error;
   }
 }
+
+export async function listAllFramers() {
+  try {
+    const res = await fetch(API_URL, {
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) throw new Error("Erro ao buscar todos os quadros");
+
+    const data = await res.json();
+    return data;
+
+  } catch (e) {
+    console.error("[QuadroService] Erro ao listar todos os quadros:", e);
+    throw e;
+  }
+}

@@ -1,7 +1,9 @@
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import { framerReducer, initalFramerState } from '../../reducer/framerReducer';
 import { create_framer } from '../../services/framerService';
 import { FramerContext } from './FramerContext';
+import { listAllFramers } from '../../services/framerService';
+import { delete_framer } from '../../services/framerService';
 
 export function FramerProvider({ children }) {
     const [ state, dispatch ] = useReducer(framerReducer, initalFramerState);
@@ -17,6 +19,32 @@ export function FramerProvider({ children }) {
         }
     }
 
+    const fetchFramers = async () => {
+    dispatch({ type: "FETCH_FRAMERS_REQUEST" });
+    try {
+      const framers = await listAllFramers();
+      dispatch({ type: "FETCH_FRAMERS_SUCCESS", payload: framers });
+    } catch (e) {
+      dispatch({ type: "FETCH_FRAMERS_FAILURE", payload: e.message });
+    }
+  };
+
+  const deleteBoard = async (idBoard) => {
+      dispatch({ type: "DELETE_BOARD_REQUEST" });
+  
+      try {
+        await delete_framer(idBoard);
+        dispatch({ type: "DELETE_BOARD_SUCCESS", payload: idBoard });
+      } catch (e) {
+        dispatch({ type: "DELETE_BOARD_FAILURE", payload: e.message });
+         throw e;
+      }
+    };
+
+  useEffect(() => {
+    fetchFramers();
+  }, []);
+
     return(
         <FramerContext.Provider
             value={{
@@ -24,6 +52,8 @@ export function FramerProvider({ children }) {
                 loading: state.loading,
                 error: state.error,
                 createFramer,
+                deleteBoard,
+                fetchFramers
             }}
         >
             {children}

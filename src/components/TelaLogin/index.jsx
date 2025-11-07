@@ -30,13 +30,7 @@ export function TelaLogin() {
         toast.success("Login realizado com sucesso.", {
         autoClose: 1000, // 1 segundo
           onClose: () => {
-
-          // Redirecionamento baseado na role
-          if (user.permissao === "ADMIN") {
-            navigate("/admin");
-          } else {
             navigate("/");
-          }
           }
       });
       }
