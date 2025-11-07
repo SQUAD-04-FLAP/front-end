@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AdminSidebar } from '../../../components/AdminSidebar';
+import { AdminSidebar } from '../../components/AdminSidebar';
 import { Pencil, Trash } from 'lucide-react';
 
 const usuariosMock = [
@@ -21,7 +21,7 @@ const badgeClasses = {
 
 const permissoesOpcoes = ['Administrador', 'Editor', 'Visitante'];
 
-export default function AdminUsuarios() {
+export function Usuarios() {
   const [usuarios, setUsuarios] = useState(usuariosMock);
   const [busca, setBusca] = useState('');
 
@@ -138,7 +138,6 @@ export default function AdminUsuarios() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
-      <AdminSidebar />
       <main className="flex-1 p-10">
         <SuccessToast />
 

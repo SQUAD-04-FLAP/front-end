@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconSidebar } from "../IconSidebar";
-import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, Plus, Layers, LogOut, Users, Briefcase } from "lucide-react";
+import { BarChart, Bell, BookDashed, Calendar, Columns, Cpu, Headphones, HelpCircle, Home, LayoutDashboard, Box, Monitor, Moon, Palette, Search, Settings, Sun, LogOut, Users, Briefcase, KanbanSquare, Grid } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
 import { BorderSidebar } from "../BorderSidebar";
@@ -42,7 +42,7 @@ export function Sidebar() {
 
             <IconSidebar href="/">
               <ContainerLinks>
-                <Columns />
+                <Grid />
                 <span>Quadro Kanban</span>
               </ContainerLinks>
             </IconSidebar>
@@ -55,22 +55,22 @@ export function Sidebar() {
             </IconSidebar>
 
             {user.permissao === "ADMIN" && (
-               <IconSidebar href="/projects">
+               <IconSidebar href="/users">
               <ContainerLinks>
                 <Users />
-                <span>Gerenciamento de Usuários</span>
+                <span>Colaboradores</span>
               </ContainerLinks>
               </IconSidebar>
             )}
 
-            <BorderSidebar />
-
-            {/* <IconSidebar href="/configuracoes">
+               <IconSidebar href="/projects">
               <ContainerLinks>
-                <Settings />
-                <span>Configurações</span>
+                <Columns />
+                <span>Quadros</span>
               </ContainerLinks>
-            </IconSidebar> */}
+              </IconSidebar>
+
+            <BorderSidebar />
 
             <button
             onClick={logout}

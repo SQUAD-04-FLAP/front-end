@@ -85,6 +85,7 @@ import BoardV2 from "../../pages/BoardV2";
 import Configuracoes from "../../pages/Configuracoes";
 import NovaTarefa from "../../pages/NovaTarefa";
 import { Projects } from "../../pages/Projects";
+import { Usuarios } from '../../pages/Usuarios';
 
 export function MainRouter() {
   const { loading } = useAuth();
@@ -110,6 +111,7 @@ export function MainRouter() {
           <Route path="/configuracoes" element={<Configuracoes />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/nova-tarefa" element={<NovaTarefa />} />
+          <Route path="/users" element={<Usuarios />} />
         </Route>
 
         {/* Redirecionamento padrão */}
