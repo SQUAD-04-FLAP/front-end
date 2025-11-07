@@ -4,6 +4,7 @@ import { BtnNewProject } from '../../components/BtnNewProject';
 import { useAuth } from '../../hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { DeleteFramerButton } from '../../components/DeleteFramerButton';
+import { ButtonNewBoard } from '../../components/ButtonNewBoard';
 
 export function Framers() {
   const { framers } = useFramer();
@@ -29,7 +30,7 @@ export function Framers() {
               Gerencie todos os quadros Kanban criados no sistema.
             </p>
           </div>
-          {user?.permissao === "ADMIN" && <BtnNewProject />}
+          <ButtonNewBoard />
         </div>
 
         {/* Grid de Quadros */}
@@ -75,14 +76,7 @@ export function Framers() {
                     <Edit className="w-4 h-4 text-blue-500" />
                   </button>
 
-                  <DeleteFramerButton id={framers.idQuadro} />
-                  {/* <button
-                    title="Excluir"
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-                    onClick={() => console.log('Excluir quadro', quadro.idQuadro)}
-                  >
-                    <Trash2 className="w-4 h-4 text-red-500" />
-                  </button> */}
+                  <DeleteFramerButton id={quadro.idQuadro} />
                 </div>
 
                 {/* Header do card */}

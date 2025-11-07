@@ -3,6 +3,7 @@ import { framerReducer, initalFramerState } from '../../reducer/framerReducer';
 import { create_framer } from '../../services/framerService';
 import { FramerContext } from './FramerContext';
 import { listAllFramers } from '../../services/framerService';
+import { delete_framer } from '../../services/framerService';
 
 export function FramerProvider({ children }) {
     const [ state, dispatch ] = useReducer(framerReducer, initalFramerState);
@@ -28,6 +29,18 @@ export function FramerProvider({ children }) {
     }
   };
 
+  const deleteBoard = async (idBoard) => {
+      dispatch({ type: "DELETE_BOARD_REQUEST" });
+  
+      try {
+        await delete_framer(idBoard);
+        dispatch({ type: "DELETE_BOARD_SUCCESS", payload: idBoard });
+      } catch (e) {
+        dispatch({ type: "DELETE_BOARD_FAILURE", payload: e.message });
+         throw e;
+      }
+    };
+
   useEffect(() => {
     fetchFramers();
   }, []);
@@ -39,6 +52,7 @@ export function FramerProvider({ children }) {
                 loading: state.loading,
                 error: state.error,
                 createFramer,
+                deleteBoard,
                 fetchFramers
             }}
         >

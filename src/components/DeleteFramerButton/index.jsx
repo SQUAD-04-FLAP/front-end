@@ -1,11 +1,11 @@
 import { Trash2 } from "lucide-react";
 import { toast } from 'react-toastify';
 import { Dialog } from "../../components/Dialog";
-import { useKanbanMember } from "../../hooks/useKanbanMember";
 import { showMessage } from '../../adapters/showMessage';
+import { useFramer } from '../../hooks/useFramer';
 
 export function DeleteFramerButton({ id }) {
-  const { deleteBoard } = useKanbanMember();
+  const { deleteBoard } = useFramer();
 
   const handleDelete = () => {
     showMessage.dismiss();
@@ -23,7 +23,7 @@ export function DeleteFramerButton({ id }) {
             showMessage.success("Quadro apagado com sucesso!", true);
           } catch (error) {
             console.error(error);
-            showMessage.error("Erro ao apagar quadro. Tente novamente.", true);
+            showMessage.error("Erro ao apagar quadro. Talvez existam tarefas associadas a esse quadro.");
           }
         }
       },
