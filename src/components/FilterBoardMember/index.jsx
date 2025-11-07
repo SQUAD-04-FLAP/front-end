@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
-import { useKanbanMember } from "../../hooks/useKanbanMember";
+import { useFramer } from "../../hooks/useFramer";
 import { ChevronDown } from "lucide-react";
 
 export function FilterBoardMember({ onFilter, ...props }) {
-  const { state } = useKanbanMember();
+  const { framers } = useFramer();
+
+  console.log(framers);
+
   const [quadroSelecionado, setQuadroSelecionado] = useState("");
 
   useEffect(() => {
@@ -37,7 +40,7 @@ export function FilterBoardMember({ onFilter, ...props }) {
         {...props}
       >
         <option value="">Selecionar quadro</option>
-        {state.boards.map((quadro) => (
+        {framers.map((quadro) => (
           <option key={quadro.idQuadro} value={quadro.idQuadro}>
             {quadro.nome}
           </option>

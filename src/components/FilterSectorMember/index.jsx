@@ -4,7 +4,6 @@ import { useSectors } from '../../hooks/useSectors';
 
 export function FilterSectorMember({ onFilter, ...props }) {
   const [setorSelecionado, setSetorSelecionado] = useState("");
-  // const { user } = useAuth();
   const { sectors } = useSectors();
 
 

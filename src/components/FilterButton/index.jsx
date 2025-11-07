@@ -35,7 +35,7 @@ export function FilterButton() {
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 z-40 transition-opacity"
         />
       )}
 
