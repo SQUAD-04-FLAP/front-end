@@ -47,7 +47,7 @@ useEffect(() => {
                 Gestão de Empresas
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Gerencie todos as empresas cadastradoa no sistema
+                Gerencie todos as empresas cadastradas no sistema
               </p>
             </div>
 

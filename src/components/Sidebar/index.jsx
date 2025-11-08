@@ -41,7 +41,7 @@ export function Sidebar() {
             <IconSidebar href="/">
               <ContainerLinks>
                 <Grid />
-                <span>Kanban</span>
+                <span>Quadro Kanban</span>
               </ContainerLinks>
             </IconSidebar>
 
