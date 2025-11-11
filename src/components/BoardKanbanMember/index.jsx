@@ -18,6 +18,8 @@ export function BoardKanbanMember() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
 
+  console.log(state);
+
   useEffect(() => {
     // Quando tasks ou status mudarem, recria as colunas
     if (state.tasks.length > 0 && state.selectedBoardStatus?.length > 0) {

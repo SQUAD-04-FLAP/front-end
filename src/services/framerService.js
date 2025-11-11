@@ -105,3 +105,24 @@ export async function createStatus(idQuadro, nome) {
     throw error;
   }
 }
+
+export async function deleteStatus(idStatus) {
+  try {
+    const res = await fetch(`${API_URL}/status/${idStatus}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao excluir o status com ID ${idStatus}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("[QuadroService] Erro ao excluir status:", error);
+    throw error;
+  }
+}
