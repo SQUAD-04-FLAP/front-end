@@ -11,7 +11,6 @@ import { deleteStatus } from '../../services/framerService';
 export function KanbanMemberProvider({ children }) {
   const [state, dispatch] = useReducer(kanbanReducer, initialStateKanban);
 
-
   useEffect(() => {
     if (!state.selectedSector) return;
 

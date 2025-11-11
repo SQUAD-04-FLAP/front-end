@@ -12,6 +12,7 @@ import { ButtonAddNewList } from '../ButtonAddNewList';
 export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
+  // const columnsState = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
   const [loading, setLoading] = useState(true);
 
   const [selectedTask, setSelectedTask] = useState(null);

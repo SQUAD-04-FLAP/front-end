@@ -90,7 +90,7 @@ case "DELETE_STATUS_SUCCESS":
     ...state,
     loading: false,
     selectedBoardStatus: state.selectedBoardStatus.filter(
-      (s) => s.id !== action.payload && s.idStatus !== action.payload
+      (s) => String(s.id) !== String(action.payload)
     ),
   };
 
