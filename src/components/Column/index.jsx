@@ -19,7 +19,6 @@ export function Column({ data, onCardClick }) {
       onClose: async (confirmation) => {
         if (confirmation) {
           try {
-            console.log("Excluindo: ", data.id)
             await delete_status(id);
             showMessage.success("Status excluído com sucesso!", true);
           } catch (error) {

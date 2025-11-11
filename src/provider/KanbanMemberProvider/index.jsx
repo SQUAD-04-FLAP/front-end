@@ -86,6 +86,7 @@ export function KanbanMemberProvider({ children }) {
     dispatch({ type: "DELETE_STATUS_SUCCESS", payload: id });
   } catch (e) {
     dispatch({ type: "DELETE_STATUS_FAILURE", payload: e.message });
+    throw e;
   }
 };
 
