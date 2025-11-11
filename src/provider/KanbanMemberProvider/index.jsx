@@ -5,6 +5,7 @@ import { delete_framer, listFramersBySector } from '../../services/framerService
 import { fetchTasksByBoardID } from '../../services/tasks';
 import { deleteTaskById } from '../../services/tasks';
 import {createTask} from '../../services/tasks';
+import { createStatus } from '../../services/framerService';
 
 export function KanbanMemberProvider({ children }) {
   const [state, dispatch] = useReducer(kanbanReducer, initialStateKanban);
@@ -65,6 +66,18 @@ export function KanbanMemberProvider({ children }) {
     }
   };
 
+   const create_status = async (idQuadro, nome) => {
+      dispatch({ type: "CREATE_STATUS_REQUEST" });
+      try {
+        const newStatus = await createStatus(idQuadro, nome);
+        dispatch({ type: "CREATE_STATUS_SUCCESS", payload: newStatus });
+        return newStatus;
+      } catch (e) {
+        dispatch({ type: "CREATE_STATUS_FAILURE", payload: e.message });
+        throw e;
+      }
+  };
+
 
   useEffect(() => {
     if (!state.selectedBoard) return;
@@ -112,7 +125,7 @@ export function KanbanMemberProvider({ children }) {
   }, [state.columns, state.quadroSelecionado, state.setorSelecionado]);
 
   return (
-    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard }}>
+    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard, create_status }}>
       {children}
     </KanbanMemberContext.Provider>
   );

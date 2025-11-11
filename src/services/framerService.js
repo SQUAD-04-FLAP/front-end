@@ -85,3 +85,23 @@ export async function listAllFramers() {
     throw e;
   }
 }
+
+export async function createStatus(idQuadro, nome) {
+  try {
+    const res = await fetch(`${API_URL}/${idQuadro}/status`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ nome }),
+    });
+
+    if (!res.ok) throw new Error(`Erro ao criar status no quadro ${idQuadro}`);
+
+    return await res.json();
+  } catch (error) {
+    console.error("[QuadroService] Erro ao criar status:", error);
+    throw error;
+  }
+}
