@@ -7,6 +7,7 @@ import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterButton } from '../FilterButton';
 import { moveTask } from '../../services/tasks';
 import { useAuth } from '../../hooks/useAuth';
+import { ButtonAddNewList } from '../ButtonAddNewList';
 
 export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
@@ -127,17 +128,7 @@ export function BoardKanbanMember() {
                       onCardClick={handleCardClick}
                     />
                   ))}
-                  <button
-                    onClick={() => alert("Abrir modal para adicionar nova coluna")}
-                    className="flex flex-col items-center justify-center min-w-[250px] h-[200px]
-                      border-2 border-dashed border-gray-400 dark:border-gray-600
-                      rounded-2xl text-gray-500 dark:text-gray-300
-                      hover:border-indigo-500 hover:text-indigo-500
-                      transition-all duration-200"
-                  >
-                    <span className="text-2xl font-bold">+</span>
-                    <span className="text-sm">Adicionar nova lista</span>
-                  </button>
+                  <ButtonAddNewList />
                 </>
               )}
             </div>
