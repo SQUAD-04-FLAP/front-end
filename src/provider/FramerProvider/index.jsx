@@ -53,7 +53,7 @@ export function FramerProvider({ children }) {
                 error: state.error,
                 createFramer,
                 deleteBoard,
-                fetchFramers
+                fetchFramers,
             }}
         >
             {children}

@@ -2,6 +2,7 @@ export const initialStateKanban = {
   columns: [],
   boards: [],
   tasks: [],
+  status: [],
   selectedBoardStatus: [],
   loading: true,
   error: null,
@@ -56,18 +57,31 @@ case "DELETE_BOARD_FAILURE":
     case 'SET_FILTERED_COLUMNS':
       return { ...state, filteredColumns: action.payload };
     case "UPDATE_TASK_STATUS":
-  return {
-    ...state,
-    tasks: state.tasks.map((task) =>
-      task.idTarefa === action.payload.id
-        ? {
-            ...task,
-            idStatus: action.payload.statusId,
-            nomeStatus: action.payload.statusName,
-          }
-        : task
-    ),
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.idTarefa === action.payload.id
+            ? {
+                ...task,
+                idStatus: action.payload.statusId,
+                nomeStatus: action.payload.statusName,
+              }
+            : task
+        ),
   };
+  
+  case "CREATE_STATUS_REQUEST":
+      return { ...state, loading: true, error: null };
+    case "CREATE_STATUS_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        status: [...state.status, action.payload],
+        selectedBoardStatus: [...(state.selectedBoardStatus || []), action.payload],
+      };
+
+    case "CREATE_STATUS_FAILURE":
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
