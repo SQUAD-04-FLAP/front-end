@@ -82,6 +82,28 @@ case "DELETE_BOARD_FAILURE":
 
     case "CREATE_STATUS_FAILURE":
       return { ...state, loading: false, error: action.payload };
+    case "DELETE_STATUS_REQUEST":
+  return { ...state, loading: true, error: null };
+
+case "DELETE_STATUS_SUCCESS":
+  return {
+    ...state,
+    loading: false,
+    selectedBoardStatus: state.selectedBoardStatus.filter(
+      (s) => String(s.id) !== String(action.payload)
+    ),
+  };
+
+case "DELETE_STATUS_FAILURE":
+  return { ...state, loading: false, error: action.payload };
+
+  case "SET_SELECTED_BOARD_STATUS":
+  return {
+    ...state,
+    selectedBoardStatus: action.payload,
+  };
+
+
     default:
       return state;
   }
