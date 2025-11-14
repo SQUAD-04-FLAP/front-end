@@ -12,7 +12,6 @@ import { ButtonAddNewList } from '../ButtonAddNewList';
 export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
-  // const columnsState = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
   const [loading, setLoading] = useState(true);
 
   const [selectedTask, setSelectedTask] = useState(null);
@@ -175,9 +174,8 @@ function groupTasksByStatus(tasks, boardStatus) {
 
 function getStatusColor(nome) {
   const lower = nome.toLowerCase();
-  if (lower.includes("backlog")) return "bg-amber-500";
-  if (lower.includes("desenvolvimento")) return "bg-sky-500";
-  if (lower.includes("teste")) return "bg-fuchsia-500";
-  if (lower.includes("concluído")) return "bg-emerald-500";
+  if (lower.includes("A Fazer")) return "bg-amber-500";
+  if (lower.includes("Em Progresso")) return "bg-sky-500";
+  if (lower.includes("Concluído")) return "bg-emerald-500";
   return "bg-gray-400";
 }

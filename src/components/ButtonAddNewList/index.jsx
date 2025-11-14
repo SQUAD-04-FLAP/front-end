@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useKanbanMember } from "../../hooks/useKanbanMember";
 import { showMessage } from "../../adapters/showMessage";
-import { listFramersBySector } from '../../services/framerService';
 
 export function ButtonAddNewList() {
   const [isOpen, setIsOpen] = useState(false);
