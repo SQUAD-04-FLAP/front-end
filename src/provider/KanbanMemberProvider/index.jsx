@@ -7,6 +7,7 @@ import { deleteTaskById } from '../../services/tasks';
 import {createTask} from '../../services/tasks';
 import { createStatus } from '../../services/framerService';
 import { deleteStatus } from '../../services/framerService';
+import { updateStatusFramer } from '../../services/framerService';
 
 export function KanbanMemberProvider({ children }) {
   const [state, dispatch] = useReducer(kanbanReducer, initialStateKanban);
@@ -89,6 +90,21 @@ export function KanbanMemberProvider({ children }) {
   }
 };
 
+const update_status = async (idStatus, nome) => {
+  dispatch({ type: "UPDATE_STATUS_REQUEST" });
+
+  try {
+    const updated = await updateStatusFramer(idStatus, nome);
+
+    dispatch({ type: "UPDATE_STATUS_SUCCESS", payload: updated });
+    return updated;
+  } catch (e) {
+    dispatch({ type: "UPDATE_STATUS_FAILURE", payload: e.message });
+    throw e;
+  }
+};
+
+
   useEffect(() => {
     if (!state.selectedBoard) return;
 
@@ -135,7 +151,7 @@ export function KanbanMemberProvider({ children }) {
   }, [state.columns, state.quadroSelecionado, state.setorSelecionado]);
 
   return (
-    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard, create_status, delete_status }}>
+    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard, create_status, delete_status, update_status }}>
       {children}
     </KanbanMemberContext.Provider>
   );

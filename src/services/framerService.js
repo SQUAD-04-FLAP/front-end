@@ -127,3 +127,22 @@ export async function deleteStatus(idStatus) {
     throw error;
   }
 }
+
+export const updateStatusFramer = async (idStatus, nome) => {
+  try {
+    const res = await fetch(`${API_URL}/status/${idStatus}`, {
+      method: "PUT",
+      headers: {
+         "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ nome }),
+    });
+
+    if(!res.ok) throw new Error("Não foi possível atualizar o status");
+    return await res.json();
+  } catch(e) {
+    console.log("Erro ao atualizar o status", e);
+    throw e;
+  }
+}
