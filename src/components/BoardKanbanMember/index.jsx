@@ -179,3 +179,4 @@ function getStatusColor(nome) {
   if (lower.includes("Concluído")) return "bg-emerald-500";
   return "bg-gray-400";
 }
+
