@@ -32,8 +32,7 @@ export function KanbanMemberProvider({ children }) {
 
    async function addTask(newTaskData) {
     try {
-      const createdTask = await createTask(newTaskData); // chama API
-      // Atualiza localmente
+      const createdTask = await createTask(newTaskData); 
       dispatch({ type: 'ADD_TASK', payload: createdTask });
     } catch (err) {
       console.error('Erro ao criar tarefa:', err);
@@ -89,7 +88,6 @@ export function KanbanMemberProvider({ children }) {
     throw e;
   }
 };
-
 
   useEffect(() => {
     if (!state.selectedBoard) return;

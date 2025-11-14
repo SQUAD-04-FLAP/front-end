@@ -99,7 +99,8 @@ export async function createStatus(idQuadro, nome) {
 
     if (!res.ok) throw new Error(`Erro ao criar status no quadro ${idQuadro}`);
 
-    return await res.json();
+    const data = await res.json();
+    return data;
   } catch (error) {
     console.error("[QuadroService] Erro ao criar status:", error);
     throw error;

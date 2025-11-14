@@ -154,7 +154,8 @@ function groupTasksByStatus(tasks, boardStatus) {
 
   const orderedStatus = [...boardStatus].sort((a, b) => a.ordem - b.ordem);
   return orderedStatus.map((s) => ({
-    id: s.id.toString(),
+    // id: s.id.toString(),
+    id: s?.id ? s.id.toString() : "",
     name: s.nome,
     colorDot: getStatusColor(s.nome),
     tasks: tasks

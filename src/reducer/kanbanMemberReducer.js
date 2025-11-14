@@ -97,6 +97,13 @@ case "DELETE_STATUS_SUCCESS":
 case "DELETE_STATUS_FAILURE":
   return { ...state, loading: false, error: action.payload };
 
+  case "SET_SELECTED_BOARD_STATUS":
+  return {
+    ...state,
+    selectedBoardStatus: action.payload,
+  };
+
+
     default:
       return state;
   }
