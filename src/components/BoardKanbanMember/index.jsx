@@ -12,11 +12,14 @@ import { ButtonAddNewList } from '../ButtonAddNewList';
 export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
+  // const columnsState = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
   const [loading, setLoading] = useState(true);
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
+
+  console.log(state);
 
   useEffect(() => {
     // Quando tasks ou status mudarem, recria as colunas
@@ -151,7 +154,8 @@ function groupTasksByStatus(tasks, boardStatus) {
 
   const orderedStatus = [...boardStatus].sort((a, b) => a.ordem - b.ordem);
   return orderedStatus.map((s) => ({
-    id: s.id.toString(),
+    // id: s.id.toString(),
+    id: s?.id ? s.id.toString() : "",
     name: s.nome,
     colorDot: getStatusColor(s.nome),
     tasks: tasks

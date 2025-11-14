@@ -6,10 +6,10 @@ import { fetchTasksByBoardID } from '../../services/tasks';
 import { deleteTaskById } from '../../services/tasks';
 import {createTask} from '../../services/tasks';
 import { createStatus } from '../../services/framerService';
+import { deleteStatus } from '../../services/framerService';
 
 export function KanbanMemberProvider({ children }) {
   const [state, dispatch] = useReducer(kanbanReducer, initialStateKanban);
-
 
   useEffect(() => {
     if (!state.selectedSector) return;
@@ -32,8 +32,7 @@ export function KanbanMemberProvider({ children }) {
 
    async function addTask(newTaskData) {
     try {
-      const createdTask = await createTask(newTaskData); // chama API
-      // Atualiza localmente
+      const createdTask = await createTask(newTaskData); 
       dispatch({ type: 'ADD_TASK', payload: createdTask });
     } catch (err) {
       console.error('Erro ao criar tarefa:', err);
@@ -78,6 +77,17 @@ export function KanbanMemberProvider({ children }) {
       }
   };
 
+  const delete_status = async (id) => {
+  dispatch({ type: "DELETE_STATUS_REQUEST" });
+
+  try {
+    await deleteStatus(id);
+    dispatch({ type: "DELETE_STATUS_SUCCESS", payload: id });
+  } catch (e) {
+    dispatch({ type: "DELETE_STATUS_FAILURE", payload: e.message });
+    throw e;
+  }
+};
 
   useEffect(() => {
     if (!state.selectedBoard) return;
@@ -125,7 +135,7 @@ export function KanbanMemberProvider({ children }) {
   }, [state.columns, state.quadroSelecionado, state.setorSelecionado]);
 
   return (
-    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard, create_status }}>
+    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard, create_status, delete_status }}>
       {children}
     </KanbanMemberContext.Provider>
   );
