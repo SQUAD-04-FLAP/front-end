@@ -5,6 +5,7 @@ import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { toast } from 'react-toastify';
 import { Dialog } from '../Dialog';
 import { showMessage } from '../../adapters/showMessage';
+import { ButtonEditStatusFramer } from '../ButtonEditStatusFramer';
 
 export function Column({ data, onCardClick }) {
   const { delete_status } = useKanbanMember();
@@ -44,15 +45,8 @@ export function Column({ data, onCardClick }) {
       </div>
 
        <div>
-         <button
-        onClick={() => console.log("Editar status")}
-        className="p-2 rounded-full text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 
-                  hover:text-blue-500 hover:bg-gray-200 dark:hover:bg-gray-700 
-                  transition-all duration-200 cursor-pointer shadow-sm"
-        title="Editar status"
-      >
-        <Pencil size={15} strokeWidth={2.2} />
-      </button>
+
+       <ButtonEditStatusFramer status={data} />
       
         <button
         onClick={() => handleDeleteStatus(data.id)}
@@ -65,8 +59,6 @@ export function Column({ data, onCardClick }) {
 
 
       </header>
-
-
 
       <Droppable droppableId={data.id}>
         {(provided, ) => (

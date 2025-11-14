@@ -51,7 +51,7 @@ export const delete_sector = async (idSetor) => {
   });
 
   if (!response.ok) {
-    throw new Error("Não foi possível excluir o projeto. Tente novamente mais tarde.");
+    throw new Error("Não foi possível excluir a empresa. Tente novamente mais tarde.");
   }
 
   return true;

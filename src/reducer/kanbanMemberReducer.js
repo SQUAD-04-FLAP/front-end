@@ -103,6 +103,14 @@ case "DELETE_STATUS_FAILURE":
     selectedBoardStatus: action.payload,
   };
 
+  case "UPDATE_STATUS_SUCCESS":
+  return {
+    ...state,
+    loading: false,
+    selectedBoardStatus: state.selectedBoardStatus.map(s =>
+      s.id === action.payload.id ? action.payload : s
+    ),
+  };
 
     default:
       return state;
