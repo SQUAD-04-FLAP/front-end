@@ -5,7 +5,7 @@ export const userAuthentication = {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ email, senha }),
     });
@@ -16,9 +16,10 @@ export const userAuthentication = {
     }
 
     const data = await res.json();
+    console.log(data);
 
     if(data.token) {
-        localStorage.setItem("token", data.token) // salva o token
+        localStorage.setItem("token", data.token);
         return data.token;
     }
 
