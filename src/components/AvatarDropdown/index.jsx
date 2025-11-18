@@ -60,15 +60,6 @@ export default function AvatarDropdown() {
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
             <li>
               <RouterLinks
-                href="#"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-purple-50 dark:hover:bg-purple-600 rounded-md transition"
-              >
-                <User className="w-4 h-4 text-blue-600" />
-                Perfil
-              </RouterLinks>
-            </li>
-            <li>
-              <RouterLinks
                 href="/configuracoes"
                 className="flex items-center gap-2 px-4 py-2 hover:bg-purple-50 dark:hover:bg-purple-600 rounded-md transition"
               >

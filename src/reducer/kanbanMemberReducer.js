@@ -6,8 +6,8 @@ export const initialStateKanban = {
   selectedBoardStatus: [],
   loading: true,
   error: null,
-  selectedBoard: localStorage.getItem('selectedBoard') || '',
-  selectedSector: localStorage.getItem('selectedSector') || '',
+  selectedBoard: '',
+  selectedSector: '',
   selectedTask: null,
   isModalOpen: false,
 };

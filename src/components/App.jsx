@@ -11,23 +11,23 @@ import { CommentsProvider } from "../provider/CommentsProvider";
 
 function App() {
   return (
+     <AuthProvider>
     <CommentsProvider>
     <KanbanMemberProvider>
       <TaskProvider>
       <FilterProvider>
       <FramerProvider>
       <SectorProvider>
-      <AuthProvider>
         <MessagesContainer>
             <MainRouter />
         </MessagesContainer>
-      </AuthProvider>
       </SectorProvider>
       </FramerProvider>
       </FilterProvider>
       </TaskProvider>
     </KanbanMemberProvider>
     </CommentsProvider>
+    </AuthProvider>
   )
 }
 

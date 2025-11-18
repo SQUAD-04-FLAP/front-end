@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useFramer } from "../../hooks/useFramer";
-import { ChevronDown, Loader2, Inbox } from "lucide-react";
+import { ChevronDown, Loader2, Inbox, Columns } from "lucide-react";
 import { useKanbanMember } from "../../hooks/useKanbanMember";
 
 export function FilterBoardMember({ ...props }) {
@@ -10,52 +10,56 @@ export function FilterBoardMember({ ...props }) {
   const [quadroSelecionado, setQuadroSelecionado] = useState("");
   const [status, setStatus] = useState("loading");
 
+  // Atualiza o status do carregamento
   useEffect(() => {
-    if (framers && framers.length > 0) {
+    if (isLoading) {
+      setStatus("loading");
+    } else if (framers && framers.length > 0) {
       setStatus("loaded");
-    } else if (!isLoading && framers?.length === 0) {
+    } else {
       setStatus("empty");
     }
   }, [framers, isLoading]);
 
-
+  // Seleciona quadro salvo no localStorage
   useEffect(() => {
-  const savedBoard = localStorage.getItem("selectedBoard");
-  const savedBoardName = localStorage.getItem("selectedBoardName");
-  const savedBoardStatus = localStorage.getItem("selectedBoardStatus");
+    if (status === "loaded" && framers.length > 0) {
+      const savedBoard = localStorage.getItem("selectedBoard");
+      const savedBoardName = localStorage.getItem("selectedBoardName");
+      const savedBoardStatus = localStorage.getItem("selectedBoardStatus");
 
-  if (status === "loaded" && framers.length > 0 && savedBoard) {
-    const quadro = framers.find(f => f.idQuadro === parseInt(savedBoard));
-    const name = quadro?.nome || savedBoardName;
-    const statusList = quadro?.status || JSON.parse(savedBoardStatus || "[]");
+      if (savedBoard) {
+        const quadro = framers.find(f => f.idQuadro === parseInt(savedBoard));
+        const name = quadro?.nome || savedBoardName;
+        const statusList = quadro?.status || JSON.parse(savedBoardStatus || "[]");
 
-    setQuadroSelecionado(savedBoard);
+        setQuadroSelecionado(savedBoard);
+
+        dispatch({
+          type: "SET_QUADRO_FILTER",
+          payload: { id: savedBoard, name, statusList },
+        });
+      }
+    }
+  }, [framers, status, dispatch]);
+
+  // Quando usuário muda o select
+  const handleChange = (e) => {
+    const id = e.target.value;
+    const quadro = framers.find(f => f.idQuadro === parseInt(id));
+    const name = quadro?.nome || "";
+    const statusList = quadro?.status || [];
+
+    setQuadroSelecionado(id);
+    localStorage.setItem("selectedBoard", id);
+    localStorage.setItem("selectedBoardName", name);
+    localStorage.setItem("selectedBoardStatus", JSON.stringify(statusList));
 
     dispatch({
       type: "SET_QUADRO_FILTER",
-      payload: { id: savedBoard, name, statusList },
+      payload: { id, name, statusList },
     });
-  }
-}, [framers, status, dispatch]);
-
-  const handleChange = (e) => {
-  const id = e.target.value;
-  const quadro = framers.find(f => f.idQuadro === parseInt(id));
-
-  const name = quadro?.nome || "";
-  const statusList = quadro?.status || [];
-
-  setQuadroSelecionado(id);
-  localStorage.setItem("selectedBoard", id);
-  localStorage.setItem("selectedBoardName", name);
-  localStorage.setItem("selectedBoardStatus", JSON.stringify(statusList));
-
-  dispatch({
-    type: "SET_QUADRO_FILTER",
-    payload: { id, name, statusList },
-  });
-};
-
+  };
 
   return (
     <div className="relative inline-block">
@@ -66,10 +70,8 @@ export function FilterBoardMember({ ...props }) {
         </div>
       ) : status === "empty" ? (
         <div className="flex items-center gap-2 px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
-          <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-          <span className="flex items-center gap-1">
-            Carregando...
-          </span>
+          <Columns className="w-4 h-4" />
+          Nenhum quadro disponível
         </div>
       ) : (
         <>

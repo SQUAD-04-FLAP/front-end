@@ -6,10 +6,11 @@ import { SectorContext } from './SectorContext';
 import { create_sector } from '../../services/sectorsService';
 import { delete_sector } from '../../services/sectorsService';
 import { update_sector } from '../../services/sectorsService';
-
+import { useAuth } from '../../hooks/useAuth';
 
 export function SectorProvider({ children }) {
     const [ state, dispatch ] = useReducer(sectorReducer, initialSectorState);
+    const { token } = useAuth();
 
     const fetchSectors = async() => {
         dispatch({ type: "FETCH_SECTORS_REQUEST" });
@@ -21,6 +22,12 @@ export function SectorProvider({ children }) {
             dispatch({ type: "FETCH_SECTORS_FAILURE", payload: e.message });
         }
     }
+
+     useEffect(() => {
+        if (token) {
+            fetchSectors();
+        }
+    }, [token]);
 
   const createSector = async (newSectorData) => {
   dispatch({ type: "CREATE_SECTOR_REQUEST" });
