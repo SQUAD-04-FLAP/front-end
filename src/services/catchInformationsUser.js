@@ -1,6 +1,6 @@
 import { userAuthentication } from './userAuthentication';
 
-const API_URL = "/api/auth/user";
+const API_URL = "/api/user/find";
 
 export const catchInformationsUser =  {
     getUserById: async (id) => {

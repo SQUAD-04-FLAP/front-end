@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUser = async () => {
       const token = userAuthentication.getTokenFromStorage();
+
       if (!token) {
         dispatch({ type: "SET_LOADING", payload: false });
         return;
