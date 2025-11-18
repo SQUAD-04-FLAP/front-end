@@ -4,9 +4,11 @@ import { create_framer } from '../../services/framerService';
 import { FramerContext } from './FramerContext';
 import { listAllFramers } from '../../services/framerService';
 import { delete_framer } from '../../services/framerService';
+import { useAuth } from '../../hooks/useAuth';
 
 export function FramerProvider({ children }) {
     const [ state, dispatch ] = useReducer(framerReducer, initalFramerState);
+    const { token } = useAuth();
 
     const createFramer = async(newFramerData) => {
         dispatch({ type: "CREATE_FRAMER_REQUEST" });
@@ -29,6 +31,12 @@ export function FramerProvider({ children }) {
     }
   };
 
+  useEffect(() => {
+        if (token) { 
+            fetchFramers();
+        }
+    }, [token]);
+
   const deleteBoard = async (idBoard) => {
       dispatch({ type: "DELETE_BOARD_REQUEST" });
   
@@ -41,9 +49,9 @@ export function FramerProvider({ children }) {
       }
     };
 
-  useEffect(() => {
-    fetchFramers();
-  }, []);
+  // useEffect(() => {
+  //   fetchFramers();
+  // }, []);
 
     return(
         <FramerContext.Provider

@@ -112,10 +112,7 @@ export function Sidebar() {
         </svg>
       </button>
 
-   <div className="flex items-center justify-between w-full px-4 h-14">
-
-  {/* Campo de busca */}
-  <SearchSidebar />
+   <div className="flex items-center justify-end w-full px-4 h-14">
   
   <div className="flex items-center gap-4">
 
