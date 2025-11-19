@@ -51,6 +51,23 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+    const fetchAllUsers = async () => {
+    dispatch({ type: "FETCH_ALL_USERS_REQUEST" });
+
+    try {
+      const data = await catchInformationsUser.getAllUsers();
+      dispatch({ type: "FETCH_ALL_USERS_SUCCESS", payload: data });
+
+      return data;
+    } catch (e) {
+      dispatch({ type: "FETCH_ALL_USERS_FAILURE", payload: e.message });
+    }
+  };
+
+  useEffect(() => {
+      fetchAllUsers();
+  }, []);
+
   const login = async (email, password) => {
     const token = await userAuthentication.login(email, password);
 
@@ -79,6 +96,9 @@ export const AuthProvider = ({ children }) => {
         loading: state.loading,
         login,
         logout,
+        allUsers: state.allUsers,
+        loadingAllUser: state.loadingAllUser,
+        errorAllUser: state.errorAllUser,
       }}
     >
       {children}
