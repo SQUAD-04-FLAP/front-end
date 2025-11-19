@@ -1,6 +1,7 @@
 import { Activity, BadgeCheck, Calendar, CircleDot, Edit, Eye, Mail, MoreHorizontal, MoreVertical, Shield, ShieldCheck, Trash, User } from 'lucide-react';
 import { Loader2 } from "lucide-react";
 import { useAuth } from '../../hooks/useAuth';
+import { formatDate } from '../../utils/formatDate';
 
 export function TableUsers() {
     const { allUsers, loadingAllUser, errorAllUser } = useAuth();
@@ -60,7 +61,7 @@ export function TableUsers() {
               <th className="px-4 py-3 text-left text-sm font-medium text-slate-600 dark:text-slate-300">
                 <div className="flex items-center">
                   <Calendar className='w-4 h-4 mr-2' />
-                  Data de cadastro
+                  Data e hora de registro
                 </div>
               </th>
 
@@ -113,7 +114,7 @@ export function TableUsers() {
 
                 {/* DATA */}
                 <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                  {user.createdAt ? user.createdAt : "Sem data"}
+                  {user.createdAt ? formatDate(user.createdAt) : "N/A"}
                 </td>
 
                 {/* AÇÕES */}
