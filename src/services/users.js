@@ -41,5 +41,19 @@ export const users =  {
             console.error("Ocorreu um erro inesperado.", e);
             throw e;
          }
+    },
+
+    deleteUserByid: async (id) => {
+        const response = await fetch(`${API_URL}/delete/${id}`, {
+            method: "DELETE",
+             headers: {
+                "Content-Type": "application/json",
+                ...getAuthHeader()
+            }
+        });
+
+        if(!response.ok) throw new Error("Não foi possível excluir o usuário com ID: ", id);
+
+        return true;
     }
 }

@@ -4,6 +4,7 @@ import { userAuthentication } from '../../services/userAuthentication';
 import { users } from '../../services/users';
 import { AuthContext } from './AuthContext';
 import { jwtDecode } from 'jwt-decode';
+import { showMessage } from '../../adapters/showMessage';
 
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
@@ -87,7 +88,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-      const register = async (nome, email, senha) => {
+    const register = async (nome, email, senha) => {
       dispatch({ type: "REGISTER_LOADING", payload: true });
 
       try {
@@ -110,6 +111,19 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
+    const deleteUserById = async (idUser) => {
+      dispatch({ type: "DELETE_USER_REQUEST" });
+
+      try {
+        await users.deleteUserByid(idUser);
+        dispatch({ type: "DELETE_USER_SUCCESS", payload: idUser });
+        showMessage.success("Usuário excluído com sucesso", true);
+      } catch(e) {
+        dispatch({ type: "DELETE_USER_FAILURE", payload: e.message });
+        showMessage.error("Aconteceu um problema inesperado ao excluir o usuário", true);
+      }
+    }
+
   return (
     <AuthContext.Provider
       value={{
@@ -117,11 +131,18 @@ export const AuthProvider = ({ children }) => {
         user: state.user,
         token: state.token,
         loading: state.loading,
+
         login,
         logout,
+
+        deleteUserById,
+        loadingDeleteUserById: state.loadingDeleteUserById,
+        errorDeleteUserById: state.errorDeleteUserById,
+
         register,
         loadingRegister: state.loadingRegister,
         errorRegister: state.errorRegister,
+
         allUsers: state.allUsers,
         loadingAllUser: state.loadingAllUser,
         errorAllUser: state.errorAllUser,

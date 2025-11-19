@@ -2,11 +2,25 @@ import { Activity, BadgeCheck, Calendar, CircleDot, Edit, Eye, Mail, MoreHorizon
 import { Loader2 } from "lucide-react";
 import { useAuth } from '../../hooks/useAuth';
 import { formatDate } from '../../utils/formatDate';
+import { toast } from 'react-toastify';
+import { Dialog } from '../../components/Dialog';
+import { showMessage } from '../../adapters/showMessage';
 
 export function TableUsers() {
-    const { allUsers, loadingAllUser, errorAllUser } = useAuth();
-    console.log(allUsers);
+    const { 
+      allUsers, 
+      loadingAllUser, 
+      errorAllUser,
 
+      deleteUserById,
+      loadingDeleteUserById,
+      errorDeleteUserById
+    } = useAuth();
+
+    if (errorDeleteUserById) {
+      showMessage.error(`${errorDeleteUserById}`, true);
+  }
+  
     return(
       <div className="overflow-x-auto p-8">
 
@@ -136,11 +150,32 @@ export function TableUsers() {
                     Editar
                   </button>
 
-                  <button 
+                  <button
                     type="button" 
                     className="flex items-center gap-2 rounded-lg text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 border border-gray-200 dark:border-slate-600 px-3 py-1 cursor-pointer"
+                    onClick={() => {
+                      toast.dismiss();
+                      toast(Dialog, {
+                        data: "Tem certeza que deseja excluir este usuário?",
+                        autoClose: false,
+                        closeOnClick: false,
+                        closeButton: false,
+                        draggable: false,
+                        onClose: (confirmation) => {
+                        if (confirmation) {
+                          deleteUserById(user.idUsuario);
+                        }
+                  },
+                  })
+                    }}
+                    title="Excluir Usuário"
                   >
-                    <Trash className='h-4 w-4' />
+                    {loadingDeleteUserById ? (
+                      <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin disabled:cursor-not-allowed"></div>
+                    ) : (
+                      <Trash className='h-4 w-4' />
+                    )}
+                    
                     Excluir
                   </button>
 
