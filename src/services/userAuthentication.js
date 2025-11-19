@@ -1,8 +1,8 @@
-const API_URL = "/api/auth/login";
+const API_URL = "/api/auth";
 
 export const userAuthentication = {
   login: async (email, senha) => {
-    const res = await fetch(API_URL, {
+    const res = await fetch((`${API_URL}/login`), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -23,6 +23,22 @@ export const userAuthentication = {
     }
 
     return null;
+  },
+
+  register: async(nome, email, senha ) => {
+    const res = await fetch(`${API_URL}/register`, {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ nome, email, senha }),
+    })
+
+    if(!res.ok) throw new Error("Erro ao criar usuário");
+
+    const data = await res.json();
+
+    return data;
   },
 
   logout: () => {

@@ -87,6 +87,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+      const register = async (nome, email, senha) => {
+      dispatch({ type: "REGISTER_LOADING", payload: true });
+
+      try {
+        const newUser = await userAuthentication.register(nome, email, senha);
+
+        const updatedUsers = [...state.allUsers, newUser];
+
+        dispatch({
+          type: "REGISTER_SUCCESS",
+          payload: updatedUsers
+        });
+
+        return true;
+
+      } catch (e) {
+        dispatch({
+          type: "REGISTER_FAILURE",
+          payload: e.message
+        });
+      }
+    };
+
   return (
     <AuthContext.Provider
       value={{
@@ -96,6 +119,9 @@ export const AuthProvider = ({ children }) => {
         loading: state.loading,
         login,
         logout,
+        register,
+        loadingRegister: state.loadingRegister,
+        errorRegister: state.errorRegister,
         allUsers: state.allUsers,
         loadingAllUser: state.loadingAllUser,
         errorAllUser: state.errorAllUser,
