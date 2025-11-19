@@ -101,7 +101,7 @@ export function TableUsers() {
 
                 {/* PERMISSÃO */}
                 <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-300 font-medium">
-                  {user.permissao}
+                  {user.permissao === "ADMIN" ? "Administrador" : "Membro"}
                 </td>
 
                 {/* STATUS */}
