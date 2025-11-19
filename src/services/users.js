@@ -7,7 +7,7 @@ function getAuthHeader() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export const catchInformationsUser =  {
+export const users =  {
     getUserById: async (id) => {
         const token = userAuthentication.getTokenFromStorage();
 

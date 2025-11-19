@@ -1,7 +1,7 @@
 import { useReducer, useEffect } from 'react';
 import { authReducer, initialState } from '../../reducer/authReducer';
 import { userAuthentication } from '../../services/userAuthentication';
-import { catchInformationsUser } from '../../services/catchInformationsUser';
+import { users } from '../../services/users';
 import { AuthContext } from './AuthContext';
 import { jwtDecode } from 'jwt-decode';
 
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         // Buscar informações completas do usuário pela API
-        const userData = await catchInformationsUser.getUserById(decoded.sub);
+        const userData = await users.getUserById(decoded.sub);
 
         dispatch({
           type: "LOGIN",
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: "FETCH_ALL_USERS_REQUEST" });
 
     try {
-      const data = await catchInformationsUser.getAllUsers();
+      const data = await users.getAllUsers();
       dispatch({ type: "FETCH_ALL_USERS_SUCCESS", payload: data });
 
       return data;
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       const decoded = jwtDecode(token);
 
       // Buscar informações completas do usuário após login
-      const userData = await catchInformationsUser.getUserById(decoded.sub);
+      const userData = await users.getUserById(decoded.sub);
 
       dispatch({ type: "LOGIN", payload: { token, user: userData } });
 
