@@ -1,4 +1,4 @@
-import { Activity, BadgeCheck, Calendar, CircleDot, Dot, Edit, Mail, MoreHorizontal, MoreVertical, Shield, ShieldCheck, Trash, User } from 'lucide-react';
+import { Activity, BadgeCheck, Calendar, CircleDot, Edit, Eye, Mail, MoreHorizontal, MoreVertical, Shield, ShieldCheck, Trash, User } from 'lucide-react';
 import { Loader2 } from "lucide-react";
 import { useAuth } from '../../hooks/useAuth';
 
@@ -118,6 +118,14 @@ export function TableUsers() {
 
                 {/* AÇÕES */}
                 <td className="flex gap-3 px-4 py-3 text-sm font-medium">
+
+                   <button 
+                      type="button" 
+                      className="flex items-center gap-2 rounded-lg text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 border border-gray-200 dark:border-slate-600 px-3 py-1 cursor-pointer"
+                    >
+                      <Eye className="h-4 w-4" />
+                      Visualizar
+                    </button>
 
                   <button 
                     type="button" 
