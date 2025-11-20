@@ -31,6 +31,7 @@
     "@hello-pangea/dnd": "^18.0.1",
     "@heroicons/react": "^2.2.0",
     "axios": "^1.11.0",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.23.22",
     "jotai": "^2.15.0",
     "jwt-decode": "^4.0.0",

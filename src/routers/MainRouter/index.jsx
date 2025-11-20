@@ -19,6 +19,7 @@ import { Framers } from "../../pages/Framers";
 import ProjectPage from "../../pages/Projects/ProjectPage";
 import { RecoveryPassword } from '../../pages/RecoveryPassword';
 import { ForgotPassword } from '../../pages/ForgotPassword';
+import UsuariosPage from "../../pages/Usuarios/UsuariosPage";
 
 export function MainRouter() {
   const { loading } = useAuth();
@@ -48,6 +49,7 @@ export function MainRouter() {
           <Route path="/projects/:id" element={<ProjectPage />} />
           <Route path="/nova-tarefa" element={<NovaTarefa />} />
           <Route path="/users" element={<Usuarios />} />
+          <Route path="/users/:id" element={<UsuariosPage />} />
           <Route path="/framers" element={<Framers />} />
         </Route>
 

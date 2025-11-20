@@ -10,7 +10,7 @@ export async function list_sectors() {
     const res = await fetch(API_URL, {
       headers: {
         "Content-Type": "application/json",
-        ...getAuthHeader(), // envia o token
+        ...getAuthHeader(),
       },
     });
 
@@ -28,7 +28,7 @@ export async function create_sector(sectorData) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...getAuthHeader(), // envia o token
+        ...getAuthHeader(),
       },
       body: JSON.stringify(sectorData),
     });
