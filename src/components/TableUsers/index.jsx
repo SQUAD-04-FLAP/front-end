@@ -99,7 +99,7 @@ export function TableUsers() {
                 <td className="px-4 py-3 text-sm text-slate-900 dark:text-slate-200 font-medium">
                   <div className="flex items-center cursor-pointer w-max">
                     <img 
-                      src={user.avatar || "img/profile-default.jpg"} 
+                      src={user.avatar || "https://ui-avatars.com/api/?name=" + user.nome} 
                       alt={user.nome} 
                       className="w-9 h-9 rounded-full shrink-0" 
                     />

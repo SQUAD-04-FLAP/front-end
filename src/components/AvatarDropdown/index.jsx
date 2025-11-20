@@ -47,7 +47,7 @@ export default function AvatarDropdown() {
       <img
         onClick={toggleDropdown}
         className="w-10 h-10 rounded-full cursor-pointer transition"
-        src={user.avatar || "img/profile-default.jpg"}
+        src={user.avatar || "https://ui-avatars.com/api/?name=" + user.nome}
         alt={user.nome}
       />
 
