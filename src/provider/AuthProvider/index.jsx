@@ -65,9 +65,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
+    useEffect(() => {
+    if (state.token) {
       fetchAllUsers();
-  }, []);
+    }
+  }, [state.token]);
+
 
   const login = async (email, password) => {
     const token = await userAuthentication.login(email, password);
