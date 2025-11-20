@@ -33,7 +33,7 @@ export function SelectUser() {
         <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white dark:bg-gray-800 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-opacity-75 sm:text-sm transition-colors">
           <span className="flex items-center gap-3">
             <img
-              src={selected.avatar || "img/profile-default.jpg"}
+              src={selected.avatar || "https://ui-avatars.com/api/?name=" + selected.nome}
               alt=""
               className="w-6 h-6 rounded-full"
             />
@@ -61,7 +61,7 @@ export function SelectUser() {
                 <>
                   <div className="flex items-center gap-3">
                     <img
-                      src={person.avatar || "img/profile-default.jpg"}
+                      src={person.avatar || "https://ui-avatars.com/api/?name=" + person.nome}
                       alt={person.nome}
                       className="w-6 h-6 rounded-full"
                     />
