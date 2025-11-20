@@ -16,6 +16,9 @@ export const initialState = {
 
     loadingUpdateUserById: false,
     errorUpdateUserById: null,
+
+    loadingUpdateRoleUserById: false,
+    errorUpdateRoleUserById: null,
 }
 
 export function authReducer(state, action) {
@@ -64,6 +67,20 @@ export function authReducer(state, action) {
                 loadingUpdateUserById: false,
                 errorUpdateUserById: action.payload
         }
+
+        case "UPDATE_ROLE_USER_REQUEST":
+            return {...state, loadingUpdateRoleUserById: true, errorUpdateRoleUserById: null}
+        case "UPDATE_ROLE_USER_SUCCESS":
+            return {
+                ...state, loadingUpdateRoleUserById: false,
+                allUsers: state.allUsers.map(u => u.idUsuario === action.payload.idUsuario ? action.payload : u)
+            }
+        case "UPDATE_ROLE_USER_FAILURE":
+            return {
+                ...state,
+                loadingUpdateRoleUserById: false,
+                errorUpdateRoleUserById: action.payload
+            }
 
         case "FETCH_ALL_USERS_REQUEST":
             return {...state, loadingAllUser: true, errorAllUser: null}

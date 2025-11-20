@@ -154,6 +154,33 @@ export const AuthProvider = ({ children }) => {
       }
   };
 
+  const updateRoleUserById = async (idUser, dataToUpdate) => {
+  dispatch({ type: "UPDATE_ROLE_USER_REQUEST" });
+
+  try {
+    const updatedUser = await userAuthentication.updateRoleUserById(idUser, dataToUpdate);
+
+    dispatch({
+      type: "UPDATE_ROLE_USER_SUCCESS",
+      payload: updatedUser
+    });
+
+    showMessage.success("Permissão atualizada com sucesso", true);
+
+    return updatedUser;
+
+  } catch (error) {
+    dispatch({
+      type: "UPDATE_ROLE_USER_FAILURE",
+      payload: error.message
+    });
+
+    showMessage.error("Erro ao atualizar permissão do usuário", false);
+    throw error;
+  }
+};
+
+
   return (
     <AuthContext.Provider
       value={{
@@ -172,6 +199,10 @@ export const AuthProvider = ({ children }) => {
         updateUserById,
         loadingUpdateUserById: state.loadingUpdateUserById,
         errorUpdateUserById: state.errorUpdateUserById,
+
+        updateRoleUserById,
+        loadingUpdateRoleUserById: state.loadingUpdateRoleUserById,
+        errorUpdateRoleUserById: state.errorUpdateRoleUserById,
 
         register,
         loadingRegister: state.loadingRegister,
