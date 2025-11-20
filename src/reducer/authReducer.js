@@ -50,17 +50,22 @@ export function authReducer(state, action) {
               return { ...state, errorDeleteUserById: null }
 
 
-         case "UPDATE_USER_REQUEST":
+        case "UPDATE_USER_REQUEST":
             return {...state, loadingUpdateUserById: true, errorUpdateUserById: null}
 
         case "UPDATE_USER_SUCCESS":
             return {
-                ...state, 
+                ...state,
                 loadingUpdateUserById: false,
                 allUsers: state.allUsers.map(u =>
                     u.idUsuario === action.payload.idUsuario ? action.payload : u
-                )
-        }
+                ),
+                
+                // Atualiza o usuário logado também
+                user: state.user?.idUsuario === action.payload.idUsuario 
+                    ? action.payload 
+                    : state.user
+            };
         case "UPDATE_USER_FAILURE":
             return {
                 ...state,
