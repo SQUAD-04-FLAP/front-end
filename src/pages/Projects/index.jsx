@@ -31,7 +31,7 @@ export function Projects() {
 // Observa mudanças de setores para detectar exclusão
 useEffect(() => {
   if (state.sectors.length < previousSectorsLength.current) {
-    showMessage.success("Projeto excluído com sucesso!", true);
+    showMessage.success("Empresa excluída com sucesso!", true);
   }
   previousSectorsLength.current = state.sectors.length;
 }, [state.sectors]);
