@@ -270,6 +270,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
   const [iconeEscolhido, setIconeEscolhido] = useState('Briefcase');
   const [corEscolhida, setCorEscolhida] = useState('#3b82f6');
   const [isLoading, setIsLoading] = useState(false);
+  const [imagemCustomizada, setImagemCustomizada] = useState(null);
 
   const { createSector } = useSectors();
 
@@ -304,6 +305,18 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
     '#3b82f6', '#10b981', '#ef4444', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316'
   ];
 
+  const handleImagemUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagemCustomizada(event.target.result);
+        setIconeEscolhido('custom');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSalvar = async () => {
     if (!nomeProjeto.trim()) return;
 
@@ -315,6 +328,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
       setNomeProjeto('');
       setIconeEscolhido('Briefcase');
       setCorEscolhida('#3b82f6');
+      setImagemCustomizada(null);
 
       showMessage.success("Projeto criado com sucesso!");
       onClose();
@@ -348,7 +362,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
               <Briefcase className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              Adicionar Nova Emmpresa
+              Adicionar Nova Empresa
             </h2>
           </div>
           <button
@@ -407,6 +421,33 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
                   </button>
                 );
               })}
+              
+              {/* Botão para Upload de Imagem */}
+              <label
+                className={`p-3 rounded-lg border-2 backdrop-blur-sm transition-all hover:scale-105 cursor-pointer ${
+                  iconeEscolhido === 'custom'
+                    ? 'border-blue-500/70 bg-blue-50/70 dark:bg-blue-500/20'
+                    : 'border-gray-200/50 dark:border-gray-700/50 hover:border-gray-300/70 dark:hover:border-gray-600/70 bg-white/30 dark:bg-gray-800/30'
+                }`}
+              >
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImagemUpload}
+                  className="hidden"
+                />
+                {imagemCustomizada && iconeEscolhido === 'custom' ? (
+                  <img src={imagemCustomizada} alt="Custom" className="w-5 h-5 mx-auto object-cover rounded" />
+                ) : (
+                  <div className="w-5 h-5 mx-auto flex items-center justify-center">
+                    <span className={`text-xl font-light ${
+                      iconeEscolhido === 'custom'
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}>+</span>
+                  </div>
+                )}
+              </label>
             </div>
           </div>
 
@@ -444,10 +485,14 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
                   color: corEscolhida 
                 }}
               >
-                {(() => {
-                  const IconeComponent = getIconeComponent(iconeEscolhido);
-                  return <IconeComponent className="w-5 h-5" />;
-                })()}
+                {iconeEscolhido === 'custom' && imagemCustomizada ? (
+                  <img src={imagemCustomizada} alt="Custom icon" className="w-5 h-5 object-cover rounded" />
+                ) : (
+                  (() => {
+                    const IconeComponent = getIconeComponent(iconeEscolhido);
+                    return <IconeComponent className="w-5 h-5" />;
+                  })()
+                )}
               </div>
               <span className="text-gray-900 dark:text-gray-100 font-medium">
                 {nomeProjeto || 'Nome do Projeto'}
