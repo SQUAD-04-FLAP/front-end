@@ -13,10 +13,14 @@ export const initialState = {
 
     loadingDeleteUserById: false,
     errorDeleteUserById: null,
+
+    loadingUpdateUserById: false,
+    errorUpdateUserById: null,
 }
 
 export function authReducer(state, action) {
     switch(action.type) {
+        
         case "LOGIN":
             return { ...state, user: action.payload.user, token: action.payload.token }
         case "LOGOUT":
@@ -39,6 +43,27 @@ export function authReducer(state, action) {
             return {...state, loadingDeleteUserById: true, errorDeleteUserById: null }
         case "DELETE_USER_FAILURE":
             return {...state, loadingDeleteUserById: false, errorDeleteUserById: action.payload }
+        case "CLEAR_DELETE_ERROR":
+              return { ...state, errorDeleteUserById: null }
+
+
+         case "UPDATE_USER_REQUEST":
+            return {...state, loadingUpdateUserById: true, errorUpdateUserById: null}
+
+        case "UPDATE_USER_SUCCESS":
+            return {
+                ...state, 
+                loadingUpdateUserById: false,
+                allUsers: state.allUsers.map(u =>
+                    u.idUsuario === action.payload.idUsuario ? action.payload : u
+                )
+        }
+        case "UPDATE_USER_FAILURE":
+            return {
+                ...state,
+                loadingUpdateUserById: false,
+                errorUpdateUserById: action.payload
+        }
 
         case "FETCH_ALL_USERS_REQUEST":
             return {...state, loadingAllUser: true, errorAllUser: null}

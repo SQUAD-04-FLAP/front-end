@@ -52,8 +52,28 @@ export const users =  {
             }
         });
 
-        if(!response.ok) throw new Error("Não foi possível excluir o usuário com ID: ", id);
+        if(!response.ok) throw new Error("Aconteceu um problema inesperado ao excluir o usuário");
 
         return true;
+    },
+
+    updateUserById: async(id, data) => {
+        const response = await fetch(`${API_URL}/update/${id}`, {
+            method: "PATCH",
+             headers: {
+                "Content-Type": "application/json",
+                ...getAuthHeader()
+            },
+            body: JSON.stringify(data)
+        });
+
+         if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Não foi possível atualizar o usuário com ID ${id}: ${errorText}`);
+         }
+
+        const dataUpdated = await response.json();
+        return dataUpdated;
+
     }
 }

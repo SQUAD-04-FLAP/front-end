@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { Dialog } from '../../components/Dialog';
 import { showMessage } from '../../adapters/showMessage';
 import { useNavigate } from 'react-router-dom';
+import { ButtonEditUser } from '../ButtonEditUser';
 
 export function TableUsers() {
   const navigate = useNavigate();
@@ -146,13 +147,7 @@ export function TableUsers() {
                       Visualizar
                     </button>
 
-                  <button 
-                    type="button" 
-                    className="flex items-center gap-2 rounded-lg text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border border-gray-200 dark:border-slate-600 px-3 py-1 cursor-pointer"
-                  >
-                    <Edit className='h-4 w-4' />
-                    Editar
-                  </button>
+                    <ButtonEditUser user={user} />
 
                   <button
                     type="button" 

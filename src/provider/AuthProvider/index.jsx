@@ -120,9 +120,39 @@ export const AuthProvider = ({ children }) => {
         showMessage.success("Usuário excluído com sucesso", true);
       } catch(e) {
         dispatch({ type: "DELETE_USER_FAILURE", payload: e.message });
-        showMessage.error("Aconteceu um problema inesperado ao excluir o usuário", true);
+  
+        // LIMPA depois para não repetir toast
+        setTimeout(() => {
+            dispatch({ type: "CLEAR_DELETE_ERROR" });
+        }, 100);
       }
     }
+
+   const updateUserById = async (idUser, dataToUpdate) => {
+      dispatch({ type: "UPDATE_USER_REQUEST" });
+
+      try {
+        const updatedUser = await users.updateUserById(idUser, dataToUpdate);
+
+        dispatch({
+          type: "UPDATE_USER_SUCCESS",
+          payload: updatedUser
+        });
+
+        showMessage.success("Usuário atualizado com sucesso", true);
+
+        return updatedUser;
+
+      } catch (error) {
+        dispatch({
+          type: "UPDATE_USER_FAILURE",
+          payload: error.message
+        });
+
+        showMessage.error("Aconteceu um problema inesperado ao atualizar o usuário", false);
+        throw error;
+      }
+  };
 
   return (
     <AuthContext.Provider
@@ -138,6 +168,10 @@ export const AuthProvider = ({ children }) => {
         deleteUserById,
         loadingDeleteUserById: state.loadingDeleteUserById,
         errorDeleteUserById: state.errorDeleteUserById,
+
+        updateUserById,
+        loadingUpdateUserById: state.loadingUpdateUserById,
+        errorUpdateUserById: state.errorUpdateUserById,
 
         register,
         loadingRegister: state.loadingRegister,
