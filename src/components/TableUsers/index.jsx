@@ -5,10 +5,13 @@ import { formatDate } from '../../utils/formatDate';
 import { toast } from 'react-toastify';
 import { Dialog } from '../../components/Dialog';
 import { showMessage } from '../../adapters/showMessage';
+import { useNavigate } from 'react-router-dom';
 
 export function TableUsers() {
+  const navigate = useNavigate();
+  
     const { 
-      allUsers, 
+      allUsers,
       loadingAllUser, 
       errorAllUser,
 
@@ -134,7 +137,8 @@ export function TableUsers() {
                 {/* AÇÕES */}
                 <td className="flex gap-3 px-4 py-3 text-sm font-medium">
 
-                   <button 
+                   <button
+                      onClick={() => navigate(`/users/${user.idUsuario}`)}
                       type="button" 
                       className="flex items-center gap-2 rounded-lg text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 border border-gray-200 dark:border-slate-600 px-3 py-1 cursor-pointer"
                     >
