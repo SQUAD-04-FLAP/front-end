@@ -49,10 +49,6 @@ export function FramerProvider({ children }) {
       }
     };
 
-  // useEffect(() => {
-  //   fetchFramers();
-  // }, []);
-
     return(
         <FramerContext.Provider
             value={{
