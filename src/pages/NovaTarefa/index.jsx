@@ -9,17 +9,12 @@ import { useFramer } from "../../hooks/useFramer";
 export default function NovaTarefa() {
   const { user } = useAuth();
   const { framers } = useFramer();
-
-  console.log(framers);
   
   const [form, setForm] = useState({
     titulo: "",
     descricao: "",
-    responsavel: "",
-    prioridade: "Média",
-    dataInicio: "",
+    prioridade: "",
     dataFim: "",
-    projeto: "",
     quadro: "",
   });
 
@@ -53,13 +48,8 @@ export default function NovaTarefa() {
     const newErrors = {};
 
     if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
-    if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
-    if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
-    if (!form.quadro) newErrors.quadro = "Selecione um Quadro";
-    
-    if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
-      newErrors.dataFim = "A data de término deve ser posterior à data de início";
-    }
+    if (!form.quadro) newErrors.quadro = "O quadro é obrigatório.";
+    if (!form.dataFim) newErrors.dataFim = "A data de término é obrigatório.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -72,9 +62,15 @@ export default function NovaTarefa() {
     const idCriador = user.idUsuario;
     const idQuadro = Number(form.quadro);
 
+     const dtTermino = new Date(`${form.dataFim}T00:00:00.000Z`).toISOString();
+
+     console.log("Enviado", form);
+
     const novaTarefa = await createTask({
       titulo: form.titulo,
       descricao: form.descricao,
+      dtTermino,
+      prioridade: form.prioridade,
       idQuadro,
       idCriador,
     });
@@ -90,11 +86,8 @@ export default function NovaTarefa() {
       setForm({
         titulo: "",
         descricao: "",
-        responsavel: "",
-        prioridade: "Média",
-        dataInicio: "",
+        prioridade: "",
         dataFim: "",
-        projeto: "",
         quadro: "",
       });
       setShowSuccess(false);
@@ -161,7 +154,7 @@ export default function NovaTarefa() {
             <div>
               <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 <Layers className="w-4 h-4 mr-2 text-cyan-500" />
-                Descrição *
+                Descrição
               </label>
               <textarea
                 name="descricao"
@@ -180,58 +173,7 @@ export default function NovaTarefa() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <User className="w-4 h-4 mr-2 text-cyan-500" />
-                  Responsável *
-                </label>
-                <input
-                  type="text"
-                  name="responsavel"
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                    errors.responsavel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
-                  placeholder="Nome do responsável"
-                  value={form.responsavel}
-                  onChange={handleChange}
-                />
-                {errors.responsavel && (
-                  <p className="mt-1 text-sm text-red-500 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.responsavel}
-                  </p>
-                )}
-              </div>
-
-              {/* <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Layers className="w-4 h-4 mr-2 text-cyan-500" />
-                  Quadro *
-                </label>
-                <select
-                  name="framer"
-                  value={form.framer}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
-                    errors.framer ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
-                >
-                  <option value="">Selecione um quadro</option>
-                  {framers.map((framer) => (
-                    <option key={framer.idQuadro} value={framer.idQuadro}>
-                      {framer.nome}
-                    </option>
-                  ))}
-                </select>
-                {errors.framer && (
-                  <p className="mt-1 text-sm text-red-500 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.framer}
-                  </p>
-                )}
-              </div> */}
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
               <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 <Layers className="w-4 h-4 mr-2 text-cyan-500" />
@@ -260,6 +202,28 @@ export default function NovaTarefa() {
               )}
             </div>
 
+             <div>
+                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <Calendar className="w-4 h-4 mr-2 text-cyan-500" />
+                  Data de Término *
+                </label>
+                <input
+                  type="date"
+                  name="dataFim"
+                  value={form.dataFim}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white ${
+                    errors.dataFim ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
+                />
+                {errors.dataFim && (
+                  <p className="mt-1 text-sm text-red-500 flex items-center">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    {errors.dataFim}
+                  </p>
+                )}
+              </div>
+
 
             </div>
 
@@ -284,45 +248,6 @@ export default function NovaTarefa() {
                     {p}
                   </button>
                 ))}
-              </div>
-            </div>
-
-            {/* Datas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Calendar className="w-4 h-4 mr-2 text-cyan-500" />
-                  Data de Início
-                </label>
-                <input
-                  type="date"
-                  name="dataInicio"
-                  value={form.dataInicio}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Calendar className="w-4 h-4 mr-2 text-cyan-500" />
-                  Data de Término
-                </label>
-                <input
-                  type="date"
-                  name="dataFim"
-                  value={form.dataFim}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white ${
-                    errors.dataFim ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  }`}
-                />
-                {errors.dataFim && (
-                  <p className="mt-1 text-sm text-red-500 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.dataFim}
-                  </p>
-                )}
               </div>
             </div>
 
