@@ -9,17 +9,12 @@ import { useFramer } from "../../hooks/useFramer";
 export default function NovaTarefa() {
   const { user } = useAuth();
   const { framers } = useFramer();
-
-  console.log(framers);
   
   const [form, setForm] = useState({
     titulo: "",
     descricao: "",
-    responsavel: "",
-    prioridade: "Média",
-    dataInicio: "",
+    prioridade: "",
     dataFim: "",
-    projeto: "",
     quadro: "",
   });
 
@@ -53,13 +48,8 @@ export default function NovaTarefa() {
     const newErrors = {};
 
     if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
-    if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
-    if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
-    if (!form.quadro) newErrors.quadro = "Selecione um Quadro";
-    
-    if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
-      newErrors.dataFim = "A data de término deve ser posterior à data de início";
-    }
+    if (!form.quadro) newErrors.quadro = "O quadro é obrigatório.";
+    if (!form.dataFim) newErrors.dataFim = "A data de término é obrigatório.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -72,9 +62,15 @@ export default function NovaTarefa() {
     const idCriador = user.idUsuario;
     const idQuadro = Number(form.quadro);
 
+     const dtTermino = new Date(`${form.dataFim}T00:00:00.000Z`).toISOString();
+
+     console.log("Enviado", form);
+
     const novaTarefa = await createTask({
       titulo: form.titulo,
       descricao: form.descricao,
+      dtTermino,
+      prioridade: form.prioridade,
       idQuadro,
       idCriador,
     });
@@ -90,11 +86,8 @@ export default function NovaTarefa() {
       setForm({
         titulo: "",
         descricao: "",
-        responsavel: "",
-        prioridade: "Média",
-        dataInicio: "",
+        prioridade: "",
         dataFim: "",
-        projeto: "",
         quadro: "",
       });
       setShowSuccess(false);
@@ -161,7 +154,7 @@ export default function NovaTarefa() {
             <div>
               <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 <Layers className="w-4 h-4 mr-2 text-cyan-500" />
-                Descrição *
+                Descrição
               </label>
               <textarea
                 name="descricao"
@@ -212,7 +205,7 @@ export default function NovaTarefa() {
              <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                   <Calendar className="w-4 h-4 mr-2 text-cyan-500" />
-                  Data de Término
+                  Data de Término *
                 </label>
                 <input
                   type="date"

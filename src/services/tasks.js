@@ -114,7 +114,7 @@ export async function deleteTaskById(taskId) {
   }
 }
 
-export async function createTask({ titulo, descricao, idQuadro, idCriador }) {
+export async function createTask({ titulo, descricao, dtTermino, prioridade, idQuadro, idCriador }) {
   try {
     const res = await fetch(`${API_URL}`, {
       method: "POST",
@@ -122,7 +122,7 @@ export async function createTask({ titulo, descricao, idQuadro, idCriador }) {
         "Content-Type": "application/json",
         ...getAuthHeader(),
       },
-      body: JSON.stringify({ titulo, descricao, idQuadro, idCriador }),
+      body: JSON.stringify({ titulo, descricao, dtTermino, prioridade, idQuadro, idCriador }),
     });
 
     if (!res.ok) {
