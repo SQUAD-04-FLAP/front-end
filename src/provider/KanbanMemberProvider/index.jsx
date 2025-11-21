@@ -1,7 +1,7 @@
 import { useReducer, useEffect } from 'react';
 import { initialStateKanban, kanbanReducer } from '../../reducer/kanbanMemberReducer';
 import { KanbanMemberContext } from './KanbanMemberContext';
-import { delete_framer, listFramersBySector } from '../../services/framerService';
+import { delete_framer } from '../../services/framerService';
 import { fetchTasksByBoardID } from '../../services/tasks';
 import { deleteTaskById } from '../../services/tasks';
 import {createTask} from '../../services/tasks';
@@ -11,25 +11,6 @@ import { updateStatusFramer } from '../../services/framerService';
 
 export function KanbanMemberProvider({ children }) {
   const [state, dispatch] = useReducer(kanbanReducer, initialStateKanban);
-
-  useEffect(() => {
-    if (!state.selectedSector) return;
-
-    const loadData = async () => {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      try {
-        const data = await listFramersBySector(state.selectedSector);
-
-        dispatch({ type: 'SET_BOARDS', payload: data })
-      } catch (err) {
-        dispatch({ type: 'SET_ERROR', payload: err.message });
-      } finally {
-        dispatch({ type: 'SET_LOADING', payload: false });
-      }
-    };
-
-    loadData();
-  }, [state.selectedSector]);
 
    async function addTask(newTaskData) {
     try {
