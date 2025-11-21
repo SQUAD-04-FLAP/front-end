@@ -12,22 +12,20 @@ import { ButtonAddNewList } from '../ButtonAddNewList';
 export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
+
+  const loading = state.loading;
 
   useEffect(() => {
     // Quando tasks ou status mudarem, recria as colunas
     if (state.tasks.length > 0 && state.selectedBoardStatus?.length > 0) {
       const grouped = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
       setColumns(grouped);
-      // pequeno delay para evitar flicker visual
-      setTimeout(() => setLoading(false), 300);
     } else {
       setColumns([]);
-      setLoading(false);
     }
   }, [state.tasks, state.selectedBoardStatus]);
 
@@ -113,9 +111,9 @@ export function BoardKanbanMember() {
               {/* 🔹 Loading */}
               {loading ? (
                 <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
-                  Carregando colunas...
+                  Carregando tarefas...
                 </div>
-              ) : columns.length === 0 || columns.every(col => col.tasks.length === 0) ? (
+              ) : columns.length === 0 ? (
                 <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
                   Não foi encontrada nenhuma tarefa.
                 </div>
