@@ -10,8 +10,6 @@ export default function UsuariosPage() {
 
   const usuario = allUsers.find((user) => user.idUsuario === parseInt(id));
 
-  console.log(usuario);
-
   if (!usuario) {
     return (
       <div className="p-6 text-center text-gray-700 dark:text-gray-300">

@@ -20,6 +20,8 @@ import ProjectPage from "../../pages/Projects/ProjectPage";
 import { RecoveryPassword } from '../../pages/RecoveryPassword';
 import { ForgotPassword } from '../../pages/ForgotPassword';
 import UsuariosPage from "../../pages/Usuarios/UsuariosPage";
+import Dashboard from "../../pages/Dashboard";
+import { DashboardPage } from "../../pages/Dashboard/DashboardPage";
 
 export function MainRouter() {
   const { loading } = useAuth();
@@ -44,6 +46,8 @@ export function MainRouter() {
           }
         >
           <Route path="/" element={<BoardV2 />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/:id" element={<DashboardPage />} />
           <Route path="/configuracoes" element={<Configuracoes />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectPage />} />
