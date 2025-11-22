@@ -103,6 +103,13 @@ export function Sidebar() {
             </ContainerLinks>
           </IconSidebar>
 
+          <IconSidebar href="/dashboard">
+            <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
+              <LayoutDashboard />
+              {!collapsed && <span>Dashboard</span>}
+            </ContainerLinks>
+          </IconSidebar>
+
           <IconSidebar href="/projects">
             <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
               <Briefcase />

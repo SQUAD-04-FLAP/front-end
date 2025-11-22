@@ -110,8 +110,8 @@ export function BoardKanbanMember() {
               
               {/* 🔹 Loading */}
               {loading ? (
-                <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
-                  Carregando tarefas...
+                <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+                    <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : columns.length === 0 ? (
                 <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
