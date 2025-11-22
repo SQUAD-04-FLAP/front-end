@@ -8,6 +8,7 @@ import { FilterProvider } from '../provider/FilterProvider';
 import { TaskProvider } from '../provider/TaskProvider';
 import { KanbanMemberProvider } from '../provider/KanbanMemberProvider';
 import { CommentsProvider } from "../provider/CommentsProvider";
+import 'preline';
 
 function App() {
   return (

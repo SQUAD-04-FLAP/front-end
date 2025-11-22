@@ -23,6 +23,8 @@ import {
   Briefcase,
   KanbanSquare,
   Grid,
+  Building,
+  Building2,
 } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
@@ -99,28 +101,44 @@ export function Sidebar() {
           <IconSidebar href="/">
             <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
               <Grid />
-              {!collapsed && <span>Quadro Kanban</span>}
+              {!collapsed && <span className={`
+                transition-all duration-300 
+                overflow-hidden whitespace-nowrap
+                ${collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"}
+              `}>Quadro Kanban</span>}
             </ContainerLinks>
           </IconSidebar>
 
           <IconSidebar href="/dashboard">
             <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
               <LayoutDashboard />
-              {!collapsed && <span>Dashboard</span>}
+              {!collapsed && <span className={`
+            transition-all duration-300 
+            overflow-hidden whitespace-nowrap
+            ${collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"}
+          `}>Dashboard</span>}
             </ContainerLinks>
           </IconSidebar>
 
           <IconSidebar href="/projects">
             <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
-              <Briefcase />
-              {!collapsed && <span>Empresas</span>}
+              <Building2 />
+              {!collapsed && <span className={`
+              transition-all duration-300 
+              overflow-hidden whitespace-nowrap
+              ${collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"}
+            `}>Empresas</span>}
             </ContainerLinks>
           </IconSidebar>
 
           <IconSidebar href="/framers">
             <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
               <Columns />
-              {!collapsed && <span>Quadros</span>}
+              {!collapsed && <span className={`
+              transition-all duration-300 
+              overflow-hidden whitespace-nowrap
+              ${collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"}
+            `}>Quadros</span>}
             </ContainerLinks>
           </IconSidebar>
 
@@ -128,7 +146,11 @@ export function Sidebar() {
             <IconSidebar href="/users">
               <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
                 <Users />
-                {!collapsed && <span>Usuários</span>}
+                {!collapsed && <span className={`
+                transition-all duration-300 
+                overflow-hidden whitespace-nowrap
+                ${collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"}
+              `}>Usuários</span>}
               </ContainerLinks>
             </IconSidebar>
           )}
@@ -136,7 +158,11 @@ export function Sidebar() {
           <IconSidebar href="/configuracoes">
             <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
               <Settings />
-              {!collapsed && <span>Configurações</span>}
+              {!collapsed && <span className={`
+              transition-all duration-300 
+              overflow-hidden whitespace-nowrap
+              ${collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"}
+            `}>Configurações</span>}
             </ContainerLinks>
           </IconSidebar>
 
@@ -151,7 +177,11 @@ export function Sidebar() {
             aria-label="Sair"
           >
             <LogOut />
-            {!collapsed && <span>Sair</span>}
+            {!collapsed && <span className={`
+            transition-all duration-300 
+            overflow-hidden whitespace-nowrap
+            ${collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"}
+          `}>Sair</span>}
           </button>
         </nav>
       </nav>
