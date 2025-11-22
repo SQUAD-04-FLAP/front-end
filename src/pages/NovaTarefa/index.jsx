@@ -1,14 +1,16 @@
 import { useState, ChangeEvent } from "react";
-import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft } from "lucide-react";
+import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft, Building2 } from "lucide-react";
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterBoardMember } from "../../components/FilterBoardMember";
 import { createTask } from '../../services/tasks';
 import { useAuth } from '../../hooks/useAuth';
 import { useFramer } from "../../hooks/useFramer";
+import { useSectors } from '../../hooks/useSectors';
 
 export default function NovaTarefa() {
   const { user } = useAuth();
   const { framers } = useFramer();
+  const { sectors } = useSectors();
   
   const [form, setForm] = useState({
     titulo: "",
@@ -176,7 +178,7 @@ export default function NovaTarefa() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
               <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                <Layers className="w-4 h-4 mr-2 text-cyan-500" />
+                <Columns className="w-4 h-4 mr-2 text-cyan-500" />
                 Quadro *
               </label>
               <select
@@ -201,6 +203,56 @@ export default function NovaTarefa() {
                 </p>
               )}
             </div>
+
+             <div>
+              <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                <Building2 className="w-4 h-4 mr-2 text-cyan-500" />
+                Empresa *
+              </label>
+              <select
+                name="empresa"
+                value={form.empresa}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  errors.empresa ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                }`}
+              >
+                <option value="">Selecione uma empresa</option>
+                {sectors.map((sector) => (
+                  <option key={sector.idSector} value={sector.idSector}>
+                    {sector.nome}
+                  </option>
+                ))}
+              </select>
+              {errors.empresa && (
+                <p className="mt-1 text-sm text-red-500 flex items-center">
+                  <Building2 className="w-4 h-4 mr-1" />
+                  {errors.empresa}
+                </p>
+              )}
+            </div>
+
+            <div>
+                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                  <User className="w-4 h-4 mr-2 text-cyan-500" />
+                  Responsável *
+                </label>
+                <input
+                  type="text"
+                  name="responsavel"
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.responsavel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    }`}
+                  placeholder="Nome do responsável"
+                  value={form.responsavel}
+                  onChange={handleChange}
+                />
+                {errors.responsavel && (
+                  <p className="mt-1 text-sm text-red-500 flex items-center">
+                    <AlertCircle className="w-4 h-4 mr-1" />
+                    {errors.responsavel}
+                  </p>
+                )}
+              </div>
 
              <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">

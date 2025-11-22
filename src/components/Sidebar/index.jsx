@@ -23,6 +23,8 @@ import {
   Briefcase,
   KanbanSquare,
   Grid,
+  Building,
+  Building2,
 } from "lucide-react";
 import { ContainerLinks } from "../ContainerLinks";
 import { SectionSidebar } from "../SectionSidebar";
@@ -112,7 +114,7 @@ export function Sidebar() {
 
           <IconSidebar href="/projects">
             <ContainerLinks className={`${collapsed ? "justify-center" : "gap-3"}`}>
-              <Briefcase />
+              <Building2 />
               {!collapsed && <span>Empresas</span>}
             </ContainerLinks>
           </IconSidebar>
