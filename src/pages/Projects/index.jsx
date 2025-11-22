@@ -1,4 +1,4 @@
-import { Plus, BarChart3, Eye, Edit, Trash2, Folder } from 'lucide-react';
+import { Plus, BarChart3, Eye, Edit, Trash2, Folder, Building2 } from 'lucide-react';
 import { useSectors } from '../../hooks/useSectors';
 import { toast } from 'react-toastify';
 import { Dialog } from '../../components/Dialog';
@@ -65,7 +65,7 @@ useEffect(() => {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-500/20 dark:to-cyan-500/20 rounded-lg flex items-center justify-center text-2xl">
-                        <Folder className="w-6 h-6 text-blue-500" />
+                        <Building2 className="w-6 h-6 text-blue-500" />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
