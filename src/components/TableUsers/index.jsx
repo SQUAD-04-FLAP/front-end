@@ -211,32 +211,6 @@ export function TableUsers() {
                     Permissão
                   </button>
 
-
-                  {/* <button 
-                    onClick={() => {
-                      toast.dismiss();
-                      toast.dismiss();
-                      toast(Dialog, {
-                        data: `Tem certeza que deseja conceder permissão de ${user.permissao === "ADMIN" ? "Membro" : "Administrador"} a este usuário?`,
-                        autoClose: false,
-                        closeOnClick: false,
-                        closeButton: false,
-                        draggable: false,
-                        onClose: (confirmation) => {
-                        if (confirmation) {
-                          alert("Ok");
-                        }
-                  },
-                  })
-                    }}
-                    type="button"
-                    title='Mudar permissão'
-                    className="flex items-center gap-2 rounded-lg text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 border border-gray-200 dark:border-slate-600 px-3 py-1 cursor-pointer"
-                  >
-                    <ShieldCheck className="h-4 w-4" />
-                    Permissão
-                  </button> */}
-
                 </td>
               </tr>
             ))}

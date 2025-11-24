@@ -3,12 +3,11 @@ import { useAuth } from "../../hooks/useAuth";
 
 export function SelectUser() {
   const { allUsers } = useAuth();
-  console.log(allUsers);
 
   const dropdowns = [
     {
       name: "users",
-      label: "Responsáveis",
+      label: "Membros",
       items: allUsers.map((user) => ({
         value: user.idUsuario,
         label: user.nome,

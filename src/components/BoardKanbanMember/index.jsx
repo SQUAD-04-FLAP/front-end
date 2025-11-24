@@ -159,11 +159,13 @@ function groupTasksByStatus(tasks, boardStatus) {
         id: t.idTarefa.toString(),
         title: t.titulo,
         description: t.descricao || "",
-        date: t.prazo ? new Date(t.prazo).toLocaleDateString("pt-BR") : "",
+        dtTermino: t.dtTermino ? new Date(t.dtTermino).toLocaleDateString("pt-BR") : "",
         comments: t.comentarios?.length || 0,
-        assigneeAvatar: t.assigneeAvatar || "img/profile-default.jpg",
-        priority: "Média",
+        assigneeAvatar: t.nomeResponsavel,
+        prioridade: t.prioridade || "",
+        status: t.nomeStatus,
         idQuadro: t.idQuadro,
+        dtCreated: t.createdAt,
       })),
   }));
 }
