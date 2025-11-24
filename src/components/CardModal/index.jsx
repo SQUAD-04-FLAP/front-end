@@ -8,6 +8,7 @@ import { DeleteButtonTask } from '../DeleteButtonTask';
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { showMessage } from '../../adapters/showMessage';
 import { SelectMultiple } from '../SelectMultiple';
+import { formatDate } from '../../utils/formatDate';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [comment, setComment] = useState('');
@@ -438,7 +439,6 @@ export function CardModal({ isOpen, onClose, task }) {
                 className="w-full h-12"
               />
 
-
                 </div>
                 ) : (
                   <div>
@@ -484,7 +484,7 @@ export function CardModal({ isOpen, onClose, task }) {
                   />
                 ) : (
                   <p className="text-gray-500 dark:text-gray-400 text-sm italic">
-                        Nenhum comentário ainda. Seja o primeiro a comentar!
+                      Nenhum comentário ainda. Seja o primeiro a comentar!
                   </p>
                 )}
               </div>
@@ -506,41 +506,24 @@ export function CardModal({ isOpen, onClose, task }) {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Criado em:</span>
-                    <span className="text-gray-900 dark:text-gray-100 font-medium">{editedCreatedDate}</span>
+                    <span className="text-gray-900 dark:text-gray-100 font-medium">{formatDate(task.dtCreated)}</span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  {task.dtTermino && (
+                     <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Prazo:</span>
                     {isEditing ? (
                       <input
                         type="text"
-                        value={editedDeadline}
+                        value={task.dtTermino}
                         onChange={(e) => setEditedDeadline(e.target.value)}
                         className="w-28 px-2 py-1 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded text-gray-900 dark:text-gray-100 text-sm"
                       />
                     ) : (
-                      <span className="text-gray-900 dark:text-gray-100 font-medium">{editedDeadline}</span>
+                      <span className="text-gray-900 dark:text-gray-100 font-medium">{task.dtTermino}</span>
                     )}
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600 dark:text-gray-400">Tempo estimado:</span>
-                    {isEditing ? (
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="number"
-                          value={editedEstimatedTime}
-                          onChange={(e) => setEditedEstimatedTime(e.target.value)}
-                          className="w-16 px-2 py-1 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded text-gray-900 dark:text-gray-100 text-sm"
-                        />
-                        <span className="text-gray-900 dark:text-gray-100 text-sm">horas</span>
-                      </div>
-                    ) : (
-                      <span className="text-gray-900 dark:text-gray-100 font-medium">{editedEstimatedTime} horas</span>
-                    )}
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Tempo registrado:</span>
-                    <span className="text-gray-900 dark:text-gray-100 font-medium">8 horas</span>
-                  </div>
+                  )}
+                 
                 </div>
               </div>
 
