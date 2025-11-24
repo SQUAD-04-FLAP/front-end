@@ -7,12 +7,13 @@ import { useAuth } from '../../hooks/useAuth';
 import { DeleteButtonTask } from '../DeleteButtonTask';
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { showMessage } from '../../adapters/showMessage';
+import { SelectMultiple } from '../SelectMultiple';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [comment, setComment] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
-  const { user } = useAuth();
+  const { user, allUsers } = useAuth();
 
   const { deleteTask } = useKanbanMember();
   
@@ -23,7 +24,6 @@ export function CardModal({ isOpen, onClose, task }) {
   const [editedCreatedDate, setEditedCreatedDate] = useState('');
   const [editedEstimatedTime, setEditedEstimatedTime] = useState('');
   const [editedAssignee, setEditedAssignee] = useState('');
-  const [editedRole, setEditedRole] = useState('');
   const [attachments, setAttachments] = useState([
     { id: 1, name: 'mockup-filtros-v4.png', type: 'image' },
     { id: 2, name: 'especificacoes-tecnicas.pdf', type: 'pdf' }
@@ -53,7 +53,6 @@ export function CardModal({ isOpen, onClose, task }) {
         createdDate: '10/05/2023',
         estimatedTime: '16',
         assignee: 'Carlos Mendes',
-        role: 'Desenvolvedor Frontend'
       };
       
       setEditedTitle(initialValues.title);
@@ -62,7 +61,6 @@ export function CardModal({ isOpen, onClose, task }) {
       setEditedCreatedDate(initialValues.createdDate);
       setEditedEstimatedTime(initialValues.estimatedTime);
       setEditedAssignee(initialValues.assignee);
-      setEditedRole(initialValues.role);
       setOriginalValues(initialValues);
     }
   }, [task]);
@@ -185,17 +183,7 @@ export function CardModal({ isOpen, onClose, task }) {
         color: 'purple'
       });
     }
-    
-    if (editedRole !== originalValues.role) {
-      newActivities.push({
-        id: Date.now() + Math.random(),
-        user: 'Você',
-        action: `alterou o cargo de ${originalValues.role} para ${editedRole}`,
-        time: `agora às ${timeString}`,
-        color: 'purple'
-      });
-    }
-    
+  
     // Adicionar atividades ao histórico
     if (newActivities.length > 0) {
       setActivityHistory(prev => [...newActivities, ...prev]);
@@ -208,7 +196,6 @@ export function CardModal({ isOpen, onClose, task }) {
         createdDate: editedCreatedDate,
         estimatedTime: editedEstimatedTime,
         assignee: editedAssignee,
-        role: editedRole
       });
       
       alert(`${newActivities.length} alteração(ões) salva(s) com sucesso!`);
@@ -227,7 +214,6 @@ export function CardModal({ isOpen, onClose, task }) {
     setEditedCreatedDate(originalValues.createdDate);
     setEditedEstimatedTime(originalValues.estimatedTime);
     setEditedAssignee(originalValues.assignee);
-    setEditedRole(originalValues.role);
     setIsEditing(false);
   };
 
@@ -376,11 +362,11 @@ export function CardModal({ isOpen, onClose, task }) {
           </h1>
           <div className="flex items-center gap-3">
             <span className="px-4 py-2 text-sm font-medium bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300 rounded-full">
-              Em Progresso
+              {task.status}
             </span>
             {task?.priority && (
               <span className={`px-4 py-2 text-sm font-medium rounded-full ${getPriorityClasses(task.priority)}`}>
-                Prioridade: {task.priority}
+                Prioridade: {task.prioridade}
               </span>
             )}
           </div>
@@ -438,67 +424,43 @@ export function CardModal({ isOpen, onClose, task }) {
                   Responsável
                 </h3>
                 {isEditing ? (
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Nome
-                      </label>
-                      <select
-                        value={editedAssignee}
-                        onChange={(e) => {
-                          setEditedAssignee(e.target.value);
-                          // Atualizar cargo baseado no nome selecionado
-                          const roles = {
-                            'Carlos Mendes': 'Desenvolvedor Frontend',
-                            'Marina Silva': 'Designer UX/UI',
-                            'João Santos': 'Desenvolvedor Backend',
-                            'Ana Costa': 'Product Manager',
-                            'Pedro Oliveira': 'QA Engineer'
-                          };
-                          setEditedRole(roles[e.target.value] || '');
-                        }}
-                        className="w-full pl-4 pr-10 py-3 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded-lg text-gray-900 dark:text-gray-100 cursor-pointer"
-                      >
-                        <option value="Carlos Mendes">Carlos Mendes</option>
-                        <option value="Marina Silva">Marina Silva</option>
-                        <option value="João Santos">João Santos</option>
-                        <option value="Ana Costa">Ana Costa</option>
-                        <option value="Pedro Oliveira">Pedro Oliveira</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Cargo
-                      </label>
-                      <select
-                        value={editedRole}
-                        onChange={(e) => setEditedRole(e.target.value)}
-                        className="w-full pl-4 pr-10 py-3 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded-lg text-gray-900 dark:text-gray-100 cursor-pointer"
-                      >
-                        <option value="Desenvolvedor Frontend">Desenvolvedor Frontend</option>
-                        <option value="Desenvolvedor Backend">Desenvolvedor Backend</option>
-                        <option value="Designer UX/UI">Designer UX/UI</option>
-                        <option value="Product Manager">Product Manager</option>
-                        <option value="QA Engineer">QA Engineer</option>
-                        <option value="DevOps Engineer">DevOps Engineer</option>
-                      </select>
-                    </div>
-                  </div>
+                  <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Nome
+                  </label>
+
+                <SelectMultiple
+                options={allUsers.map(u => ({ value: u.idUsuario, label : u.nome, avatar: u.avatar || "https://ui-avatars.com/api/?name=" + u.nome}))}
+                value={editedAssignee}
+                onChange={setEditedAssignee}
+                className="w-full h-12"
+              />
+
+
+                </div>
                 ) : (
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={task.assigneeAvatar || 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg'}
-                      alt="Responsável"
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                    <div>
+                  <div>
+                    {task.nomeResponsavel ? (
+                      <div className="flex items-center gap-4">
+                      <img
+                        src={
+                          task.assigneeAvatar 
+                            ? task.assigneeAvatar 
+                            : "https://ui-avatars.com/api/?name=" + task.nomeResponsavel
+                        }
+                        alt="Responsável"
+                        className="w-16 h-16 rounded-full object-cover"
+                      />
+
                       <p className="font-semibold text-gray-900 dark:text-gray-100 text-xl">
-                        {editedAssignee}
-                      </p>
-                      <p className="text-gray-600 dark:text-gray-400 text-lg">
-                        {editedRole}
+                        {task.nomeResponsavel}
                       </p>
                     </div>
+                    ) : (
+                       <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
+                          Não há ninguém responsável por essa tarefa ainda
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
@@ -678,9 +640,8 @@ export function CardModal({ isOpen, onClose, task }) {
         await deleteTask(task.id);
         showMessage.success("Tarefa excluída com sucesso!", true);
       }}
-      onDeleteSuccess={onClose} // fecha modal e remove card
+      onDeleteSuccess={onClose}
   />
-
 
           <button 
             onClick={onClose}
@@ -688,6 +649,7 @@ export function CardModal({ isOpen, onClose, task }) {
           >
             Fechar
           </button>
+
           {isEditing ? (
             <>
               <button 
