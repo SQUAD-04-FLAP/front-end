@@ -46,27 +46,34 @@ export function CardModal({ isOpen, onClose, task }) {
   // Estados para rastrear valores originais
   const [originalValues, setOriginalValues] = useState({});
 
-  // Inicializar campos quando o task mudar
-  useEffect(() => {
-    if (task) {
-      const initialValues = {
-        title: task.title || '',
-        description: task.description || '',
-        deadline: '25/05/2023',
-        createdDate: '10/05/2023',
-        estimatedTime: '16',
-        assignee: 'Carlos Mendes',
-      };
-      
-      setEditedTitle(initialValues.title);
-      setEditedDescription(initialValues.description);
-      setEditedDeadline(initialValues.deadline);
-      setEditedCreatedDate(initialValues.createdDate);
-      setEditedEstimatedTime(initialValues.estimatedTime);
-      setEditedAssignee(initialValues.assignee);
-      setOriginalValues(initialValues);
-    }
-  }, [task]);
+  const [editedIsActive, setEditedIsActive] = useState(false);
+  const [editedPriority, setEditedPriority] = useState('Média');
+
+ useEffect(() => {
+  if (task) {
+    const initialValues = {
+      title: task.title || '',
+      description: task.description || '',
+      deadline: task.dtTermino || '',
+      createdDate: task.dtCreated || '',
+      estimatedTime: task.estimatedTime || '',
+      assignee: task.assignee || '',
+      isActive: task.ativo ?? true,
+      priority: task.prioridade || '',
+    };
+
+    setEditedTitle(initialValues.title);
+    setEditedDescription(initialValues.description);
+    setEditedDeadline(initialValues.deadline);
+    setEditedCreatedDate(initialValues.createdDate);
+    setEditedEstimatedTime(initialValues.estimatedTime);
+    setEditedAssignee(initialValues.assignee);
+    setEditedIsActive(initialValues.isActive); // inicializa o toggle
+    setEditedPriority(initialValues.priority);
+    setOriginalValues(initialValues);
+  }
+}, [task]);
+
 
   // Fechar modal com ESC
   useEffect(() => {
@@ -466,6 +473,61 @@ export function CardModal({ isOpen, onClose, task }) {
                   </div>
                 )}
               </div>
+
+         {/* Toggle Ativa */}
+      <div className="flex items-center gap-3">
+        <span className="text-gray-700 dark:text-gray-300 font-medium">Ativa:</span>
+        <button
+          type="button"
+          onClick={() => isEditing && setEditedIsActive(!editedIsActive)}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none ${
+            editedIsActive ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
+          }`}
+          disabled={!isEditing}
+        >
+          <span
+            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
+              editedIsActive ? 'translate-x-6' : 'translate-x-1'
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Select Prioridade */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full max-w-xs">
+        <label className="text-gray-700 dark:text-gray-300 font-medium mb-1 sm:mb-0">Prioridade:</label>
+        {isEditing ? (
+          <select
+            value={editedPriority}
+            onChange={(e) => setEditedPriority(e.target.value)}
+            className="
+              w-full
+              px-4 py-2
+              border border-gray-300 dark:border-gray-600
+              rounded-lg
+              bg-white dark:bg-gray-700
+              text-gray-900 dark:text-gray-100
+              focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+              shadow-sm
+              transition
+              duration-200
+              ease-in-out
+              hover:border-blue-500 dark:hover:border-blue-400
+              cursor-pointer
+            "
+          >
+            <option value="Alta">Alta</option>
+            <option value="Média">Média</option>
+            <option value="Baixa">Baixa</option>
+          </select>
+        ) : (
+          <span className={`px-3 py-1 rounded-full font-semibold text-sm ${getPriorityClasses(task.prioridade)}`}>
+            {task.prioridade}
+          </span>
+        )}
+      </div>
+
+
 
               {/* Comentários */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
