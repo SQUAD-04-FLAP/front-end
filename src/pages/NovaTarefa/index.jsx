@@ -88,8 +88,6 @@ export default function NovaTarefa() {
 
     setShowSuccess(true);
 
-    // navigate("/board-v2");
-
     setTimeout(() => {
       setForm({
         titulo: "",

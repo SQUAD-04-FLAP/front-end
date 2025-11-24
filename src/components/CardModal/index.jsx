@@ -16,6 +16,8 @@ export function CardModal({ isOpen, onClose, task }) {
   const { user, allUsers } = useAuth();
 
   const { deleteTask } = useKanbanMember();
+
+  console.log(task);
   
   // Estados editáveis
   const [editedTitle, setEditedTitle] = useState('');
@@ -364,8 +366,8 @@ export function CardModal({ isOpen, onClose, task }) {
             <span className="px-4 py-2 text-sm font-medium bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300 rounded-full">
               {task.status}
             </span>
-            {task?.priority && (
-              <span className={`px-4 py-2 text-sm font-medium rounded-full ${getPriorityClasses(task.priority)}`}>
+            {task?.prioridade && (
+              <span className={`px-4 py-2 text-sm font-medium rounded-full ${getPriorityClasses(task.prioridade)}`}>
                 Prioridade: {task.prioridade}
               </span>
             )}

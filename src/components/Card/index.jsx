@@ -1,6 +1,6 @@
 export function Card({ task, onClick }) {
-  const getPriorityClasses = (priority) => {
-    switch (priority) {
+  const getPriorityClasses = (prioridade) => {
+    switch (prioridade) {
       case 'Alta':
         return 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300';
       case 'Média':
@@ -22,11 +22,12 @@ export function Card({ task, onClick }) {
         <h4 className="text-gray-900 dark:text-gray-100 font-semibold text-lg leading-snug">
           {task.title}
         </h4>
-        {task.priority && (
-          <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getPriorityClasses(task.priority)}`}>
-            {task.priority}
-          </span>
-        )}
+        {task.prioridade && (
+        <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getPriorityClasses(task.prioridade)}`}>
+          {task.prioridade}
+        </span>
+      )}
+
       </div>
 
       {/* Description */}
