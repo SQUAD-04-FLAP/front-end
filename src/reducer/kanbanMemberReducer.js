@@ -112,6 +112,15 @@ case "DELETE_STATUS_FAILURE":
     ),
   };
 
+  case "UPDATE_TASK":
+  return {
+    ...state,
+    tasks: state.tasks.map(task =>
+      task.idTarefa === action.payload.idTarefa ? action.payload : task
+    ),
+  };
+
+
     default:
       return state;
   }
