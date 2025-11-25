@@ -243,6 +243,29 @@ const handleSave = async () => {
                 )}
               </div>
 
+               {/* Criador */}
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Criador</h3>
+
+            {task.nomeCriadoPor ? (
+              <div className="flex items-center gap-4">
+                <img
+                  src={task.assigneeAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(task.nomeCriadoPor)}&background=0D8ABC&color=fff`}
+                  alt="criador"
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+                <p className="font-semibold text-gray-900 dark:text-gray-100 text-xl">
+                  {task.nomeCriadoPor}
+                </p>
+              </div>
+            ) : (
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
+                Não há nenhum criador
+              </p>
+            )}
+        </div>
+
+
               {/* Toggle Ativa */}
               <div className="flex items-center gap-3">
                 <span className="text-gray-700 dark:text-gray-300 font-medium">Ativa:</span>

@@ -48,7 +48,7 @@ export function Card({ task, onClick }) {
               Criado por
             </span>
             <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-              {task.nomeCriadoPor}
+              {task.nomeCriadoPor.split(' ')[0]}
             </span>
           </div>
         </div>
