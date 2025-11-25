@@ -12,7 +12,6 @@ export function Card({ task, onClick }) {
     }
   };
 
-  console.log(task);
 
   return (
     <div 

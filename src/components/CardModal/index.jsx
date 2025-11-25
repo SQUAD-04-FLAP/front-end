@@ -59,7 +59,7 @@ export function CardModal({ isOpen, onClose, task }) {
         createdDate: task.dtCreated || '',
         estimatedTime: task.estimatedTime || '',
         assignee: task.assignee || '',
-        isActive: task.ativo,
+        isActive: task.ativo ?? true,
         priority: task.prioridade || '',
       };
 
@@ -123,7 +123,7 @@ const handleSave = async () => {
       prioridade: editedPriority,
     };
 
-    // console.log("Payload enviado para editTask:", payload);
+    console.log("Payload enviado para editTask:", payload);
 
     // Chama a função de edição real
     await editTask(task.id, payload);
