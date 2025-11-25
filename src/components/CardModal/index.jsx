@@ -59,7 +59,7 @@ export function CardModal({ isOpen, onClose, task }) {
         createdDate: task.dtCreated || '',
         estimatedTime: task.estimatedTime || '',
         assignee: task.assignee || '',
-        isActive: task.ativo ?? true,
+        isActive: task.ativo,
         priority: task.prioridade || '',
       };
 
@@ -123,10 +123,12 @@ const handleSave = async () => {
       prioridade: editedPriority,
     };
 
-    console.log("Payload enviado para editTask:", payload);
+    // console.log("Payload enviado para editTask:", payload);
 
     // Chama a função de edição real
     await editTask(task.id, payload);
+
+    task.isActive = editedIsActive;
 
     // Atualiza os valores originais localmente
     setOriginalValues({
@@ -264,24 +266,33 @@ const handleSave = async () => {
               </p>
             )}
         </div>
-
-
               {/* Toggle Ativa */}
-              <div className="flex items-center gap-3">
-                <span className="text-gray-700 dark:text-gray-300 font-medium">Ativa:</span>
-                <button
-                  type="button"
-                  onClick={() => isEditing && setEditedIsActive(!editedIsActive)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none ${
-                    editedIsActive ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
-                  }`}
-                  disabled={!isEditing}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${
-                    editedIsActive ? 'translate-x-6' : 'translate-x-1'
-                  }`} />
-                </button>
-              </div>
+            <div className="flex items-center gap-3">
+              <span className="text-gray-700 dark:text-gray-300 font-medium">Ativa:</span>
+
+              <button
+                type="button"
+                onClick={() => isEditing && setEditedIsActive(!editedIsActive)}
+                className={`
+                  relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 
+                  ${isEditing 
+                      ? (editedIsActive ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600')
+                      : (task.isActive ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600')
+                  }
+                `}
+                disabled={!isEditing}
+              >
+                <span
+                  className={`
+                    inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300
+                    ${isEditing 
+                        ? (editedIsActive ? 'translate-x-6' : 'translate-x-1')
+                        : (task.isActive ? 'translate-x-6' : 'translate-x-1')
+                    }
+                  `}
+                />
+              </button>
+            </div>
 
               {/* Prioridade editável */}
               {isEditing ? (
