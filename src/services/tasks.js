@@ -138,3 +138,27 @@ export async function createTask({ titulo, descricao, dtTermino, prioridade, idQ
     throw e;
   }
 }
+
+export async function updateTask(idTarefa, updatedData) {
+  try {
+    const res = await fetch(`${API_URL}/${idTarefa}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Erro ao atualizar tarefa: ${text}`);
+    }
+
+    return await res.json();
+  } catch (e) {
+    console.error("[TasksService] Erro ao atualizar tarefa:", e);
+    throw e;
+  }
+}
+
