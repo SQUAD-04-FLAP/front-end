@@ -4,6 +4,7 @@ import { KanbanMemberContext } from './KanbanMemberContext';
 import { delete_framer } from '../../services/framerService';
 import { fetchTasksByBoardID } from '../../services/tasks';
 import { deleteTaskById } from '../../services/tasks';
+import { updateTask } from '../../services/tasks';
 import {createTask} from '../../services/tasks';
 import { createStatus } from '../../services/framerService';
 import { deleteStatus } from '../../services/framerService';
@@ -35,6 +36,17 @@ export function KanbanMemberProvider({ children }) {
       dispatch({ type: "SET_ERROR", payload: e.message });
     }
   }
+
+  async function editTask(idTarefa, updatedData) {
+  try {
+    const updatedTask = await updateTask(idTarefa, updatedData);
+    dispatch({ type: "UPDATE_TASK", payload: updatedTask });
+  } catch (err) {
+    console.error("Erro ao atualizar tarefa:", err);
+    dispatch({ type: "SET_ERROR", payload: err.message });
+  }
+}
+
 
  const deleteBoard = async (idBoard) => {
     dispatch({ type: "DELETE_BOARD_REQUEST" });
@@ -132,7 +144,7 @@ const update_status = async (idStatus, nome) => {
   }, [state.columns, state.quadroSelecionado, state.setorSelecionado]);
 
   return (
-    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard, create_status, delete_status, update_status }}>
+    <KanbanMemberContext.Provider value={{ state, dispatch, addTask, deleteTask, deleteBoard, create_status, delete_status, update_status, editTask }}>
       {children}
     </KanbanMemberContext.Provider>
   );

@@ -1,6 +1,6 @@
 export function Card({ task, onClick }) {
-  const getPriorityClasses = (priority) => {
-    switch (priority) {
+  const getPriorityClasses = (prioridade) => {
+    switch (prioridade) {
       case 'Alta':
         return 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300';
       case 'Média':
@@ -12,6 +12,7 @@ export function Card({ task, onClick }) {
     }
   };
 
+
   return (
     <div 
       onClick={() => onClick(task)}
@@ -22,12 +23,36 @@ export function Card({ task, onClick }) {
         <h4 className="text-gray-900 dark:text-gray-100 font-semibold text-lg leading-snug">
           {task.title}
         </h4>
-        {task.priority && (
-          <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getPriorityClasses(task.priority)}`}>
-            {task.priority}
-          </span>
-        )}
+        {task.prioridade && (
+        <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getPriorityClasses(task.prioridade)}`}>
+          {task.prioridade}
+        </span>
+      )}
+
       </div>
+
+      {/* Criador da tarefa */}
+      {task.nomeCriadoPor && (
+        <div className="flex items-center gap-3 mb-4">
+          <img
+            src={
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(task.nomeCriadoPor)}&background=0D8ABC&color=fff`
+            }
+            alt="creator"
+            className="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-gray-200 dark:ring-gray-700"
+          />
+
+          <div className="flex flex-col leading-tight">
+            <span className="text-[11px] uppercase tracking-wide text-gray-400 dark:text-gray-500">
+              Criado por
+            </span>
+            <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+              {task.nomeCriadoPor.split(' ')[0]}
+            </span>
+          </div>
+        </div>
+      )}
+
 
       {/* Description */}
       <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
