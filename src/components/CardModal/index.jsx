@@ -14,7 +14,7 @@ export function CardModal({ isOpen, onClose, task }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const { user, allUsers } = useAuth();
-  const { deleteTask, editTask } = useKanbanMember();
+  const { deleteTask, state, editTask, dispatch } = useKanbanMember();
 
   // Estados editáveis
   const [editedTitle, setEditedTitle] = useState('');
@@ -114,6 +114,8 @@ export function CardModal({ isOpen, onClose, task }) {
 const handleSave = async () => {
   const dtTerminoISO = new Date(editedDeadline.split('/').reverse().join('-')).toISOString();
 
+  dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: true }); 
+
   try {
     const payload = {
       titulo: editedTitle,
@@ -127,6 +129,9 @@ const handleSave = async () => {
 
     // Chama a função de edição real
     await editTask(task.id, payload);
+
+     dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
+
 
     task.isActive = editedIsActive;
 
@@ -145,6 +150,8 @@ const handleSave = async () => {
     setIsEditing(false);
     alert("Alterações salvas com sucesso!", true);
   } catch (error) {
+     dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
+
     alert("Erro ao salvar alterações");
     console.error(error);
   }
@@ -412,8 +419,29 @@ const handleSave = async () => {
 
           {isEditing ? (
             <>
-              <button onClick={handleCancelEdit} className="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition">Cancelar</button>
-              <button onClick={handleSave} className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">Salvar Alterações</button>
+
+              <button
+              onClick={handleCancelEdit}
+              disabled={state.loadingEditTask}
+              className={`
+                px-6 py-3 rounded-lg font-medium transition
+                ${state.loadingEditTask ? "bg-gray-400 cursor-not-allowed text-white" : "bg-gray-500 hover:bg-gray-600 text-white"}
+              `}
+            >
+              {state.loadingEditTask ? "Aguarde..." : "Cancelar"}
+            </button>
+
+            <button
+              onClick={handleSave}
+              disabled={state.loadingEditTask}
+              className={`
+                px-6 py-3 rounded-lg font-medium transition
+                ${state.loadingEditTask ? "bg-blue-300 cursor-not-allowed text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}
+              `}
+            >
+              {state.loadingEditTask ? "Salvando..." : "Salvar Alterações"}
+            </button>
+
             </>
           ) : (
             <button onClick={handleEdit} className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition">Editar</button>

@@ -5,6 +5,7 @@ export const initialStateKanban = {
   status: [],
   selectedBoardStatus: [],
   loading: true,
+  loadingEditTask: false,
   error: null,
   selectedBoard: '',
   selectedSector: '',
@@ -119,6 +120,9 @@ case "DELETE_STATUS_FAILURE":
       task.idTarefa === action.payload.idTarefa ? action.payload : task
     ),
   };
+
+case "SET_LOADING_UPDATE_TASK":
+  return { ...state, loadingEditTask: action.payload };
 
 
     default:
