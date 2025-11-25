@@ -37,11 +37,6 @@ export function CardModal({ isOpen, onClose, task }) {
     { id: 3, name: 'Sprint 5', color: 'green' },
     { id: 4, name: 'Filtros', color: 'purple' }
   ]);
-  const [activityHistory, setActivityHistory] = useState([
-    { id: 1, user: 'Marina Silva', action: "alterou para 'Em Progresso'", time: 'há 2 horas', color: 'green' },
-    { id: 2, user: 'Carlos Mendes', action: 'adicionou comentário', time: 'ontem às 16:43', color: 'blue' },
-    { id: 3, user: 'João Santos', action: "moveu de 'A Fazer' para 'Em Progresso'", time: 'há 3 dias', color: 'yellow' }
-  ]);
   
   // Estados para rastrear valores originais
   const [originalValues, setOriginalValues] = useState({});
@@ -493,41 +488,53 @@ export function CardModal({ isOpen, onClose, task }) {
         </button>
       </div>
 
-      {/* Select Prioridade */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full max-w-xs">
-        <label className="text-gray-700 dark:text-gray-300 font-medium mb-1 sm:mb-0">Prioridade:</label>
         {isEditing ? (
-          <select
-            value={editedPriority}
-            onChange={(e) => setEditedPriority(e.target.value)}
-            className="
-              w-full
-              px-4 py-2
-              border border-gray-300 dark:border-gray-600
-              rounded-lg
-              bg-white dark:bg-gray-700
-              text-gray-900 dark:text-gray-100
-              focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-              shadow-sm
-              transition
-              duration-200
-              ease-in-out
-              hover:border-blue-500 dark:hover:border-blue-400
-              cursor-pointer
-            "
-          >
-            <option value="Alta">Alta</option>
-            <option value="Média">Média</option>
-            <option value="Baixa">Baixa</option>
-          </select>
+          <>
+            <label className="text-gray-700 dark:text-gray-300 font-medium mb-1 sm:mb-0">
+              Prioridade:
+            </label>
+            <select
+              value={editedPriority}
+              onChange={(e) => setEditedPriority(e.target.value)}
+              className="
+                    w-full
+                    px-4 py-2
+                    border border-gray-300 dark:border-gray-600
+                    rounded-lg
+                    bg-white dark:bg-gray-700
+                    text-gray-900 dark:text-gray-100
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+                    shadow-sm
+                    transition
+                    duration-200
+                    ease-in-out
+                    hover:border-blue-500 dark:hover:border-blue-400
+                    cursor-pointer
+                  "
+            >
+              <option value="">Selecione</option>
+              <option value="alta">Alta</option>
+              <option value="media">Média</option>
+              <option value="baixa">Baixa</option>
+            </select>
+          </>
         ) : (
-          <span className={`px-3 py-1 rounded-full font-semibold text-sm ${getPriorityClasses(task.prioridade)}`}>
-            {task.prioridade}
-          </span>
+          task.prioridade && (
+           <div className="flex items-center gap-2">
+            <span className="text-gray-700 dark:text-gray-300 font-medium">Prioridade:</span>
+            <span
+              className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getPriorityClasses(task.prioridade)}`}
+            >
+              {task.prioridade}
+            </span>
+          </div>
+          )
         )}
       </div>
 
 
+     
 
               {/* Comentários */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
@@ -652,26 +659,6 @@ export function CardModal({ isOpen, onClose, task }) {
                     Adicionar anexo
                   </button>
                 )}
-              </div>
-
-              {/* Histórico de Atividades */}
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                  Histórico de Atividades
-                </h3>
-                <div className="space-y-3 text-sm max-h-64 overflow-y-auto">
-                  {activityHistory.map((activity) => (
-                    <div key={activity.id} className="flex items-start gap-2">
-                      <div className={`w-2 h-2 bg-${activity.color}-500 rounded-full mt-2 flex-shrink-0`}></div>
-                      <div>
-                        <p className="text-gray-900 dark:text-gray-100">
-                          <span className="font-medium">{activity.user}</span> {activity.action}
-                        </p>
-                        <p className="text-gray-500 dark:text-gray-400 text-xs">{activity.time}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
