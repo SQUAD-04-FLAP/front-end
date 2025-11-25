@@ -166,6 +166,7 @@ function groupTasksByStatus(tasks, boardStatus) {
         idQuadro: t.idQuadro,
         dtCreated: t.createdAt,
         isActive: t.ativo,
+        nomeCriadoPor: t.nomeCriadoPor
       })),
   }));
 }

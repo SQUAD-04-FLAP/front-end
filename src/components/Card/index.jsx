@@ -12,6 +12,8 @@ export function Card({ task, onClick }) {
     }
   };
 
+  console.log(task);
+
   return (
     <div 
       onClick={() => onClick(task)}
@@ -29,6 +31,29 @@ export function Card({ task, onClick }) {
       )}
 
       </div>
+
+      {/* Criador da tarefa */}
+      {task.nomeCriadoPor && (
+        <div className="flex items-center gap-3 mb-4">
+          <img
+            src={
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(task.nomeCriadoPor)}&background=0D8ABC&color=fff`
+            }
+            alt="creator"
+            className="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-gray-200 dark:ring-gray-700"
+          />
+
+          <div className="flex flex-col leading-tight">
+            <span className="text-[11px] uppercase tracking-wide text-gray-400 dark:text-gray-500">
+              Criado por
+            </span>
+            <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+              {task.nomeCriadoPor}
+            </span>
+          </div>
+        </div>
+      )}
+
 
       {/* Description */}
       <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
