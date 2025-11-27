@@ -83,19 +83,7 @@ export function ButtonRegisterNewUser() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-1 dark:text-white">
-                    Data de Nascimento
-                  </label>
-                  <input
-                    type="date"
-                    value={dtNascimento}
-                    onChange={(e) => setdtNascimento(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 p-2 rounded-lg dark:text-white"
-                  />
-              </div>
-
-                {/* Email */}
+                 {/* Email */}
                 <div>
                   <label className="block text-sm font-medium mb-1 dark:text-white">
                     Email
@@ -109,6 +97,18 @@ export function ButtonRegisterNewUser() {
                     required
                   />
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1 dark:text-white">
+                    Data de Nascimento
+                  </label>
+                  <input
+                    type="date"
+                    value={dtNascimento}
+                    onChange={(e) => setdtNascimento(e.target.value)}
+                    className="w-full border border-gray-300 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 p-2 rounded-lg dark:text-white"
+                  />
+              </div>
 
                 {/* Senha */}
                 <div>
