@@ -11,10 +11,7 @@ export function Card({ task, onClick }) {
         return '';
     }
   };
-
-  console.log(task);
-
-
+  
   return (
     <div 
       onClick={() => onClick(task)}
@@ -78,35 +75,6 @@ export function Card({ task, onClick }) {
           ))}
         </div>
       )}
-
-
-
-      {/* <div>
-        <div className="flex -space-x-4 rtl:space-x-reverse">
-          <img
-            className="w-10 h-10 border-2 border-buffer rounded-full"
-            src="/docs/images/people/profile-picture-5.jpg"
-            alt=""
-          />
-          <img
-            className="w-10 h-10 border-2 border-buffer rounded-full"
-            src="/docs/images/people/profile-picture-2.jpg"
-            alt=""
-          />
-          <img
-            className="w-10 h-10 border-2 border-buffer rounded-full"
-            src="/docs/images/people/profile-picture-3.jpg"
-            alt=""
-          />
-          <img
-            className="w-10 h-10 border-2 border-buffer rounded-full"
-            src="/docs/images/people/profile-picture-4.jpg"
-            alt=""
-          />
-        </div>
-      </div> */}
-
-
 
       {/* Footer */}
       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4">
