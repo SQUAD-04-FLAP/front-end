@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Filter, X, Calendar, Clock } from "lucide-react";
 import { SelectUser } from "../SelectUser";
 
-export function FilterButton() {
+export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () => {} }) {
   const [isOpen, setIsOpen] = useState(false);
   const [noMembers, setNoMembers] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -16,6 +16,73 @@ export function FilterButton() {
   const [activeLastTwoWeeks, setActiveLastTwoWeeks] = useState(false);
   const [activeLastFourWeeks, setActiveLastFourWeeks] = useState(false);
   const [noActiveLastFourWeeks, setNoActiveLastFourWeeks] = useState(false);
+
+  const [search, setSearch] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState([]);
+
+  // Atualiza filtros e envia para parent quando clicar em Aplicar
+  const handleApply = () => {
+    const filters = {
+      search,
+      noMembers,
+      selectedUsers: selectedUsers || [],
+      isReady,
+      noReady,
+      noDate,
+      overdue: overDue,
+      deliveryDay,
+      deliveryWeek,
+      deliveryMonth,
+      activeLastWeek,
+      activeLastTwoWeeks,
+      activeLastFourWeeks,
+      noActiveLastFourWeeks,
+    };
+    onApplyFilters(filters);
+    setIsOpen(false);
+  };
+
+  const handleClear = () => {
+    setSearch("");
+    setNoMembers(false);
+    setSelectedUsers([]);
+    setIsReady(false);
+    setNoReady(false);
+    setNoDate(false);
+    setOverdue(false);
+    setDeliveryDay(false);
+    setDeliveryWeek(false);
+    setDeliveryMonth(false);
+    setActiveLastWeek(false);
+    setActiveLastTwoWeeks(false);
+    setActiveLastFourWeeks(false);
+    setNoActiveLastFourWeeks(false);
+    onClearFilters();
+    setIsOpen(false);
+  };
+
+  // SelectUser deve notificar com um array de ids ou nomes; adaptamos aqui
+  const handleSelectUsersChange = (value) => {
+    // espera-se value ser array de ids ou objetos; normalize para array de strings (ids ou nomes)
+    if (!value) return setSelectedUsers([]);
+    if (Array.isArray(value)) {
+      // se cada item for objeto com idUsuario -> extrai; se for primitivo -> usa direto
+      const normalized = value.map(v => {
+        if (v == null) return null;
+        if (typeof v === "object") {
+          if (v.idUsuario) return String(v.idUsuario);
+          if (v.id) return String(v.id);
+          if (v.value) return String(v.value);
+          if (v.nome) return String(v.nome).toLowerCase();
+          return JSON.stringify(v);
+        }
+        return String(v);
+      }).filter(Boolean);
+      setSelectedUsers(normalized);
+    } else {
+      setSelectedUsers([String(value)]);
+    }
+  };
 
   return (
     <>
@@ -61,7 +128,7 @@ export function FilterButton() {
         </div>
 
         {/* Corpo do modal */}
-        <div className="p-4 space-y-5 overflow-y-auto max-h-[90vh]">
+        <div className="p-4 space-y-5 overflow-y-auto max-h-[80vh]">
           {/* Palavra-chave */}
           <div>
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -69,6 +136,8 @@ export function FilterButton() {
             </label>
             <input
               type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Digite uma palavra..."
               className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg 
                          bg-gray-50 text-gray-900
@@ -98,7 +167,8 @@ export function FilterButton() {
             </label>
           </div>
 
-          <SelectUser />
+          {/* SelectUser: espera-se que esse componente chame onChange com lista */}
+          <SelectUser onChange={handleSelectUsersChange} selected={selectedUsers} />
 
           {/* Status */}
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
@@ -183,6 +253,22 @@ export function FilterButton() {
               </label>
             </div>
           ))}
+        </div>
+
+        {/* Rodapé do modal: botões Aplicar / Limpar */}
+        <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex gap-2 justify-end">
+          <button
+            onClick={handleClear}
+            className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200"
+          >
+            Limpar
+          </button>
+          <button
+            onClick={handleApply}
+            className="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Aplicar
+          </button>
         </div>
       </div>
     </>
