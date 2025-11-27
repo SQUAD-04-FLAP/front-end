@@ -91,11 +91,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-    const register = async (nome, email, senha) => {
+    const register = async (nome, email, senha, dtNascimento) => {
       dispatch({ type: "REGISTER_LOADING", payload: true });
 
       try {
-        const newUser = await userAuthentication.register(nome, email, senha);
+        const newUser = await userAuthentication.register(nome, email, senha, dtNascimento);
 
         const updatedUsers = [...state.allUsers, newUser];
 
