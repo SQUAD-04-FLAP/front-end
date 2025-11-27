@@ -202,7 +202,6 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
           </h3>
 
           {[
-            { id: "noDate", label: "Sem Data", icon: <Calendar className="w-4 h-4 text-gray-500" />, state: noDate, set: setNoDate },
             { id: "overdue", label: "Atrasada", icon: <Clock className="w-4 h-4 text-red-500" />, state: overDue, set: setOverdue },
             { id: "deliveryDay", label: "Com vencimento no dia seguinte", icon: <Clock className="w-4 h-4 text-yellow-500" />, state: deliveryDay, set: setDeliveryDay },
             { id: "deliveryWeek", label: "A ser entregue em uma semana", icon: <Clock className="w-4 h-4 text-gray-400" />, state: deliveryWeek, set: setDeliveryWeek },
