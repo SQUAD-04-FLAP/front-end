@@ -191,7 +191,7 @@ function applyFilters(tasks = [], filters = {}) {
     const responsaveisNames = responsaveis.map(r => {
       if (!r) return "";
       if (typeof r === "string") return r;
-      return (r.nome || r.name || "").toString().toLowerCase();
+      return (r.nome).toString().toLowerCase();
     });
 
     if (filters.noMembers) {
