@@ -46,7 +46,7 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
     setIsOpen(false);
   };
 
-  const handleClear = () => {
+    const handleClear = () => {
     setSearch("");
     setNoMembers(false);
     setSelectedUsers([]);
@@ -61,9 +61,10 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
     setActiveLastTwoWeeks(false);
     setActiveLastFourWeeks(false);
     setNoActiveLastFourWeeks(false);
+    setCompany("");
     onClearFilters();
-    setIsOpen(false);
   };
+
 
   // SelectUser deve notificar com um array de ids ou nomes; adaptamos aqui
   const handleSelectUsersChange = (value) => {
@@ -286,13 +287,13 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
         <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex gap-2 justify-end">
           <button
             onClick={handleClear}
-            className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200"
+            className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 cursor-pointer"
           >
             Limpar
           </button>
           <button
             onClick={handleApply}
-            className="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            className="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
           >
             Aplicar
           </button>
