@@ -123,6 +123,7 @@ const handleSave = async () => {
       dtTermino: dtTerminoISO,
       ativo: editedIsActive,
       prioridade: editedPriority,
+      idsResponsaveis: editedAssignee,
     };
 
     console.log("Payload enviado para editTask:", payload);
@@ -134,6 +135,7 @@ const handleSave = async () => {
 
 
     task.isActive = editedIsActive;
+    task.responsaveis = editedAssignee;
 
     // Atualiza os valores originais localmente
     setOriginalValues({
