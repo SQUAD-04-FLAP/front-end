@@ -1,6 +1,7 @@
 import { useReducer, useEffect } from "react";
 import { framerReducer, initalFramerState } from '../../reducer/framerReducer';
 import { create_framer } from '../../services/framerService';
+import { updateFramer } from '../../services/framerService';
 import { FramerContext } from './FramerContext';
 import { listAllFramers } from '../../services/framerService';
 import { delete_framer } from '../../services/framerService';
@@ -49,6 +50,18 @@ export function FramerProvider({ children }) {
       }
     };
 
+  const updateFramerHandler = async (idBoard, updatedData) => {
+        dispatch({ type: "UPDATE_FRAMER_REQUEST" });
+
+        try {
+            const updatedFramer = await updateFramer(idBoard, updatedData);
+            dispatch({ type: "UPDATE_FRAMER_SUCCESS", payload: updatedFramer });
+        } catch (e) {
+            dispatch({ type: "UPDATE_FRAMER_FAILURE", payload: e.message });
+            throw e;
+        }
+    };
+
     return(
         <FramerContext.Provider
             value={{
@@ -58,6 +71,7 @@ export function FramerProvider({ children }) {
                 createFramer,
                 deleteBoard,
                 fetchFramers,
+                updateFramerHandler
             }}
         >
             {children}
