@@ -30,7 +30,7 @@ export default function DropdownNotificacoes() {
         type="button"
       >
         <Bell className="w-6 h-6" />
-        <div className="absolute w-3 h-3 border-2 border-white rounded-full -top-0.5 right-0 dark:border-gray-900" />
+        {/* <div className="absolute w-3 h-3 border-2 border-white rounded-full -top-0.5 right-0 dark:border-gray-900" /> */}
       </button>
 
       {/* Dropdown */}

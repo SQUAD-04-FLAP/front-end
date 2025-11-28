@@ -26,9 +26,19 @@ export function Card({ task, onClick }) {
         <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getPriorityClasses(task.prioridade)}`}>
           {task.prioridade}
         </span>
+        
       )}
-
       </div>
+
+      {task.nomeSetor && (
+      <span
+        className="text-[11px] font-medium px-2 py-1 rounded-md bg-indigo-100 
+                  text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300
+                  inline-block mb-3"
+      >
+        {task.nomeSetor}
+      </span>
+    )}
 
       {/* Criador da tarefa */}
       {task.nomeCriadoPor && (

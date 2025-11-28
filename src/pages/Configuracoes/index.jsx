@@ -1,4 +1,4 @@
-import { Image, Mail, ShieldCheck, User, Calendar } from 'lucide-react';
+import { Image, Mail, ShieldCheck, User, Calendar, PartyPopper } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';
 import { formatDate } from '../../utils/formatDate';
@@ -73,6 +73,16 @@ export default function Configuracoes() {
                   </div>
                 </div>
 
+                <div className="flex items-center gap-3 p-4 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60">
+                <PartyPopper className="w-6 h-6 text-pink-600 dark:text-pink-300" />
+                <div>
+                  <p className="text-gray-500 text-sm dark:text-gray-400">Aniversário</p>
+                  <p className="font-semibold dark:text-gray-200">
+                    {user.dtNascimento ? formatDate(user.dtNascimento) : "Não informado"}
+                  </p>
+                </div>
+              </div>
+
                 {/* Permissão */}
                 <div className="flex items-center gap-3 p-4 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60">
                   <ShieldCheck className="w-6 h-6 text-purple-600 dark:text-purple-300" />
@@ -83,17 +93,6 @@ export default function Configuracoes() {
                     </p>
                   </div>
                 </div>
-
-                {/* Data de Nascimento (exibe só se houver) */}
-                {user.dtNascimento && (
-                  <div className="flex items-center gap-3 p-4 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60">
-                    <Calendar className="w-6 h-6 text-orange-600 dark:text-orange-300" />
-                    <div>
-                      <p className="text-gray-500 text-sm dark:text-gray-400">Data de Nascimento</p>
-                      <p className="font-semibold dark:text-gray-200">{formatDate(user.dtNascimento)}</p>
-                    </div>
-                  </div>
-                )}
 
               </div>
             </div>
