@@ -11,8 +11,7 @@ export function Card({ task, onClick }) {
         return '';
     }
   };
-
-
+  
   return (
     <div 
       onClick={() => onClick(task)}
@@ -51,13 +50,31 @@ export function Card({ task, onClick }) {
             </span>
           </div>
         </div>
-      )}
-
+      )}   
 
       {/* Description */}
       <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
         {task.description}
       </p>
+
+      {/* Responsáveis */}
+      {task.responsaveis && task.responsaveis.length > 0 && (
+        <div className="flex -space-x-2 rtl:space-x-reverse">
+          {task.responsaveis.map((responsavel) => (
+            <div key={responsavel.idUsuario} className="relative group">
+              <img
+                className="w-8 h-8 border-2 border-white rounded-full shadow-sm transition-transform transform hover:scale-110"
+                src={`https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
+                alt={responsavel.nome}
+              />
+              {/* Tooltip */}
+              <span className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                {responsavel.nome}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Footer */}
       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4">

@@ -123,6 +123,7 @@ const handleSave = async () => {
       dtTermino: dtTerminoISO,
       ativo: editedIsActive,
       prioridade: editedPriority,
+      idsResponsaveis: editedAssignee,
     };
 
     console.log("Payload enviado para editTask:", payload);
@@ -134,6 +135,7 @@ const handleSave = async () => {
 
 
     task.isActive = editedIsActive;
+    task.responsaveis = editedAssignee;
 
     // Atualiza os valores originais localmente
     setOriginalValues({
@@ -228,6 +230,43 @@ const handleSave = async () => {
 
               {/* Responsável */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Responsáveis</h3>
+
+                {isEditing ? (
+                  <SelectMultiple
+                    options={allUsers.map(u => ({
+                      value: u.idUsuario,
+                      label: u.nome,
+                      avatar: u.avatar || `https://ui-avatars.com/api/?name=${u.nome}&size=64`
+                    }))}
+                    value={editedAssignee}
+                    onChange={setEditedAssignee}
+                    className="w-full h-12"
+                  />
+                ) : task.responsaveis && task.responsaveis.length > 0 ? (
+                  <div className="flex -space-x-2 rtl:space-x-reverse">
+                    {task.responsaveis.map((responsavel) => (
+                      <div key={responsavel.idUsuario} className="relative group">
+                        <img
+                          src={responsavel.avatar || `https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
+                          alt={responsavel.nome}
+                          className="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover transition-transform transform hover:scale-110"
+                        />
+                        {/* Tooltip elegante */}
+                        <span className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                          {responsavel.nome}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
+                    Não há ninguém responsável por essa tarefa ainda
+                  </p>
+                )}
+              </div>
+
+              {/* <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Responsável</h3>
                 {isEditing ? (
                   <SelectMultiple
@@ -250,7 +289,7 @@ const handleSave = async () => {
                     Não há ninguém responsável por essa tarefa ainda
                   </p>
                 )}
-              </div>
+              </div> */}
 
                {/* Criador */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">

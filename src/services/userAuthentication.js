@@ -31,18 +31,20 @@ export const userAuthentication = {
     return null;
   },
 
-  register: async(nome, email, senha ) => {
+  register: async(nome, email, senha, dtNascimento ) => {
     const res = await fetch(`${API_URL}/register`, {
       method: "POST",
       headers: {
          "Content-Type": "application/json"
       },
-      body: JSON.stringify({ nome, email, senha }),
+      body: JSON.stringify({ nome, email, senha, dtNascimento }),
     })
 
     if(!res.ok) throw new Error("Erro ao criar usuário");
 
     const data = await res.json();
+
+    console.log(data);
 
     return data;
   },
