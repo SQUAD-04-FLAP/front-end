@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Filter, X, Calendar, Clock } from "lucide-react";
 import { SelectUser } from "../SelectUser";
+import { useSectors } from '../../hooks/useSectors';
 
 export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () => {} }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +17,9 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
   const [activeLastTwoWeeks, setActiveLastTwoWeeks] = useState(false);
   const [activeLastFourWeeks, setActiveLastFourWeeks] = useState(false);
   const [noActiveLastFourWeeks, setNoActiveLastFourWeeks] = useState(false);
+  const [company, setCompany] = useState("");
+  const { sectors } = useSectors();
+
 
   const [search, setSearch] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -37,12 +41,12 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
       activeLastTwoWeeks,
       activeLastFourWeeks,
       noActiveLastFourWeeks,
+      company
     };
     onApplyFilters(filters);
-    setIsOpen(false);
   };
 
-  const handleClear = () => {
+    const handleClear = () => {
     setSearch("");
     setNoMembers(false);
     setSelectedUsers([]);
@@ -57,9 +61,10 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
     setActiveLastTwoWeeks(false);
     setActiveLastFourWeeks(false);
     setNoActiveLastFourWeeks(false);
+    setCompany("");
     onClearFilters();
-    setIsOpen(false);
   };
+
 
   // SelectUser deve notificar com um array de ids ou nomes; adaptamos aqui
   const handleSelectUsersChange = (value) => {
@@ -146,9 +151,9 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
             />
           </div>
 
-          {/* Membros */}
+          {/* Responsáveis */}
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
-            Membros
+            Responsáveis
           </h3>
 
           <div className="flex items-center gap-2">
@@ -163,12 +168,36 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
               htmlFor="noMembers"
               className="text-gray-700 dark:text-gray-300 text-sm font-medium cursor-pointer"
             >
-              Sem membros
+              Sem Responsável
             </label>
           </div>
 
           {/* SelectUser: espera-se que esse componente chame onChange com lista */}
           <SelectUser onChange={handleSelectUsersChange} selected={selectedUsers} />
+
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Empresa
+            </label>
+
+            <select
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg 
+                        bg-gray-50 text-gray-900
+                        dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100
+                        focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Selecione uma empresa...</option>
+
+              {sectors?.map((s) => (
+                <option key={s.idSetor} value={s.nome}>
+                  {s.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+
 
           {/* Status */}
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
@@ -258,13 +287,13 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
         <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex gap-2 justify-end">
           <button
             onClick={handleClear}
-            className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200"
+            className="px-3 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 cursor-pointer"
           >
             Limpar
           </button>
           <button
             onClick={handleApply}
-            className="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            className="px-3 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
           >
             Aplicar
           </button>

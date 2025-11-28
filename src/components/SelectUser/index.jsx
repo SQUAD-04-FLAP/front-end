@@ -7,7 +7,7 @@ export function SelectUser() {
   const dropdowns = [
     {
       name: "users",
-      label: "Membros",
+      label: "Responsáveis",
       items: allUsers.map((user) => ({
         value: user.idUsuario,
         label: user.nome,
@@ -50,14 +50,14 @@ export function SelectUser() {
   return (
     <div className="w-full">
       {/* Dropdown */}
-      <div className="flex flex-wrap items-start gap-2 mb-4">
+      <div className="flex flex-wrap items-start gap-2">
         {dropdowns.map((dropdown) => {
           const items = dropdown.items.filter((item) =>
             item.label.toLowerCase().includes(search.toLowerCase())
           );
 
           return (
-            <div key={dropdown.name} className="relative w-full md:w-48">
+            <div key={dropdown.name} className="relative w-full md:w-48 mb-4">
               {/* Button */}
               <button
                 type="button"

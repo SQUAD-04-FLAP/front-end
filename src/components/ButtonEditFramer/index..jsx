@@ -64,7 +64,7 @@ export function ButtonEditFramer({ framer }) {
                   onClick={() => setIsOpen(false)}
                   disabled={loading}
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4 text-black dark:text-white cursor-pointer" />
                 </button>
 
                 <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">
