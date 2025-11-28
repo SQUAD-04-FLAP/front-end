@@ -43,7 +43,6 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
       noActiveLastFourWeeks,
     };
     onApplyFilters(filters);
-    setIsOpen(false);
   };
 
     const handleClear = () => {
