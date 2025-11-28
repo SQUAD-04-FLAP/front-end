@@ -27,8 +27,11 @@ export function TableUsers() {
       showMessage.error(`${errorDeleteUserById}`, true);
   }
   
+    console.log(allUsers);
+  
     return(
       <div className="overflow-x-auto p-8">
+        
 
       {/* LOADING */}
       {loadingAllUser && (
@@ -81,7 +84,14 @@ export function TableUsers() {
               <th className="px-4 py-3 text-left text-sm font-medium text-slate-600 dark:text-slate-300">
                 <div className="flex items-center">
                   <Calendar className='w-4 h-4 mr-2' />
-                  Data e hora de registro
+                  Data de registro
+                </div>
+              </th>
+
+              <th className="px-4 py-3 text-left text-sm font-medium text-slate-600 dark:text-slate-300">
+                <div className="flex items-center">
+                  <Calendar className='w-4 h-4 mr-2' />
+                  Data de Nascimento
                 </div>
               </th>
 
@@ -135,6 +145,10 @@ export function TableUsers() {
                 {/* DATA */}
                 <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-300 font-medium">
                   {user.createdAt ? formatDate(user.createdAt) : "N/A"}
+                </td>
+
+                <td className="px-4 py-3 text-sm text-slate-600 dark:text-slate-300 font-medium">
+                  {user.dtNascimento ? formatDate(user.dtNascimento) : "N/A"}
                 </td>
 
                 {/* AÇÕES */}

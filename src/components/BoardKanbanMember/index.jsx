@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Column } from '../../components/Column';
 import { CardModal } from '../../components/CardModal';
 import { DragDropContext } from '@hello-pangea/dnd';
@@ -12,6 +12,7 @@ import { ButtonAddNewList } from '../ButtonAddNewList';
 export function BoardKanbanMember() {
   const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
+  const [taskFilters, setTaskFilters] = useState(null);
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,15 +20,22 @@ export function BoardKanbanMember() {
 
   const loading = state.loading;
 
+  // Aplica os filtros antes de agrupar
+  const filteredTasks = useMemo(() => {
+    if (!state.tasks || state.tasks.length === 0) return [];
+    if (!taskFilters) return state.tasks;
+    return applyFilters(state.tasks, taskFilters);
+  }, [state.tasks, taskFilters]);
+
   useEffect(() => {
-    // Quando tasks ou status mudarem, recria as colunas
-    if (state.tasks.length > 0 && state.selectedBoardStatus?.length > 0) {
-      const grouped = groupTasksByStatus(state.tasks, state.selectedBoardStatus);
+    // Quando tasks ou status mudarem, recria as colunas com as tarefas filtradas
+    if (filteredTasks.length > 0 && state.selectedBoardStatus?.length > 0) {
+      const grouped = groupTasksByStatus(filteredTasks, state.selectedBoardStatus);
       setColumns(grouped);
     } else {
       setColumns([]);
     }
-  }, [state.tasks, state.selectedBoardStatus]);
+  }, [filteredTasks, state.selectedBoardStatus]);
 
   const handleCardClick = (task) => {
     setSelectedTask(task);
@@ -99,7 +107,10 @@ export function BoardKanbanMember() {
                 dispatch({ type: "SET_QUADRO_FILTER", payload: value })
               }
             />
-            <FilterButton />
+            <FilterButton
+              onApplyFilters={(filters) => setTaskFilters(filters)}
+              onClearFilters={() => setTaskFilters(null)}
+            />
           </div>
         </div>
 
@@ -143,6 +154,147 @@ export function BoardKanbanMember() {
   );
 }
 
+function applyFilters(tasks = [], filters = {}) {
+  if (!filters || Object.keys(filters).length === 0) return tasks;
+
+  const now = new Date();
+  const normalize = (str = "") => String(str || "").toLowerCase();
+
+  return tasks.filter((t) => {
+    // fields normalization
+    const title = normalize(t.titulo);
+    const description = normalize(t.descricao);
+    const status = normalize(t.nomeStatus);
+    // const createdAt = parseDateSafe(t.dtCreated || t.createdAt);
+    const dtTermino = parseDateSafe(t.dtTermino);
+    // last activity fallback (some tasks may not have last update; use created/updated/term)
+    const lastActivity = parseDateSafe(t.dtUpdated || t.updatedAt || t.dtTermino || t.createdAt);
+
+    // 1) keyword/search
+    if (filters.search && filters.search.trim() !== "") {
+      const q = normalize(filters.search.trim());
+      if (!(title.includes(q) || description.includes(q) || (t.nomeCriadoPor && normalize(t.nomeCriadoPor).includes(q)))) {
+        return false;
+      }
+    }
+
+    // 2) members: noMembers or selectedUsers
+    const responsaveis = Array.isArray(t.responsaveis) ? t.responsaveis : (t.responsaveis ? [t.responsaveis] : []);
+    // try to extract user ids or names from responsaveis entries
+    const responsaveisIds = responsaveis.map(r => {
+      if (!r) return null;
+      if (typeof r === "number" || typeof r === "string") return String(r);
+      if (r.idUsuario) return String(r.idUsuario);
+      if (r.id) return String(r.id);
+      return null;
+    }).filter(Boolean);
+    const responsaveisNames = responsaveis.map(r => {
+      if (!r) return "";
+      if (typeof r === "string") return r;
+      return (r.nome || r.name || "").toString().toLowerCase();
+    });
+
+    if (filters.noMembers) {
+      if (responsaveis && responsaveis.length > 0) return false;
+    }
+
+    if (filters.selectedUsers && filters.selectedUsers.length > 0) {
+      // match if any selectedUser is present in task responsaveis (by id or name)
+      const found = filters.selectedUsers.some(su => {
+        const suStr = String(su);
+        if (responsaveisIds.includes(suStr)) return true;
+        // also check names
+        return responsaveisNames.some(n => n.includes(suStr.toLowerCase()));
+      });
+      if (!found) return false;
+    }
+
+    // 3) status complete / not complete
+    if (filters.isReady) {
+      // consider completed if nomeStatus contains 'conclu' or 'complet'
+      if (!(status.includes("conclu") || status.includes("complet"))) return false;
+    }
+    if (filters.noReady) {
+      if (status.includes("conclu") || status.includes("complet")) return false;
+    }
+
+    // 4) date filters
+    if (filters.noDate) {
+      if (dtTermino) return false;
+    }
+    if (filters.overdue) {
+      if (!dtTermino) return false;
+      if (!(dtTermino < startOfDay(now))) return false;
+    }
+    if (filters.deliveryDay) {
+      if (!dtTermino) return false;
+      if (!withinDays(now, dtTermino, 1)) return false;
+    }
+    if (filters.deliveryWeek) {
+      if (!dtTermino) return false;
+      if (!withinDays(now, dtTermino, 7)) return false;
+    }
+    if (filters.deliveryMonth) {
+      if (!dtTermino) return false;
+      if (!withinDays(now, dtTermino, 30)) return false;
+    }
+
+    // 5) activity filters (usa lastActivity fallback)
+    if (filters.activeLastWeek) {
+      if (!lastActivity) return false;
+      if (!withinDays(now, lastActivity, 7)) return false;
+    }
+    if (filters.activeLastTwoWeeks) {
+      if (!lastActivity) return false;
+      if (!withinDays(now, lastActivity, 14)) return false;
+    }
+    if (filters.activeLastFourWeeks) {
+      if (!lastActivity) return false;
+      if (!withinDays(now, lastActivity, 28)) return false;
+    }
+    if (filters.noActiveLastFourWeeks) {
+      if (!lastActivity) return true; // if no activity at all, it matches "no activity"
+      if (withinDays(now, lastActivity, 28)) return false; // has activity within 4 weeks => exclude
+    }
+
+    // se passou por todas as checagens, inclui
+    return true;
+  });
+}
+
+/* helpers */
+function parseDateSafe(value) {
+  if (!value) return null;
+  // se já é Date
+  if (value instanceof Date && !isNaN(value)) return value;
+  // tenta parse em diversos formatos
+  const d = new Date(value);
+  if (!isNaN(d)) return d;
+  // tenta trocar barras (dd/mm/yyyy)
+  if (typeof value === "string" && value.includes("/")) {
+    const parts = value.split("/");
+    if (parts.length === 3) {
+      const [dd, mm, yyyy] = parts;
+      const out = new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
+      if (!isNaN(out)) return out;
+    }
+  }
+  return null;
+}
+function startOfDay(d = new Date()) {
+  const x = new Date(d);
+  x.setHours(0,0,0,0);
+  return x;
+}
+function withinDays(now, date, days) {
+  if (!date) return false;
+  const diff = date.getTime() - startOfDay(now).getTime();
+  const ms = days * 24 * 60 * 60 * 1000;
+  return diff >= 0 && diff <= ms;
+}
+
+/* ------------------------- agrupamento (mantido) ------------------------- */
+
 // 🔹 Agrupa tarefas por status
 function groupTasksByStatus(tasks, boardStatus) {
   if (!boardStatus || boardStatus.length === 0) return [];
@@ -155,7 +307,7 @@ function groupTasksByStatus(tasks, boardStatus) {
     tasks: tasks
       .filter((t) => t.idStatus === s.id)
       .map((t) => ({
-        id: t.idTarefa.toString(),
+        id: t.idTarefa?.toString(),
         title: t.titulo,
         description: t.descricao || "",
         dtTermino: t.dtTermino ? new Date(t.dtTermino).toLocaleDateString("pt-BR") : "",
@@ -166,16 +318,16 @@ function groupTasksByStatus(tasks, boardStatus) {
         idQuadro: t.idQuadro,
         dtCreated: t.createdAt,
         isActive: t.ativo,
-        nomeCriadoPor: t.nomeCriadoPor
+        nomeCriadoPor: t.nomeCriadoPor,
+        responsaveis: t.responsaveis,
       })),
   }));
 }
 
 function getStatusColor(nome) {
-  const lower = nome.toLowerCase();
-  if (lower.includes("A Fazer")) return "bg-amber-500";
-  if (lower.includes("Em Progresso")) return "bg-sky-500";
-  if (lower.includes("Concluído")) return "bg-emerald-500";
+  const lower = (nome || "").toLowerCase();
+  if (lower.includes("a fazer")) return "bg-amber-500";
+  if (lower.includes("em progresso")) return "bg-sky-500";
+  if (lower.includes("concluído") || lower.includes("conclu")) return "bg-emerald-500";
   return "bg-gray-400";
 }
-

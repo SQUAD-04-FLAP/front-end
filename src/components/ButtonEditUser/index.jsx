@@ -1,17 +1,3 @@
-// import { Edit } from "lucide-react";
-
-// export function  ButtonEditUser() {
-//     return(
-//         <button 
-//             type="button" 
-//             className="flex items-center gap-2 rounded-lg text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border border-gray-200 dark:border-slate-600 px-3 py-1 cursor-pointer"
-//             >
-//             <Edit className='h-4 w-4' />
-//             Editar
-//         </button>
-//     );
-// }
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Edit, X } from "lucide-react";
@@ -23,6 +9,7 @@ export function ButtonEditUser({ user }) {
   const [open, setOpen] = useState(false);
   const [ativo, setAtivo] = useState(user.ativo);
   const [nome, setNome] = useState(user.nome || "");
+  const [dtNascimento, setdtNascimento] = useState(user.dtNascimento || "");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,10 +17,11 @@ export function ButtonEditUser({ user }) {
     const payload = {
       nome,
       ativo,
+      dtNascimento,
     };
 
-    console.log("PAYLOAD ENVIADO:", payload);
-    console.log("ID ENVIADO:", user.idUsuario);
+    // console.log("PAYLOAD ENVIADO:", payload);
+    // console.log("ID ENVIADO:", user.idUsuario);
 
     try {
       await updateUserById(user.idUsuario, payload);
@@ -86,6 +74,16 @@ export function ButtonEditUser({ user }) {
                     onChange={(e) => setNome(e.target.value)}
                     className="border dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
                     required
+                  />
+                </div>
+
+                 <div className="flex flex-col gap-1">
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Data de Nascimento</label>
+                  <input
+                    type="date"
+                    value={dtNascimento}
+                    onChange={(e) => setdtNascimento(e.target.value)}
+                    className="border dark:border-slate-600 rounded-lg px-3 py-2 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100"
                   />
                 </div>
 

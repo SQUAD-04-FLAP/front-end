@@ -1,6 +1,8 @@
-import { Image, Mail, ShieldCheck, User } from 'lucide-react';
+import { Image, Mail, ShieldCheck, User, Calendar } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';
+import { formatDate } from '../../utils/formatDate';
+import { format } from "date-fns";
 
 export default function Configuracoes() {
   const { user, updateUserById, loadingUpdateUserById, errorUpdateUserById } = useAuth();
@@ -8,7 +10,9 @@ export default function Configuracoes() {
   const [formData, setFormData] = useState({
     nome: user.nome || "",
     avatar: user?.avatar || "",
-    ativo: user.ativo
+    dtNascimento: user.dtNascimento
+    ? format(new Date(user.dtNascimento), "yyyy-MM-dd")
+    : ""
   });
 
   const handleChange = (e) => {
@@ -36,7 +40,7 @@ export default function Configuracoes() {
 
         <div className="flex flex-col lg:flex-row gap-8">
 
-          {/* Seção 1: Visualizar Perfil */}
+          {/* Visualizar Perfil */}
           <div className="flex-1 shadow-2xl p-6 rounded-2xl bg-white dark:bg-gray-800/40 backdrop-blur-md">
             <h2 className="text-3xl font-bold mb-4 dark:text-white flex items-center gap-2">
               Meu Perfil
@@ -51,7 +55,6 @@ export default function Configuracoes() {
               </div>
 
               <div className="flex-1 grid gap-4">
-                
                 {/* Nome */}
                 <div className="flex items-center gap-3 p-4 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60">
                   <User className="w-6 h-6 text-blue-600 dark:text-blue-300" />
@@ -81,11 +84,22 @@ export default function Configuracoes() {
                   </div>
                 </div>
 
+                {/* Data de Nascimento (exibe só se houver) */}
+                {user.dtNascimento && (
+                  <div className="flex items-center gap-3 p-4 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60">
+                    <Calendar className="w-6 h-6 text-orange-600 dark:text-orange-300" />
+                    <div>
+                      <p className="text-gray-500 text-sm dark:text-gray-400">Data de Nascimento</p>
+                      <p className="font-semibold dark:text-gray-200">{formatDate(user.dtNascimento)}</p>
+                    </div>
+                  </div>
+                )}
+
               </div>
             </div>
           </div>
 
-          {/* Seção 2: Editar Perfil */}
+          {/* Editar Perfil */}
           <div className="flex-1 shadow-2xl p-6 rounded-2xl bg-white dark:bg-gray-800/40 backdrop-blur-md">
             <h2 className="text-3xl font-bold mb-4 dark:text-white">Editar Perfil</h2>
 
@@ -138,6 +152,18 @@ export default function Configuracoes() {
                   className="mt-2 p-4 w-full border rounded-lg dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
                 />
               </div>       
+
+              {/* Data de Nascimento */}
+              <div>
+                <label className="dark:text-gray-200 font-medium">Data de Nascimento</label>
+                <input
+                  type="date"
+                  name="dtNascimento"
+                  value={formData.dtNascimento}
+                  onChange={handleChange}
+                  className="mt-2 p-4 w-full border rounded-lg dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700"
+                />
+              </div>
 
               <button 
                 type="submit"
