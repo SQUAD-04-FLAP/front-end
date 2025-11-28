@@ -320,6 +320,7 @@ function groupTasksByStatus(tasks, boardStatus) {
         isActive: t.ativo,
         nomeCriadoPor: t.nomeCriadoPor,
         responsaveis: t.responsaveis,
+        nomeSetor: t.nomeSetor,
       })),
   }));
 }
