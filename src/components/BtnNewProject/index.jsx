@@ -15,7 +15,7 @@ export function BtnNewProject( {...props} ) {
       transition duration-200 cursor-pointer shadow-sm"
       {...props}
     >
-      + Novo Projeto
+      + Nova Empresa
     </button>
 
      <AdicionarProjetoModal 

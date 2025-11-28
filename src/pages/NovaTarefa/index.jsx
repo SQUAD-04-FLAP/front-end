@@ -1,25 +1,25 @@
-import { useState, useRef, useEffect } from "react";
-import { useAtom } from "jotai";
-import { projectWS, roomWS, socketIORef } from "../../services/globals";
-import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft } from "lucide-react";
+import { useState, useEffect, ChangeEvent } from "react";
+import { Plus, ClipboardList, Calendar, User, Layers, AlertCircle, CheckCircle2, Columns, ArrowLeft, Building2 } from "lucide-react";
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { FilterBoardMember } from "../../components/FilterBoardMember";
-import { FilterSectorMember } from "../../components/FilterSectorMember";
 import { createTask } from '../../services/tasks';
 import { useAuth } from '../../hooks/useAuth';
+import { useFramer } from "../../hooks/useFramer";
+import { useSectors } from '../../hooks/useSectors';
 
 export default function NovaTarefa() {
-  const { user } = useAuth();
-
+  const { user, allUsers } = useAuth();
+  const { framers } = useFramer();
+  const { sectors } = useSectors();
+  
   const [form, setForm] = useState({
     titulo: "",
     descricao: "",
-    responsavel: "",
-    prioridade: "Média",
-    dataInicio: "",
+    prioridade: "",
     dataFim: "",
-    projeto: "",
     quadro: "",
+    empresa: "",
+    responsaveis: [],
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
@@ -36,6 +36,12 @@ export default function NovaTarefa() {
 
   const setores = ["Marketing", "Design", "Atendimento", "TI"];
   const prioridades = ["Baixa", "Média", "Alta"];
+
+  useEffect(() => {
+    window.HSSelect?.autoInit();
+  }, []);
+  
+
 
   const prioridadeColors = {
     Baixa: "bg-green-100 text-green-700 border-green-300 dark:bg-green-900 dark:text-green-200 dark:border-green-700",
@@ -60,163 +66,71 @@ export default function NovaTarefa() {
     const newErrors = {};
 
     if (!form.titulo.trim()) newErrors.titulo = "O título é obrigatório";
-    if (!form.descricao.trim()) newErrors.descricao = "A descrição é obrigatória";
-    if (!form.responsavel.trim()) newErrors.responsavel = "O responsável é obrigatório";
-    if (!form.setor) newErrors.setor = "Selecione um setor";
-
-    if (form.dataInicio && form.dataFim && form.dataInicio > form.dataFim) {
-      newErrors.dataFim = "A data de término deve ser posterior à data de início";
-    }
+    if (!form.quadro) newErrors.quadro = "O quadro é obrigatório.";
+    if (!form.dataFim) newErrors.dataFim = "A data de término é obrigatório.";
+    if (!form.empresa) newErrors.empresa = "A empresa é obrigatório.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
 
-  useEffect(() => {
-    socketRef.current = socketioref;
-  }, []);
+async function handleSubmit() {
+  if (!validateForm()) return;
 
-  function emitUpdate(newProj) {
-    if (!socketRef.current) return;
-    if (emitTimer.current) window.clearTimeout(emitTimer.current);
-    emitTimer.current = window.setTimeout(() => {
-      socketRef.current?.emit("updateProject", { room, project: newProj });
+  try {
+    const idCriador = user.idUsuario;
+    const idQuadro = Number(form.quadro);
+    const idSetor = Number(form.empresa);
+    const idsResponsaveis = form.responsaveis.map(Number); // transforma em array de números
+    const dtTermino = new Date(`${form.dataFim}T00:00:00.000Z`).toISOString();
 
-      // setColumns(newProj);
-      // show success + limpar form
-      setShowSuccess(true);
-      setTimeout(() => {
-        setShowSuccess(false);
-      }, 2000);
+    // console.log("Enviando para API:", {
+    //   titulo: form.titulo,
+    //   descricao: form.descricao,
+    //   dtTermino,
+    //   prioridade: form.prioridade,
+    //   idCriador,
+    //   idQuadro,
+    //   idSetor,
+    //   idsResponsaveis
+    // });
 
-      setForm({
-        titulo: "",
-        descricao: "",
-        responsavel: "",
-        prioridade: "Média",
-        dataInicio: "",
-        dataFim: "",
-        setor: "",
-      });
-    }, 300);
+    const novaTarefa = await createTask({
+      titulo: form.titulo,
+      descricao: form.descricao,
+      dtTermino,
+      prioridade: form.prioridade,
+      idCriador,
+      idQuadro,
+      idSetor,
+      idsResponsaveis
+    });
+
+    dispatch({ type: "ADD_TASK", payload: novaTarefa });
+
+    setShowSuccess(true);
+    setTimeout(() => {
+    setForm({
+      titulo: "",
+      descricao: "",
+      prioridade: "",
+      dataFim: "",
+      quadro: "",
+      empresa: "",
+      responsaveis: [],
+    });
+
+    // Limpa visualmente o HSSelect
+    const instance = window.HSSelect.getInstance("#responsavelSelect");
+    instance?.clear(); // <- limpa seleção visual
+
+    setShowSuccess(false);
+  }, 2000);
+  } catch (e) {
+    console.error("Erro ao criar tarefa:", e);
   }
+}
 
-  function insertTask() {
-    if (!validateForm()) return;
-    if (!socketRef.current) return;
-
-    // formata a nova task
-    const newTask = buildTaskFromForm();
-
-    // Recupera as columns atuais do project (suporta project = { columns: [...] } ou project = columnsArray)
-    const currentColumns = columns
-      ? columns.columns ?? (Array.isArray(columns) ? columns : undefined)
-      : undefined;
-
-    // copia segura das colunas
-    const newColumns = Array.isArray(currentColumns) ? currentColumns.map((c) => ({ ...c, tasks: [...(c.tasks || [])] })) : [];
-
-    // encontra coluna 'todo' (id 'todo' conforme seu DEFAULT_PROJECT)
-    let fazerCol = newColumns.find((col) => col.id === "todo");
-
-    if (!fazerCol) {
-      // se não existir, cria a coluna "Fazer" no começo
-      fazerCol = {
-        id: "todo",
-        name: "Fazer",
-        count: 0,
-        colorDot: "bg-amber-500",
-        tasks: [],
-      };
-      newColumns.unshift(fazerCol);
-    }
-
-    // adiciona a nova tarefa no final (ou altere para unshift para adicionar no topo)
-    fazerCol.tasks = [...fazerCol.tasks, newTask];
-    fazerCol.count = fazerCol.tasks.length;
-
-    // monta o projeto inteiro a ser salvo/enviado
-    const newProject = columns && typeof columns === "object" && columns.columns ? { ...columns, columns: newColumns } : { columns: newColumns };
-
-    // console.log(newProject.columns)
-    // emite updateProject com o JSON inteiro conforme backend espera
-    emitUpdate(newProject.columns);
-  }
-
-  function buildTaskFromForm() {
-    return {
-      id: `t_${Date.now()}_${Math.floor(Math.random() * 10000)}`,
-      title: form.titulo,
-      description: form.descricao,
-      date: form.dataFim ? new Date(form.dataFim).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }) : "",
-      comments: 0,
-      attachments: 0,
-      assigneeAvatar: undefined,
-      priority: form.prioridade,
-      responsavel: form.responsavel,
-      setor: form.setor,
-      dataInicio: form.dataInicio,
-      dataFim: form.dataFim,
-    };
-  }
-
-
-
-  async function handleSubmit() {
-    socketRef.current = socketioref;
-
-    if (!validateForm()) return;
-
-    try {
-      // const idCriador = user.idUsuario;
-      // const idQuadro = Number(form.quadro);
-
-      // const novaTarefa = await createTask({
-      //   titulo: form.titulo,
-      //   descricao: form.descricao,
-      //   idQuadro,
-      //   idCriador,
-      // });
-
-      // Atualiza o estado local ou global, ex:
-      // dispatch({ type: "ADD_TASK", payload: novaTarefa });
-
-      const newTask = buildTaskFromForm();
-      insertTask(newTask);
-
-      // setShowSuccess(true);
-
-      // setTimeout(() => {
-      //   setForm({
-      //     titulo: "",
-      //     descricao: "",
-      //     responsavel: "",
-      //     prioridade: "Média",
-      //     dataInicio: "",
-      //     dataFim: "",
-      //     setor: "",
-      //   });
-      //   setShowSuccess(false);
-      // }, 2000);
-      // navigate("/board-v2");
-
-      // setTimeout(() => {
-      //   setForm({
-      //     titulo: "",
-      //     descricao: "",
-      //     responsavel: "",
-      //     prioridade: "Média",
-      //     dataInicio: "",
-      //     dataFim: "",
-      //     projeto: "",
-      //     quadro: "",
-      //   });
-      //   setShowSuccess(false);
-      // }, 2000);
-    } catch (e) {
-      console.error("Erro ao criar tarefa:", e);
-    }
-  }
 
   return (
     <div className="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 min-h-screen transition-colors">
@@ -274,7 +188,7 @@ export default function NovaTarefa() {
             <div>
               <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 <Layers className="w-4 h-4 mr-2 text-cyan-500" />
-                Descrição *
+                Descrição
               </label>
               <textarea
                 name="descricao"
@@ -292,77 +206,172 @@ export default function NovaTarefa() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
+              <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                <Columns className="w-4 h-4 mr-2 text-cyan-500" />
+                Quadro *
+              </label>
+              <select
+                name="quadro"
+                value={form.quadro}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  errors.quadro ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                }`}
+              >
+                <option value="">Selecione um quadro</option>
+                {framers.map((framer) => (
+                  <option key={framer.idQuadro} value={framer.idQuadro}>
+                    {framer.nome}
+                  </option>
+                ))}
+              </select>
+              {errors.quadro && (
+                <p className="mt-1 text-sm text-red-500 flex items-center">
+                  <AlertCircle className="w-4 h-4 mr-1" />
+                  {errors.quadro}
+                </p>
+              )}
+            </div>
+
+             <div>
+              <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                <Building2 className="w-4 h-4 mr-2 text-cyan-500" />
+                Empresa *
+              </label>
+              <select
+                name="empresa"
+                value={form.empresa}
+                onChange={handleChange}
+                className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+                  errors.empresa ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                }`}
+              >
+                <option value="">Selecione uma empresa</option>
+                {sectors.map((sector) => (
+                  <option key={sector.idSetor} value={sector.idSetor}>
+                    {sector.nome}
+                  </option>
+                ))}
+              </select>
+              {errors.empresa && (
+                <p className="mt-1 text-sm text-red-500 flex items-center">
+                  <Building2 className="w-4 h-4 mr-1" />
+                  {errors.empresa}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                <User className="w-4 h-4 mr-2 text-cyan-500" />
+                Responsável *
+              </label>
+
+              <select
+            id="responsavelSelect"
+            multiple
+            onChange={(e) => {
+              const selectedOptions = Array.from(e.target.selectedOptions).map(opt => Number(opt.value));
+              setForm(prev => ({ ...prev, responsaveis: selectedOptions }));
+
+              // Fecha o dropdown do HSSelect
+              const instance = window.HSSelect.getInstance("#responsavelSelect");
+              instance?.close();
+            }}
+           data-hs-select='{
+            "placeholder": "Selecione...",
+            "dropdownClasses": "mt-2 z-50 w-full max-h-72 p-1 space-y-0.5 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 dark:bg-gray-700 dark:border-neutral-700",
+            "optionClasses": "py-2 px-4 w-full text-sm text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg focus:outline-hidden focus:bg-gray-100 hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 dark:bg-gray-700 dark:hover:bg-neutral-800 dark:text-dark:focus:bg-neutral-800",
+            "mode": "tags",
+            "wrapperClasses": "relative ps-0.5 pe-9 min-h-11.5 flex items-center flex-wrap text-nowrap w-full border border-gray-200 rounded-lg text-start text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-neutral-700 dark:text-neutral-400",
+            "tagsItemTemplate": "<div class=\"flex flex-nowrap items-center relative z-10 bg-white border border-gray-200 rounded-full p-1 m-1 dark:bg-gray-700 dark:border-neutral-700 \"><div class=\"size-6 me-1\" data-icon></div><div class=\"whitespace-nowrap text-gray-800 dark:text-neutral-200 \" data-title></div><div class=\"inline-flex shrink-0 justify-center items-center size-5 ms-2 rounded-full text-gray-800 bg-gray-200 hover:bg-gray-300 focus:outline-hidden focus:ring-2 focus:ring-gray-400 text-sm dark:bg-neutral-700/50 dark:hover:bg-neutral-700 dark:text-neutral-400 cursor-pointer\" data-remove><svg class=\"shrink-0 size-3\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></div></div>",
+            "tagsInputId": "hs-tags-input",
+            "tagsInputClasses": "py-2.5 sm:py-3 px-2 min-w-20 rounded-lg order-1 border-transparent focus:ring-0 sm:text-sm outline-hidden dark:bg-gray-700 dark:placeholder-neutral-500 dark:text-neutral-400",
+            "optionTemplate": "<div class=\"flex items-center\"><div class=\"size-8 me-2\" data-icon></div><div><div class=\"text-sm font-semibold text-gray-800 dark:text-neutral-200 \" data-title></div><div class=\"text-xs text-gray-500 dark:text-neutral-500 \" data-description></div></div><div class=\"ms-auto\"><span class=\"hidden hs-selected:block\"><svg class=\"shrink-0 size-4 text-blue-600\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" viewBox=\"0 0 16 16\"><path d=\"M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z\"/></svg></span></div></div>",
+            "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"shrink-0 size-3.5 text-gray-500 dark:text-neutral-500 \" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
+          }'
+            className="hidden"
+          >
+            <option value="">Escolher...</option>
+            {allUsers?.map((u) => (
+              <option
+                key={u.idUsuario}  // ajustei para idUsuario
+                value={u.idUsuario}
+                data-hs-select-option={JSON.stringify({
+                  description: u.email ?? "",
+                  icon: `<img class="inline-block rounded-full" src="${u.avatarUrl || "https://ui-avatars.com/api/?name=" + u.nome}" />`
+                })}
+              >
+                {u.nome}
+              </option>
+            ))}
+          </select>
+
+
+              {/* <select
+                id="responsavelSelect"
+                multiple
+                onChange={() => {
+                const instance = window.HSSelect.getInstance("#responsavelSelect");
+                instance?.close();
+              }}
+                data-hs-select='{
+                  "placeholder": "Selecione...",
+                  "dropdownClasses": "mt-2 z-50 w-full max-h-72 p-1 space-y-0.5 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 dark:bg-gray-700 dark:border-neutral-700",
+                  "optionClasses": "py-2 px-4 w-full text-sm text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg focus:outline-hidden focus:bg-gray-100 hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 dark:bg-gray-700 dark:hover:bg-neutral-800 dark:text-dark:focus:bg-neutral-800",
+                  "mode": "tags",
+                  "wrapperClasses": "relative ps-0.5 pe-9 min-h-11.5 flex items-center flex-wrap text-nowrap w-full border border-gray-200 rounded-lg text-start text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-neutral-700 dark:text-neutral-400",
+                  "tagsItemTemplate": "<div class=\"flex flex-nowrap items-center relative z-10 bg-white border border-gray-200 rounded-full p-1 m-1 dark:bg-gray-700 dark:border-neutral-700 \"><div class=\"size-6 me-1\" data-icon></div><div class=\"whitespace-nowrap text-gray-800 dark:text-neutral-200 \" data-title></div><div class=\"inline-flex shrink-0 justify-center items-center size-5 ms-2 rounded-full text-gray-800 bg-gray-200 hover:bg-gray-300 focus:outline-hidden focus:ring-2 focus:ring-gray-400 text-sm dark:bg-neutral-700/50 dark:hover:bg-neutral-700 dark:text-neutral-400 cursor-pointer\" data-remove><svg class=\"shrink-0 size-3\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></div></div>",
+                  "tagsInputId": "hs-tags-input",
+                  "tagsInputClasses": "py-2.5 sm:py-3 px-2 min-w-20 rounded-lg order-1 border-transparent focus:ring-0 sm:text-sm outline-hidden dark:bg-gray-700 dark:placeholder-neutral-500 dark:text-neutral-400",
+                  "optionTemplate": "<div class=\"flex items-center\"><div class=\"size-8 me-2\" data-icon></div><div><div class=\"text-sm font-semibold text-gray-800 dark:text-neutral-200 \" data-title></div><div class=\"text-xs text-gray-500 dark:text-neutral-500 \" data-description></div></div><div class=\"ms-auto\"><span class=\"hidden hs-selected:block\"><svg class=\"shrink-0 size-4 text-blue-600\" xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"currentColor\" viewBox=\"0 0 16 16\"><path d=\"M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z\"/></svg></span></div></div>",
+                  "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"shrink-0 size-3.5 text-gray-500 dark:text-neutral-500 \" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
+                }'
+                className="hidden"
+              >
+
+                <option value="">Escolher...</option>
+
+                {allUsers?.map((u) => (
+                  <option
+                    key={u.id}
+                    value={u.id}
+                    data-hs-select-option={JSON.stringify({
+                      description: u.email ?? "",
+                      icon: `<img class="inline-block rounded-full" src="${u.avatarUrl || "https://ui-avatars.com/api/?name=" + u.nome}" />`
+                    })}
+                  >
+                    {u.nome}
+                  </option>
+                ))}
+              </select> */}
+            </div>
+
+             <div>
                 <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <User className="w-4 h-4 mr-2 text-cyan-500" />
-                  Responsável *
+                  <Calendar className="w-4 h-4 mr-2 text-cyan-500" />
+                  Data de Término *
                 </label>
                 <input
-                  type="text"
-                  name="responsavel"
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white ${errors.responsavel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                    }`}
-                  placeholder="Nome do responsável"
-                  value={form.responsavel}
+                  type="date"
+                  name="dataFim"
+                  value={form.dataFim}
                   onChange={handleChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white ${
+                    errors.dataFim ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  }`}
                 />
-                {errors.responsavel && (
+                {errors.dataFim && (
                   <p className="mt-1 text-sm text-red-500 flex items-center">
                     <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.responsavel}
+                    {errors.dataFim}
                   </p>
                 )}
               </div>
 
-              <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Layers className="w-4 h-4 mr-2 text-cyan-500" />
-                  Projeto
-                </label>
 
-                <FilterSectorMember
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
-                  dark:bg-gray-700 dark:border-gray-600 dark:text-white 
-                  ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
-                `}
-                  onFilter={(value) => {
-                    dispatch({ type: "SET_SETOR_FILTER", payload: value });
-                    setForm(prev => ({ ...prev, setor: value }));
-                  }}
-                />
-
-                {errors.setor && (
-                  <p className="mt-1 text-sm text-red-500 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.setor}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Columns className="w-4 h-4 mr-2 text-cyan-500" />
-                  Quadro
-                </label>
-                <FilterBoardMember
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all 
-                  dark:bg-gray-700 dark:border-gray-600 dark:text-white 
-                  ${errors.setor ? "border-red-500" : "border-gray-300 dark:border-gray-600"}
-                `}
-                  onFilter={(value) => {
-                    dispatch({ type: "SET_SETOR_FILTER", payload: value });
-                    setForm(prev => ({ ...prev, quadro: value }));
-                  }}
-                />
-
-                {errors.setor && (
-                  <p className="mt-1 text-sm text-red-500 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.setor}
-                  </p>
-                )}
-              </div>
             </div>
 
             {/* Prioridade com visual melhorado */}
@@ -385,44 +394,6 @@ export default function NovaTarefa() {
                     {p}
                   </button>
                 ))}
-              </div>
-            </div>
-
-            {/* Datas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Calendar className="w-4 h-4 mr-2 text-cyan-500" />
-                  Data de Início
-                </label>
-                <input
-                  type="date"
-                  name="dataInicio"
-                  value={form.dataInicio}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label className="flex items-center text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
-                  <Calendar className="w-4 h-4 mr-2 text-cyan-500" />
-                  Data de Término
-                </label>
-                <input
-                  type="date"
-                  name="dataFim"
-                  value={form.dataFim}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all dark:bg-gray-700 dark:text-white ${errors.dataFim ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                    }`}
-                />
-                {errors.dataFim && (
-                  <p className="mt-1 text-sm text-red-500 flex items-center">
-                    <AlertCircle className="w-4 h-4 mr-1" />
-                    {errors.dataFim}
-                  </p>
-                )}
               </div>
             </div>
 

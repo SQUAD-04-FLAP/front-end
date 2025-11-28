@@ -10,7 +10,7 @@ export async function list_sectors() {
     const res = await fetch(API_URL, {
       headers: {
         "Content-Type": "application/json",
-        ...getAuthHeader(), // envia o token
+        ...getAuthHeader(),
       },
     });
 
@@ -28,7 +28,7 @@ export async function create_sector(sectorData) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...getAuthHeader(), // envia o token
+        ...getAuthHeader(),
       },
       body: JSON.stringify(sectorData),
     });
@@ -51,9 +51,29 @@ export const delete_sector = async (idSetor) => {
   });
 
   if (!response.ok) {
-    throw new Error("Não foi possível excluir o projeto. Tente novamente mais tarde.");
+    throw new Error("Não foi possível excluir a empresa. Tente novamente mais tarde.");
   }
 
   return true;
 };
+
+export const update_sector = async (idSetor, data) => {
+  try {
+    const res = await fetch(`${API_URL}/${idSetor}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error("Não foi possível atualizar o projeto.");
+    return await res.json();
+  } catch (e) {
+    console.error("Erro ao atualizar setor:", e);
+    throw e;
+  }
+};
+
 

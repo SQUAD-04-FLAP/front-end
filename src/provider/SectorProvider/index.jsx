@@ -5,12 +5,13 @@ import { SectorContext } from './SectorContext';
 
 import { create_sector } from '../../services/sectorsService';
 import { delete_sector } from '../../services/sectorsService';
-
+import { update_sector } from '../../services/sectorsService';
+import { useAuth } from '../../hooks/useAuth';
 
 export function SectorProvider({ children }) {
     const [ state, dispatch ] = useReducer(sectorReducer, initialSectorState);
+    const { token } = useAuth();
 
-    // função para carregar setores
     const fetchSectors = async() => {
         dispatch({ type: "FETCH_SECTORS_REQUEST" });
 
@@ -21,6 +22,12 @@ export function SectorProvider({ children }) {
             dispatch({ type: "FETCH_SECTORS_FAILURE", payload: e.message });
         }
     }
+
+     useEffect(() => {
+        if (token) {
+            fetchSectors();
+        }
+    }, [token]);
 
   const createSector = async (newSectorData) => {
   dispatch({ type: "CREATE_SECTOR_REQUEST" });
@@ -42,6 +49,15 @@ const removeSector = async (idSetor) => {
   }
 };
 
+const updateSector = async (idSetor, updatedData) => {
+  try {
+    const updatedSector = await update_sector(idSetor, updatedData);
+    dispatch({ type: "UPDATE_SECTOR_SUCCESS", payload: updatedSector });
+  } catch (e) {
+    dispatch({ type: "UPDATE_SECTOR_FAILURE", payload: e.message });
+  }
+};
+
 
   useEffect(() => {
     fetchSectors();
@@ -56,7 +72,8 @@ const removeSector = async (idSetor) => {
       createSector,
       state,
       dispatch,
-      removeSector
+      removeSector,
+      updateSector
      }}>
       {children}
     </SectorContext.Provider>

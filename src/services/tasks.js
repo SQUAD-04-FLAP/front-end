@@ -114,7 +114,7 @@ export async function deleteTaskById(taskId) {
   }
 }
 
-export async function createTask({ titulo, descricao, idQuadro, idCriador }) {
+export async function createTask({ titulo, descricao, dtTermino, prioridade, idQuadro, idCriador, idSetor, idsResponsaveis }) {
   try {
     const res = await fetch(`${API_URL}`, {
       method: "POST",
@@ -122,7 +122,7 @@ export async function createTask({ titulo, descricao, idQuadro, idCriador }) {
         "Content-Type": "application/json",
         ...getAuthHeader(),
       },
-      body: JSON.stringify({ titulo, descricao, idQuadro, idCriador }),
+      body: JSON.stringify({ titulo, descricao, dtTermino, prioridade, idQuadro, idCriador, idSetor, idsResponsaveis }),
     });
 
     if (!res.ok) {
@@ -130,9 +130,36 @@ export async function createTask({ titulo, descricao, idQuadro, idCriador }) {
       throw new Error(`Erro ao criar tarefa: ${text}`);
     }
 
-    return await res.json();
+    const data = await res.json();
+    console.log(data);
+    return data;
   } catch (e) {
     console.error("[TasksService] Erro ao criar tarefa:", e);
     throw e;
   }
 }
+
+
+export async function updateTask(idTarefa, updatedData) {
+  try {
+    const res = await fetch(`${API_URL}/${idTarefa}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Erro ao atualizar tarefa: ${text}`);
+    }
+
+    return await res.json();
+  } catch (e) {
+    console.error("[TasksService] Erro ao atualizar tarefa:", e);
+    throw e;
+  }
+}
+

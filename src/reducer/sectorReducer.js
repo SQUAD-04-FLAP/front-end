@@ -33,6 +33,17 @@ export function sectorReducer(state, action) {
                 loading: false,
                 error: action.payload
             };
+         case "UPDATE_SECTOR_SUCCESS":
+            return {
+                ...state,
+                sectors: state.sectors.map(s =>
+                    s.idSetor === action.payload.idSetor ? action.payload : s
+                ),
+                loading: false,
+            };
+        case "UPDATE_SECTOR_FAILURE":
+            return { ...state, loading: false, error: action.payload };
+        
         case "RESET_SECTOR_ERROR":
             return { ...state, error: null };
             default:
