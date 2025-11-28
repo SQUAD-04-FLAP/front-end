@@ -76,16 +76,16 @@ async function handleSubmit() {
     const idsResponsaveis = form.responsaveis.map(Number); // transforma em array de números
     const dtTermino = new Date(`${form.dataFim}T00:00:00.000Z`).toISOString();
 
-    // console.log("Enviando para API:", {
-    //   titulo: form.titulo,
-    //   descricao: form.descricao,
-    //   dtTermino,
-    //   prioridade: form.prioridade,
-    //   idCriador,
-    //   idQuadro,
-    //   idSetor,
-    //   idsResponsaveis
-    // });
+    console.log("Enviando para API:", {
+      titulo: form.titulo,
+      descricao: form.descricao,
+      dtTermino,
+      prioridade: form.prioridade,
+      idCriador,
+      idQuadro,
+      idSetor,
+      idsResponsaveis
+    });
 
     const novaTarefa = await createTask({
       titulo: form.titulo,
