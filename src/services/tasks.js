@@ -139,7 +139,6 @@ export async function createTask({ titulo, descricao, dtTermino, prioridade, idQ
   }
 }
 
-
 export async function updateTask(idTarefa, updatedData) {
   try {
     const res = await fetch(`${API_URL}/${idTarefa}`, {
@@ -162,4 +161,26 @@ export async function updateTask(idTarefa, updatedData) {
     throw e;
   }
 }
+
+export async function fetchTasksByUserID(idUsuario) {
+  try {
+    const res = await fetch(`${API_URL}/responsavel/${idUsuario}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) {
+      const msg = await res.text();
+      throw new Error(`Erro ao listar tarefas do usuário ${idUsuario}: ${msg}`);
+    }
+
+    return await res.json();
+  } catch (e) {
+    console.error("[TasksService] Erro ao buscar tarefas por responsável:", e);
+    throw e;
+  }
+}
+
 
