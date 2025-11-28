@@ -4,7 +4,7 @@ export const initialStateKanban = {
   tasks: [],
   status: [],
   selectedBoardStatus: [],
-  loading: true,
+  loading: false,
   loadingEditTask: false,
   error: null,
   selectedBoard: '',
