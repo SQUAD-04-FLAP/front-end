@@ -41,6 +41,7 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
       activeLastTwoWeeks,
       activeLastFourWeeks,
       noActiveLastFourWeeks,
+      company
     };
     onApplyFilters(filters);
   };

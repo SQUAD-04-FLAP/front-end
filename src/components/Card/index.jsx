@@ -1,5 +1,4 @@
 export function Card({ task, onClick }) {
-  console.log(task);
   const getPriorityClasses = (prioridade) => {
     switch (prioridade) {
       case 'Alta':

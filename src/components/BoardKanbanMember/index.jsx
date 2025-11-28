@@ -209,6 +209,12 @@ function applyFilters(tasks = [], filters = {}) {
       if (!found) return false;
     }
 
+  // 2.5) company / setor filter
+  if (filters.company && filters.company.trim() !== "") {
+    const taskCompany = normalize(t.nomeSetor);
+    const filterCompany = normalize(filters.company);
+    if (taskCompany !== filterCompany) return false;
+  }
     // 3) status complete / not complete
     if (filters.isReady) {
       // consider completed if nomeStatus contains 'conclu' or 'complet'
