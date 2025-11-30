@@ -14,6 +14,12 @@ export default function Dashboard() {
   const { sectors } = useSectors();
   const navigate = useNavigate();
 
+//    useEffect(() => {
+//     fetchDashboard(); // chama ao carregar a página
+//   }, []);
+
+//   console.log(dashboard);
+
   return (
     <>
       <div className="px-6 py-10 bg-gray-100 dark:bg-gray-900">

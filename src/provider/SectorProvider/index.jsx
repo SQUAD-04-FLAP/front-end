@@ -6,6 +6,9 @@ import { SectorContext } from './SectorContext';
 import { create_sector } from '../../services/sectorsService';
 import { delete_sector } from '../../services/sectorsService';
 import { update_sector } from '../../services/sectorsService';
+
+import { getDataDashboard } from '../../services/dashboard';
+
 import { useAuth } from '../../hooks/useAuth';
 
 export function SectorProvider({ children }) {
@@ -58,6 +61,17 @@ const updateSector = async (idSetor, updatedData) => {
   }
 };
 
+  const fetchDashboard = async (idSector) => {
+        dispatch({ type: "FETCH_DASHBOARD_REQUEST" });
+
+        try {
+            const data = await getDataDashboard(idSector);
+            dispatch({ type: "FETCH_DASHBOARD_SUCCESS", payload: data });
+
+        } catch (e) {
+            dispatch({ type: "FETCH_DASHBOARD_FAILURE", payload: e.message });
+        }
+  };
 
   useEffect(() => {
     fetchSectors();
@@ -73,7 +87,10 @@ const updateSector = async (idSetor, updatedData) => {
       state,
       dispatch,
       removeSector,
-      updateSector
+      updateSector,
+
+      fetchDashboard,
+      dashboard: state.dashboard
      }}>
       {children}
     </SectorContext.Provider>

@@ -1,5 +1,6 @@
 export const initialSectorState = {
     sectors: [],
+    dashboard: [],
     loading: false,
     error: null,
 }
@@ -43,6 +44,13 @@ export function sectorReducer(state, action) {
             };
         case "UPDATE_SECTOR_FAILURE":
             return { ...state, loading: false, error: action.payload };
+        
+        case "FETCH_DASHBOARD_REQUEST": 
+            return {...state, loading: true, error: null}
+        case "FETCH_DASHBOARD_SUCCESS":
+            return {...state, loading: false, dashboard: action.payload }
+        case "FETCH_DASHBOARD_FAILURE":
+            return {...state, loading: false, error: action.payload}
         
         case "RESET_SECTOR_ERROR":
             return { ...state, error: null };
