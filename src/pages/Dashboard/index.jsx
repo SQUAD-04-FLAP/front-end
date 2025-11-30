@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Building2, ChevronRight, MoreHorizontal } from "lucide-react";
 
 export default function Dashboard() {
-  const { sectors, dashboard, fetchDashboard, fetchTasksDueDate, tasksCloseDueDate, loading } = useSectors();
+  const { sectors, dashboard, fetchDashboard, fetchTasksDueDate, tasksCloseDueDate, loading, loadingTasksDueDate } = useSectors();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -158,7 +158,7 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {loading ? (
+          {loadingTasksDueDate ? (
             <LoadingCard height="16rem" />
           ) : (
             tasksCloseDueDate.map((task) => {

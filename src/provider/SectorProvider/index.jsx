@@ -105,7 +105,8 @@ const updateSector = async (idSetor, updatedData) => {
       dashboard: state.dashboard,
 
       fetchTasksDueDate,
-      tasksCloseDueDate: state.tasksCloseDueDate
+      tasksCloseDueDate: state.tasksCloseDueDate,
+      loadingTasksDueDate: state.loadingTasksDueDate,
      }}>
       {children}
     </SectorContext.Provider>
