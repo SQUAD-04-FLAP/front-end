@@ -12,7 +12,7 @@ import {
   List  } from "lucide-react";
 
 export default function Dashboard() {
-  const { sectors, dashboard, fetchDashboard } = useSectors();
+  const { sectors, dashboard, fetchDashboard, loading } = useSectors();
   const navigate = useNavigate();
 
    useEffect(() => {
@@ -103,8 +103,10 @@ export default function Dashboard() {
 
             {/* Top Row Cards */}
             <div className="grid grid-cols-3 gap-6 mb-8">
-            {/* Resumo de Tarefas */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm h-64 flex flex-col dark:border dark:border-gray-700">
+                {loading ? (
+                    <LoadingCard height="16rem" />
+                ): (
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm h-64 flex flex-col dark:border dark:border-gray-700">
                 <div className="flex justify-between items-start mb-6">
                 <h3 className="font-medium text-gray-900 dark:text-white">
                     Resumo de Tarefas
@@ -167,7 +169,9 @@ export default function Dashboard() {
                         % das tarefas concluídas
                     </p>
                     </div>
-            </div>
+                </div>
+                )}
+           
             </div>
 
             {/* Quadros de Tarefas */}
