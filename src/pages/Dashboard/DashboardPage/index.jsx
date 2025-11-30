@@ -57,7 +57,7 @@ export function DashboardPage() {
                 Dashboard {sector.nome}
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Visão geral das tarefas e projetos da empresa
+                Visão geral das tarefas da empresa
                 </p>
             </div>
             </div>
@@ -145,9 +145,6 @@ export function DashboardPage() {
                     </div>
                     <div className="flex-grow"></div>
                     <div className="text-sm">
-                    <p className="text-gray-500 dark:text-gray-400 mb-1">
-                        Última atualização: hoje às 10:45
-                    </p>
                     <RouterLinks
                         href={`/projects/${sector?.idSetor}`}
                         className="text-blue-500 dark:text-blue-400 hover:underline"

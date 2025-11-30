@@ -7,7 +7,7 @@ import { create_sector } from '../../services/sectorsService';
 import { delete_sector } from '../../services/sectorsService';
 import { update_sector } from '../../services/sectorsService';
 
-import { getDataDashboard } from '../../services/dashboard';
+import { getDataDashboard, getCloseTasksDueDate } from '../../services/dashboard';
 
 import { useAuth } from '../../hooks/useAuth';
 
@@ -73,6 +73,18 @@ const updateSector = async (idSetor, updatedData) => {
         }
   };
 
+   const fetchTasksDueDate = async (idSector) => {
+        dispatch({ type: "FETCH_TASKS_DUE_DATE_REQUEST" });
+
+        try {
+            const data = await getCloseTasksDueDate(idSector);
+            dispatch({ type: "FETCH_TASKS_DUE_DATE_SUCCESS", payload: data });
+
+        } catch (e) {
+            dispatch({ type: "FETCH_TASKS_DUE_DATE_FAILURE", payload: e.message });
+        }
+  };
+
   useEffect(() => {
     fetchSectors();
   }, []);
@@ -90,7 +102,10 @@ const updateSector = async (idSetor, updatedData) => {
       updateSector,
 
       fetchDashboard,
-      dashboard: state.dashboard
+      dashboard: state.dashboard,
+
+      fetchTasksDueDate,
+      tasksCloseDueDate: state.tasksCloseDueDate
      }}>
       {children}
     </SectorContext.Provider>

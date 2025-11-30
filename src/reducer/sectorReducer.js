@@ -1,6 +1,7 @@
 export const initialSectorState = {
     sectors: [],
     dashboard: [],
+    tasksCloseDueDate: [],
     loading: false,
     error: null,
 }
@@ -50,6 +51,13 @@ export function sectorReducer(state, action) {
         case "FETCH_DASHBOARD_SUCCESS":
             return {...state, loading: false, dashboard: action.payload }
         case "FETCH_DASHBOARD_FAILURE":
+            return {...state, loading: false, error: action.payload}
+
+         case "FETCH_TASKS_DUE_DATE_REQUEST": 
+            return {...state, loading: true, error: null}
+        case "FETCH_TASKS_DUE_DATE_SUCCESS":
+            return {...state, loading: false, tasksCloseDueDate: action.payload }
+        case "FETCH_TASKS_DUE_DATE_FAILURE":
             return {...state, loading: false, error: action.payload}
         
         case "RESET_SECTOR_ERROR":
