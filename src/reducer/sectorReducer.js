@@ -58,7 +58,7 @@ export function sectorReducer(state, action) {
          case "FETCH_TASKS_DUE_DATE_REQUEST": 
             return {...state, loadingTasksDueDate: true, error: null}
         case "FETCH_TASKS_DUE_DATE_SUCCESS":
-            return {...state, loadingTasksDueDate: false, tasksCloseDueDate: action.payload }
+            return {...state, loadingTasksDueDate: false, tasksCloseDueDate: Array.isArray(action.payload) ? action.payload : [], }
         case "FETCH_TASKS_DUE_DATE_FAILURE":
             return {...state, loadingTasksDueDate: false, error: action.payload}
         

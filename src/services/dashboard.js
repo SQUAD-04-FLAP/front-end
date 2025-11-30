@@ -39,7 +39,7 @@ export async function getDataDashboard(idSector) {
 export async function getCloseTasksDueDate(idSector) {
     try {
         const url = idSector
-            ? `${API_URL}/proximas?idSetor=${idSector}`
+            ? `${API_URL}/proximas/${idSector}?idSetor=${idSector}`
             : `${API_URL}/proximas/${idSector}`;
 
         const res = await fetch(url, {

@@ -15,7 +15,7 @@ import { useEffect } from "react";
 export function DashboardPage() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { sectors, dashboard, fetchDashboard, loading } = useSectors();
+    const { sectors, dashboard, fetchDashboard, loading, tasksCloseDueDate, fetchTasksDueDate, loadingTasksDueDate } = useSectors();
     const sector = sectors.find((p) => p.idSetor === parseInt(id));
 
       useEffect(() => {
@@ -23,6 +23,14 @@ export function DashboardPage() {
             fetchDashboard(Number(id));
         }
     }, [id]);
+
+     useEffect(() => {
+        if (id) {
+            fetchTasksDueDate(Number(id));
+        }
+    }, [id]);
+
+    console.log(tasksCloseDueDate);
 
     const LoadingCard = ({ height }) => (
     <div
@@ -156,7 +164,7 @@ export function DashboardPage() {
                 </>
             )}
             </div>
-            {/* Quadros de Tarefas */}
+            
             <div className="mb-8">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -164,339 +172,69 @@ export function DashboardPage() {
                 </h2>
             </div>
 
-            <div className="grid grid-cols-3 gap-6">
-                {/* Campanha de Lançamento */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:border dark:border-gray-700">
-                <div className="flex justify-between items-start mb-2">
-                    <div className="flex items-center gap-2">
-                    <h3 className="font-medium text-gray-900 dark:text-white">
-                        Campanha de Lançamento
-                    </h3>
-                    <Star size={16} className="text-yellow-500 fill-current" />
-                    </div>
-                </div>
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {loadingTasksDueDate ? (
+            <LoadingCard height="16rem" />
+          ) : (
+            tasksCloseDueDate.map((task) => {
+              const diasRestantes = Math.ceil(
+                (new Date(task.dtTermino) - new Date()) / (1000 * 60 * 60 * 24)
+              );
 
-                <div className="mb-3">
-                    <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 text-xs rounded-full font-medium">
-                    Ativo
-                    </span>
-                </div>
+              return (
+                <div
+                  key={task.idTarefa}
+                  className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:border dark:border-gray-700"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-medium text-gray-900 dark:text-white">{task.titulo}</h3>
+                  </div>
 
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                    Planejamento e execução da campanha de lançamento do novo
-                    produto
-                </p>
-
-                <div className="border-b border-gray-200 dark:border-gray-700 mb-4"></div>
-
-                <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center -space-x-2">
-                    <div className="w-7 h-7 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-medium border-2 border-white dark:border-gray-800 z-30">
-                        J
-                    </div>
-                    <div className="w-7 h-7 bg-teal-500 text-white rounded-full flex items-center justify-center text-xs font-medium border-2 border-white dark:border-gray-800 z-20">
-                        M
-                    </div>
-                    <div className="w-7 h-7 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-medium border-2 border-white dark:border-gray-800 z-10">
-                        A
-                    </div>
-                    </div>
-
-                    <div className="w-32 flex items-center">
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                        className="bg-yellow-500 dark:bg-green-500 h-2 rounded-full"
-                        style={{ width: "75%" }}
-                        ></div>
-                    </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                    <List size={14} />
-                    <span>12 tarefas</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-orange-600 dark:text-orange-400">
-                    <AlertTriangle size={14} />
-                    <span>5 dias restantes</span>
-                    </div>
-                </div>
-                </div>
-
-                {/* Redes Sociais */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:border dark:border-gray-700">
-                <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-medium text-gray-900 dark:text-white">
-                    Redes Sociais
-                    </h3>
-                </div>
-
-                <div className="mb-3">
+                  <div className="mb-3">
                     <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 text-xs rounded-full font-medium">
-                    Em progresso
+                      {task.nomeStatus}
                     </span>
+                  </div>
+
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{task.descricao}</p>
+
+                  <div className="border-b border-gray-200 dark:border-gray-700 mb-4"></div>
+
+                  {task.responsaveis?.length > 0 && (
+                    <div className="flex -space-x-2 rtl:space-x-reverse mb-3">
+                      {task.responsaveis.map((responsavel) => (
+                        <div key={responsavel.idUsuario} className="relative group">
+                          <img
+                            className="w-8 h-8 border-2 border-white rounded-full shadow-sm transition-transform transform hover:scale-110"
+                            src={`https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
+                            alt={responsavel.nome}
+                          />
+                          <span className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                            {responsavel.nome}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-4 text-sm">
+                    <div className="text-gray-600 dark:text-gray-400">
+                      {task.prioridade} prioridade
+                    </div>
+
+                    {diasRestantes > 0 ? (
+                      <div className="text-orange-600 dark:text-orange-400">
+                        {diasRestantes} dias restantes
+                      </div>
+                    ) : (
+                      <div className="text-red-600 dark:text-red-400">Vencida</div>
+                    )}
+                  </div>
                 </div>
-
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                    Gerenciamento de conteúdo e engajamento nas redes sociais
-                </p>
-
-                <div className="border-b border-gray-200 dark:border-gray-700 mb-4"></div>
-
-                <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center -space-x-2">
-                    <div className="w-7 h-7 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-medium border-2 border-white dark:border-gray-800 z-20">
-                        M
-                    </div>
-                    <div className="w-7 h-7 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-medium border-2 border-white dark:border-gray-800 z-10">
-                        P
-                    </div>
-                    </div>
-
-                    <div className="w-32 flex items-center">
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                        className="bg-yellow-500 h-2 rounded-full"
-                        style={{ width: "60%" }}
-                        ></div>
-                    </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                    <List size={14} />
-                    <span>8 tarefas</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                    <CheckCircle size={14} />
-                    <span>Contínuo</span>
-                    </div>
-                </div>
-                </div>
-
-                {/* SEO e Analytics */}
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:border dark:border-gray-700">
-                <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-medium text-gray-900 dark:text-white">
-                    SEO e Analytics
-                    </h3>
-                </div>
-
-                <div className="mb-3">
-                    <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs rounded-full font-medium">
-                    Planejamento
-                    </span>
-                </div>
-
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
-                    Otimização de SEO e análise de métricas do site
-                </p>
-
-                <div className="border-b border-gray-200 dark:border-gray-700 mb-4"></div>
-
-                <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center -space-x-2">
-                    <div className="w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-medium border-2 border-white dark:border-gray-800 z-20">
-                        A
-                    </div>
-                    <div className="w-7 h-7 bg-indigo-500 text-white rounded-full flex items-center justify-center text-xs font-medium border-2 border-white dark:border-gray-800 z-10">
-                        J
-                    </div>
-                    </div>
-
-                    <div className="w-32 flex items-center">
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                        <div
-                        className="bg-blue-500 h-2 rounded-full"
-                        style={{ width: "25%" }}
-                        ></div>
-                    </div>
-                    </div>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                    <List size={14} />
-                    <span>6 tarefas</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
-                    <div className="w-3 h-3 bg-blue-600 dark:bg-blue-500 rounded-full"></div>
-                    <span>15 dias restantes</span>
-                    </div>
-                </div>
-                </div>
-            </div>
-            </div>
-
-            {/* Bottom Section */}
-            <div className="grid grid-cols-2 gap-6">
-            {/* Atividade Recente */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:border dark:border-gray-700">
-                <div className="flex justify-between items-center mb-6">
-                <h3 className="font-medium text-gray-900 dark:text-white">
-                    Atividade Recente
-                </h3>
-                <a
-                    href="#"
-                    className="text-blue-500 dark:text-blue-400 hover:underline text-sm"
-                >
-                    Ver todas
-                </a>
-                </div>
-
-                <div className="space-y-4">
-                {/* 1 */}
-                <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                    JL
-                    </div>
-                    <div className="flex-1">
-                    <p className="text-sm">
-                        <span className="font-medium text-gray-900 dark:text-white">
-                        Juliana Lima
-                        </span>{" "}
-                        <span className="text-gray-900 dark:text-gray-300">
-                        adicionou 3 novas tarefas ao quadro
-                        </span>
-                    </p>
-                    <p className="text-sm text-blue-500 dark:text-blue-400">
-                        Redes Sociais
-                    </p>
-                    <p className="text-xs text-gray-500">Hoje, 11:32</p>
-                    </div>
-                </div>
-
-                {/* 2 */}
-                <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                    CM
-                    </div>
-                    <div className="flex-1">
-                    <p className="text-sm">
-                        <span className="font-medium text-gray-900 dark:text-white">
-                        Carlos Mendes
-                        </span>{" "}
-                        <span className="text-gray-900 dark:text-gray-300">
-                        comentou na tarefa
-                        </span>
-                    </p>
-                    <p className="text-sm text-blue-500 dark:text-blue-400">
-                        Análise de Concorrentes
-                    </p>
-                    <p className="text-xs text-gray-500">Hoje, 10:45</p>
-                    </div>
-                </div>
-
-                {/* 3 */}
-                <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                    MC
-                    </div>
-                    <div className="flex-1">
-                    <p className="text-sm">
-                        <span className="font-medium text-gray-900 dark:text-white">
-                        Mariana Costa
-                        </span>{" "}
-                        <span className="text-gray-900 dark:text-gray-300">
-                        concluiu a tarefa
-                        </span>
-                    </p>
-                    <p className="text-sm text-blue-500 dark:text-blue-400">
-                        Briefing da Campanha
-                    </p>
-                    <p className="text-xs text-gray-500">Ontem, 16:20</p>
-                    </div>
-                </div>
-
-                {/* 4 */}
-                <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                    PA
-                    </div>
-                    <div className="flex-1">
-                    <p className="text-sm">
-                        <span className="font-medium text-gray-900 dark:text-white">
-                        Pedro Almeida
-                        </span>{" "}
-                        <span className="text-gray-900 dark:text-gray-300">
-                        anexou arquivos à tarefa
-                        </span>
-                    </p>
-                    <p className="text-sm text-blue-500 dark:text-blue-400">
-                        Materiais Gráficos
-                    </p>
-                    <p className="text-xs text-gray-500">Ontem, 14:15</p>
-                    </div>
-                </div>
-                </div>
-            </div>
-
-            {/* Membros da Equipe */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:border dark:border-gray-700">
-                <div className="flex justify-between items-center mb-6">
-                <h3 className="font-medium text-gray-900 dark:text-white">
-                    Membros da Equipe
-                </h3>
-                <a
-                    href="#"
-                    className="text-blue-500 dark:text-blue-400 hover:underline text-sm"
-                >
-                    Ver todos
-                </a>
-                </div>
-
-                <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                        JL
-                    </div>
-                    <span className="text-gray-900 dark:text-gray-300">
-                        Juliana Lima
-                    </span>
-                    </div>
-                    <span className="text-sm text-green-500">Online</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                        PA
-                    </div>
-                    <span className="text-gray-900 dark:text-gray-300">
-                        Paulo Augusto
-                    </span>
-                    </div>
-                    <span className="text-sm text-gray-400">Offline</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-teal-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                        ME
-                    </div>
-                    <span className="text-gray-900 dark:text-gray-300">
-                        Maria Eduarda
-                    </span>
-                    </div>
-                    <span className="text-sm text-green-500">Online</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-medium">
-                        LN
-                    </div>
-                    <span className="text-gray-900 dark:text-gray-300">
-                        Lucas Nascimento
-                    </span>
-                    </div>
-                    <span className="text-sm text-gray-400">Offline</span>
-                </div>
-                </div>
-            </div>
+              );
+            })
+          )}
+        </div>
             </div>
         </div>
         </div>
