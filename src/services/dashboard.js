@@ -9,7 +9,7 @@ export async function getDataDashboard(idSector) {
   try {
     const url = idSector
       ? `${API_URL}/${idSector}?idSetor=${idSector}`
-      : API_URL;
+      : `${API_URL}/${idSector}`;
 
     const res = await fetch(url, {
       headers: {

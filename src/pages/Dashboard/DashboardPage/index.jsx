@@ -24,7 +24,7 @@ export function DashboardPage() {
         }
     }, [id]);
 
-     const LoadingCard = ({ height }) => (
+    const LoadingCard = ({ height }) => (
     <div
       className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 animate-pulse`}
       style={{ height }}

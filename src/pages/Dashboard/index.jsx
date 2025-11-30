@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useSectors } from "../../hooks/useSectors";
+import { useEffect } from "react";
 import { Building2, ChevronRight } from "lucide-react";
 import {  
   Filter,
@@ -11,14 +12,29 @@ import {
   List  } from "lucide-react";
 
 export default function Dashboard() {
-  const { sectors } = useSectors();
+  const { sectors, dashboard, fetchDashboard } = useSectors();
   const navigate = useNavigate();
 
-//    useEffect(() => {
-//     fetchDashboard(); // chama ao carregar a página
-//   }, []);
+   useEffect(() => {
+    fetchDashboard(); // chama ao carregar a página
+  }, []);
 
-//   console.log(dashboard);
+  console.log(dashboard);
+
+  const LoadingCard = ({ height }) => (
+    <div
+      className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 animate-pulse`}
+      style={{ height }}
+    >
+      <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
+      <div className="grid grid-cols-4 gap-4">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        ))}
+      </div>
+      <div className="mt-auto h-3 bg-gray-200 dark:bg-gray-700 rounded w-full mt-4"></div>
+    </div>
+  );
 
   return (
     <>
@@ -98,14 +114,14 @@ export default function Dashboard() {
 
                 <div className="grid grid-cols-4 gap-6 mb-auto">
                 <div>
-                    <div className="text-4xl font-bold text-blue-500 mb-2">21</div>
+                    <div className="text-4xl font-bold text-blue-500 mb-2">{dashboard.totalTarefas ?? 0}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400 ml-1">
                     Total
                     </div>
                 </div>
                 <div>
                     <div className="text-4xl font-bold text-green-500 mb-2 -ml-2">
-                    12
+                    {dashboard.tarefasConcluidas ?? 0}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400 -ml-5">
                     Concluídas
@@ -113,7 +129,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                     <div className="text-4xl font-bold text-yellow-500 mb-2 ml-4">
-                    6
+                     {dashboard.tarefasPendentes ?? 0}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400 -ml-4 whitespace-nowrap">
                     Em Progresso
@@ -121,7 +137,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                     <div className="text-4xl font-bold text-red-500 mb-2 ml-5">
-                    3
+                    {dashboard.tarefasAtrasadas ?? 0}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
                     Atrasadas
@@ -130,16 +146,27 @@ export default function Dashboard() {
                 </div>
 
                 <div className="mt-auto">
-                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
-                    <div
-                    className="bg-blue-500 h-2 rounded-full"
-                    style={{ width: "57%" }}
-                    ></div>
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                    57% das tarefas concluídas
-                </p>
-                </div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+                        <div
+                        className="bg-blue-500 h-2 rounded-full"
+                        style={{
+                            width: `${
+                            dashboard.totalTarefas
+                                ? Math.round(
+                                    (dashboard.tarefasConcluidas / dashboard.totalTarefas) * 100
+                                )
+                                : 0
+                            }%`,
+                        }}
+                        ></div>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {dashboard.totalTarefas
+                        ? Math.round((dashboard.tarefasConcluidas / dashboard.totalTarefas) * 100)
+                        : 0}
+                        % das tarefas concluídas
+                    </p>
+                    </div>
             </div>
             </div>
 
