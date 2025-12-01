@@ -2,9 +2,9 @@ import { useReducer, useEffect } from "react";
 import { framerReducer, initalFramerState } from '../../reducer/framerReducer';
 import { create_framer } from '../../services/framerService';
 import { updateFramer } from '../../services/framerService';
-import { FramerContext } from './FramerContext';
 import { listAllFramers } from '../../services/framerService';
 import { delete_framer } from '../../services/framerService';
+import { FramerContext } from './FramerContext';
 import { useAuth } from '../../hooks/useAuth';
 
 export function FramerProvider({ children }) {
@@ -71,7 +71,7 @@ export function FramerProvider({ children }) {
                 createFramer,
                 deleteBoard,
                 fetchFramers,
-                updateFramerHandler
+                updateFramerHandler,
             }}
         >
             {children}

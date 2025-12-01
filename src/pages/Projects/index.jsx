@@ -156,20 +156,6 @@ useEffect(() => {
                   {sectors.length} empresas cadastradas
                 </p>
               </div>
-              <div className="flex gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    {sectors.filter(p => p.status === 'Ativo').length}
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Ativos</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                    {sectors.filter(p => p.status === 'Em análise').length}
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Em análise</div>
-                </div>
-              </div>
             </div>
           </div>
         </main>

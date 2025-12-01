@@ -27,8 +27,6 @@ export function TableUsers() {
       showMessage.error(`${errorDeleteUserById}`, true);
   }
   
-    console.log(allUsers);
-  
     return(
       <div className="overflow-x-auto p-8">
         
