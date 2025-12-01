@@ -73,17 +73,45 @@ const updateSector = async (idSetor, updatedData) => {
         }
   };
 
-   const fetchTasksDueDate = async (idSector) => {
+  //  const fetchTasksDueDate = async (idSector) => {
+  //       dispatch({ type: "FETCH_TASKS_DUE_DATE_REQUEST" });
+
+  //       try {
+  //           const data = await getCloseTasksDueDate(idSector);
+  //           dispatch({ type: "FETCH_TASKS_DUE_DATE_SUCCESS", payload: data });
+
+  //       } catch (e) {
+  //           dispatch({ type: "FETCH_TASKS_DUE_DATE_FAILURE", payload: e.message });
+  //       }
+  // };
+
+ const fetchTasksDueDate = async (idSector) => {
         dispatch({ type: "FETCH_TASKS_DUE_DATE_REQUEST" });
 
         try {
             const data = await getCloseTasksDueDate(idSector);
-            dispatch({ type: "FETCH_TASKS_DUE_DATE_SUCCESS", payload: data });
 
+            if (idSector) {
+                // tarefas por setor
+                dispatch({
+                    type: "FETCH_TASKS_DUE_DATE_SUCCESS_BY_SECTOR",
+                    payload: data,
+                });
+            } else {
+                // tarefas gerais
+                dispatch({
+                    type: "FETCH_TASKS_DUE_DATE_SUCCESS_GENERAL",
+                    payload: data,
+                });
+            }
         } catch (e) {
-            dispatch({ type: "FETCH_TASKS_DUE_DATE_FAILURE", payload: e.message });
+            dispatch({
+                type: "FETCH_TASKS_DUE_DATE_FAILURE",
+                payload: e.message,
+            });
         }
-  };
+    };
+
 
   useEffect(() => {
     fetchSectors();
@@ -105,7 +133,8 @@ const updateSector = async (idSetor, updatedData) => {
       dashboard: state.dashboard,
 
       fetchTasksDueDate,
-      tasksCloseDueDate: state.tasksCloseDueDate,
+      tasksCloseDueDateGeneral: state.tasksCloseDueDateGeneral,
+      tasksCloseDueDateBySector: state.tasksCloseDueDateBySector,
       loadingTasksDueDate: state.loadingTasksDueDate,
      }}>
       {children}

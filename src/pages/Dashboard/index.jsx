@@ -4,16 +4,13 @@ import { useEffect } from "react";
 import { Building2, ChevronRight, MoreHorizontal } from "lucide-react";
 
 export default function Dashboard() {
-  const { sectors, dashboard, fetchDashboard, fetchTasksDueDate, tasksCloseDueDate, loading, loadingTasksDueDate } = useSectors();
+  const { sectors, dashboard, fetchDashboard, fetchTasksDueDate, tasksCloseDueDateGeneral, loading, loadingTasksDueDate } = useSectors();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchDashboard();
-  }, []);
-
-  useEffect(() => {
-    fetchTasksDueDate();
-  }, []);
+    useEffect(() => {
+      fetchDashboard();
+      fetchTasksDueDate();
+    }, []);
 
   const LoadingCard = ({ height }) => (
     <div
@@ -95,7 +92,7 @@ export default function Dashboard() {
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm h-64 flex flex-col dark:border dark:border-gray-700">
             <div className="flex justify-between items-start mb-6">
               <h3 className="font-medium text-gray-900 dark:text-white">
-                Resumo de Tarefas
+                Resumo de todas as Tarefas
               </h3>
               <MoreHorizontal size={16} className="text-gray-400" />
             </div>
@@ -153,7 +150,7 @@ export default function Dashboard() {
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Tarefas próximas do vencimento
+            Todas as tarefas próximas do vencimento
           </h2>
         </div>
 
@@ -161,7 +158,7 @@ export default function Dashboard() {
           {loadingTasksDueDate ? (
             <LoadingCard height="16rem" />
           ) : (
-            tasksCloseDueDate.map((task) => {
+            tasksCloseDueDateGeneral.map((task) => {
               const diasRestantes = Math.ceil(
                 (new Date(task.dtTermino) - new Date()) / (1000 * 60 * 60 * 24)
               );

@@ -15,7 +15,7 @@ import { useEffect } from "react";
 export function DashboardPage() {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { sectors, dashboard, fetchDashboard, loading, tasksCloseDueDate, fetchTasksDueDate, loadingTasksDueDate } = useSectors();
+    const { sectors, dashboard, fetchDashboard, loading, tasksCloseDueDateBySector, fetchTasksDueDate, loadingTasksDueDate } = useSectors();
     const sector = sectors.find((p) => p.idSetor === parseInt(id));
 
       useEffect(() => {
@@ -29,8 +29,6 @@ export function DashboardPage() {
             fetchTasksDueDate(Number(id));
         }
     }, [id]);
-
-    console.log(tasksCloseDueDate);
 
     const LoadingCard = ({ height }) => (
     <div
@@ -173,68 +171,76 @@ export function DashboardPage() {
             </div>
 
            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {loadingTasksDueDate ? (
+        {loadingTasksDueDate ? (
             <LoadingCard height="16rem" />
-          ) : (
-            tasksCloseDueDate.map((task) => {
-              const diasRestantes = Math.ceil(
+        ) : tasksCloseDueDateBySector.length === 0 ? (
+            <div className="col-span-3 text-center py-10 text-gray-600 dark:text-gray-400">
+            Nenhuma tarefa encontrada.
+            </div>
+        ) : (
+            tasksCloseDueDateBySector.map((task) => {
+            const diasRestantes = Math.ceil(
                 (new Date(task.dtTermino) - new Date()) / (1000 * 60 * 60 * 24)
-              );
+            );
 
-              return (
+            return (
                 <div
-                  key={task.idTarefa}
-                  className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:border dark:border-gray-700"
+                key={task.idTarefa}
+                className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:border dark:border-gray-700"
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-medium text-gray-900 dark:text-white">{task.titulo}</h3>
-                  </div>
+                <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-medium text-gray-900 dark:text-white">
+                    {task.titulo}
+                    </h3>
+                </div>
 
-                  <div className="mb-3">
+                <div className="mb-3">
                     <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300 text-xs rounded-full font-medium">
-                      {task.nomeStatus}
+                    {task.nomeStatus}
                     </span>
-                  </div>
+                </div>
 
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{task.descricao}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    {task.descricao}
+                </p>
 
-                  <div className="border-b border-gray-200 dark:border-gray-700 mb-4"></div>
+                <div className="border-b border-gray-200 dark:border-gray-700 mb-4"></div>
 
-                  {task.responsaveis?.length > 0 && (
+                {task.responsaveis?.length > 0 && (
                     <div className="flex -space-x-2 rtl:space-x-reverse mb-3">
-                      {task.responsaveis.map((responsavel) => (
+                    {task.responsaveis.map((responsavel) => (
                         <div key={responsavel.idUsuario} className="relative group">
-                          <img
+                        <img
                             className="w-8 h-8 border-2 border-white rounded-full shadow-sm transition-transform transform hover:scale-110"
                             src={`https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
                             alt={responsavel.nome}
-                          />
-                          <span className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                        />
+                        <span className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
                             {responsavel.nome}
-                          </span>
+                        </span>
                         </div>
-                      ))}
+                    ))}
                     </div>
-                  )}
+                )}
 
-                  <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-4 text-sm">
                     <div className="text-gray-600 dark:text-gray-400">
-                      {task.prioridade} prioridade
+                    {task.prioridade} prioridade
                     </div>
 
                     {diasRestantes > 0 ? (
-                      <div className="text-orange-600 dark:text-orange-400">
+                    <div className="text-orange-600 dark:text-orange-400">
                         {diasRestantes} dias restantes
-                      </div>
+                    </div>
                     ) : (
-                      <div className="text-red-600 dark:text-red-400">Vencida</div>
+                    <div className="text-red-600 dark:text-red-400">Vencida</div>
                     )}
-                  </div>
                 </div>
-              );
+                </div>
+            );
             })
-          )}
-        </div>
+        )}
+           </div>
             </div>
         </div>
         </div>
