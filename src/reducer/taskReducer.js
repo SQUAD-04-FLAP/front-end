@@ -11,6 +11,9 @@ export function taskReducer(state, action) {
 
     case "SET_TASK":
       return { ...state, tasks: action.payload, loading: false, error: null };
+    
+      case "SET_TASKS_BY_USER":
+      return { ...state, tasks: action.payload, loading: false, error: null };
 
     case "ADD_TASK":
       return { ...state, tasks: [...state.tasks, action.payload] };

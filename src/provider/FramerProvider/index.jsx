@@ -1,12 +1,15 @@
 import { useReducer, useEffect } from "react";
 import { framerReducer, initalFramerState } from '../../reducer/framerReducer';
 import { create_framer } from '../../services/framerService';
-import { FramerContext } from './FramerContext';
+import { updateFramer } from '../../services/framerService';
 import { listAllFramers } from '../../services/framerService';
 import { delete_framer } from '../../services/framerService';
+import { FramerContext } from './FramerContext';
+import { useAuth } from '../../hooks/useAuth';
 
 export function FramerProvider({ children }) {
     const [ state, dispatch ] = useReducer(framerReducer, initalFramerState);
+    const { token } = useAuth();
 
     const createFramer = async(newFramerData) => {
         dispatch({ type: "CREATE_FRAMER_REQUEST" });
@@ -29,6 +32,12 @@ export function FramerProvider({ children }) {
     }
   };
 
+  useEffect(() => {
+        if (token) { 
+            fetchFramers();
+        }
+    }, [token]);
+
   const deleteBoard = async (idBoard) => {
       dispatch({ type: "DELETE_BOARD_REQUEST" });
   
@@ -41,9 +50,17 @@ export function FramerProvider({ children }) {
       }
     };
 
-  useEffect(() => {
-    fetchFramers();
-  }, []);
+  const updateFramerHandler = async (idBoard, updatedData) => {
+        dispatch({ type: "UPDATE_FRAMER_REQUEST" });
+
+        try {
+            const updatedFramer = await updateFramer(idBoard, updatedData);
+            dispatch({ type: "UPDATE_FRAMER_SUCCESS", payload: updatedFramer });
+        } catch (e) {
+            dispatch({ type: "UPDATE_FRAMER_FAILURE", payload: e.message });
+            throw e;
+        }
+    };
 
     return(
         <FramerContext.Provider
@@ -54,6 +71,7 @@ export function FramerProvider({ children }) {
                 createFramer,
                 deleteBoard,
                 fetchFramers,
+                updateFramerHandler,
             }}
         >
             {children}

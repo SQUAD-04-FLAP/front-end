@@ -1,10 +1,10 @@
-import { Plus, Eye, LayoutDashboard, Edit, Trash2 } from 'lucide-react';
+import { Plus, Eye, LayoutDashboard, Trash2, Columns } from 'lucide-react';
 import { useFramer } from '../../hooks/useFramer';
-import { BtnNewProject } from '../../components/BtnNewProject';
 import { useAuth } from '../../hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { DeleteFramerButton } from '../../components/DeleteFramerButton';
 import { ButtonNewBoard } from '../../components/ButtonNewBoard';
+import { ButtonEditFramer } from '../../components/ButtonEditFramer/index.';
 
 export function Framers() {
   const { framers } = useFramer();
@@ -68,14 +68,7 @@ export function Framers() {
               >
                 {/* Ícones de ação no topo */}
                 <div className="absolute top-3 right-3 flex gap-2">
-                  <button
-                    title="Editar"
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-                    onClick={() => console.log('Editar quadro', quadro.idQuadro)}
-                  >
-                    <Edit className="w-4 h-4 text-blue-500" />
-                  </button>
-
+                  <ButtonEditFramer framer={quadro} />
                   <DeleteFramerButton id={quadro.idQuadro} />
                 </div>
 
@@ -84,7 +77,7 @@ export function Framers() {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-cyan-100 dark:from-indigo-500/20 dark:to-cyan-500/20 rounded-lg flex items-center justify-center text-2xl">
-                        <LayoutDashboard className="w-6 h-6 text-indigo-500" />
+                        <Columns className="w-6 h-6 text-indigo-500" />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">

@@ -7,9 +7,13 @@ import { create_sector } from '../../services/sectorsService';
 import { delete_sector } from '../../services/sectorsService';
 import { update_sector } from '../../services/sectorsService';
 
+import { getDataDashboard, getCloseTasksDueDate } from '../../services/dashboard';
+
+import { useAuth } from '../../hooks/useAuth';
 
 export function SectorProvider({ children }) {
     const [ state, dispatch ] = useReducer(sectorReducer, initialSectorState);
+    const { token } = useAuth();
 
     const fetchSectors = async() => {
         dispatch({ type: "FETCH_SECTORS_REQUEST" });
@@ -21,6 +25,12 @@ export function SectorProvider({ children }) {
             dispatch({ type: "FETCH_SECTORS_FAILURE", payload: e.message });
         }
     }
+
+     useEffect(() => {
+        if (token) {
+            fetchSectors();
+        }
+    }, [token]);
 
   const createSector = async (newSectorData) => {
   dispatch({ type: "CREATE_SECTOR_REQUEST" });
@@ -51,6 +61,57 @@ const updateSector = async (idSetor, updatedData) => {
   }
 };
 
+  const fetchDashboard = async (idSector) => {
+        dispatch({ type: "FETCH_DASHBOARD_REQUEST" });
+
+        try {
+            const data = await getDataDashboard(idSector);
+            dispatch({ type: "FETCH_DASHBOARD_SUCCESS", payload: data });
+
+        } catch (e) {
+            dispatch({ type: "FETCH_DASHBOARD_FAILURE", payload: e.message });
+        }
+  };
+
+  //  const fetchTasksDueDate = async (idSector) => {
+  //       dispatch({ type: "FETCH_TASKS_DUE_DATE_REQUEST" });
+
+  //       try {
+  //           const data = await getCloseTasksDueDate(idSector);
+  //           dispatch({ type: "FETCH_TASKS_DUE_DATE_SUCCESS", payload: data });
+
+  //       } catch (e) {
+  //           dispatch({ type: "FETCH_TASKS_DUE_DATE_FAILURE", payload: e.message });
+  //       }
+  // };
+
+ const fetchTasksDueDate = async (idSector) => {
+        dispatch({ type: "FETCH_TASKS_DUE_DATE_REQUEST" });
+
+        try {
+            const data = await getCloseTasksDueDate(idSector);
+
+            if (idSector) {
+                // tarefas por setor
+                dispatch({
+                    type: "FETCH_TASKS_DUE_DATE_SUCCESS_BY_SECTOR",
+                    payload: data,
+                });
+            } else {
+                // tarefas gerais
+                dispatch({
+                    type: "FETCH_TASKS_DUE_DATE_SUCCESS_GENERAL",
+                    payload: data,
+                });
+            }
+        } catch (e) {
+            dispatch({
+                type: "FETCH_TASKS_DUE_DATE_FAILURE",
+                payload: e.message,
+            });
+        }
+    };
+
 
   useEffect(() => {
     fetchSectors();
@@ -66,7 +127,15 @@ const updateSector = async (idSetor, updatedData) => {
       state,
       dispatch,
       removeSector,
-      updateSector
+      updateSector,
+
+      fetchDashboard,
+      dashboard: state.dashboard,
+
+      fetchTasksDueDate,
+      tasksCloseDueDateGeneral: state.tasksCloseDueDateGeneral,
+      tasksCloseDueDateBySector: state.tasksCloseDueDateBySector,
+      loadingTasksDueDate: state.loadingTasksDueDate,
      }}>
       {children}
     </SectorContext.Provider>

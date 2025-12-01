@@ -1,6 +1,6 @@
 export function Card({ task, onClick }) {
-  const getPriorityClasses = (priority) => {
-    switch (priority) {
+  const getPriorityClasses = (prioridade) => {
+    switch (prioridade) {
       case 'Alta':
         return 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300';
       case 'Média':
@@ -11,7 +11,7 @@ export function Card({ task, onClick }) {
         return '';
     }
   };
-
+  
   return (
     <div 
       onClick={() => onClick(task)}
@@ -22,17 +22,69 @@ export function Card({ task, onClick }) {
         <h4 className="text-gray-900 dark:text-gray-100 font-semibold text-lg leading-snug">
           {task.title}
         </h4>
-        {task.priority && (
-          <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getPriorityClasses(task.priority)}`}>
-            {task.priority}
-          </span>
-        )}
+        {task.prioridade && (
+        <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${getPriorityClasses(task.prioridade)}`}>
+          {task.prioridade}
+        </span>
+        
+      )}
       </div>
+
+      {task.nomeSetor && (
+      <span
+        className="text-[11px] font-medium px-2 py-1 rounded-md bg-indigo-100 
+                  text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300
+                  inline-block mb-3"
+      >
+        {task.nomeSetor}
+      </span>
+    )}
+
+      {/* Criador da tarefa */}
+      {task.nomeCriadoPor && (
+        <div className="flex items-center gap-3 mb-4">
+          <img
+            src={
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(task.nomeCriadoPor)}&background=0D8ABC&color=fff`
+            }
+            alt="creator"
+            className="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-gray-200 dark:ring-gray-700"
+          />
+
+          <div className="flex flex-col leading-tight">
+            <span className="text-[11px] uppercase tracking-wide text-gray-400 dark:text-gray-500">
+              Criado por
+            </span>
+            <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+              {task.nomeCriadoPor.split(' ')[0]}
+            </span>
+          </div>
+        </div>
+      )}   
 
       {/* Description */}
       <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
         {task.description}
       </p>
+
+      {/* Responsáveis */}
+      {task.responsaveis && task.responsaveis.length > 0 && (
+        <div className="flex -space-x-2 rtl:space-x-reverse">
+          {task.responsaveis.map((responsavel) => (
+            <div key={responsavel.idUsuario} className="relative group">
+              <img
+                className="w-8 h-8 border-2 border-white rounded-full shadow-sm transition-transform transform hover:scale-110"
+                src={`https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
+                alt={responsavel.nome}
+              />
+              {/* Tooltip */}
+              <span className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                {responsavel.nome}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Footer */}
       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4">

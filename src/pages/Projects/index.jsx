@@ -1,4 +1,4 @@
-import { Plus, BarChart3, Eye, Edit, Trash2, Folder } from 'lucide-react';
+import { Plus, BarChart3, Eye, Edit, Trash2, Folder, Building2 } from 'lucide-react';
 import { useSectors } from '../../hooks/useSectors';
 import { toast } from 'react-toastify';
 import { Dialog } from '../../components/Dialog';
@@ -31,7 +31,7 @@ export function Projects() {
 // Observa mudanças de setores para detectar exclusão
 useEffect(() => {
   if (state.sectors.length < previousSectorsLength.current) {
-    showMessage.success("Projeto excluído com sucesso!", true);
+    showMessage.success("Empresa excluída com sucesso!", true);
   }
   previousSectorsLength.current = state.sectors.length;
 }, [state.sectors]);
@@ -65,7 +65,7 @@ useEffect(() => {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-500/20 dark:to-cyan-500/20 rounded-lg flex items-center justify-center text-2xl">
-                        <Folder className="w-6 h-6 text-blue-500" />
+                        <Building2 className="w-6 h-6 text-blue-500" />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -155,20 +155,6 @@ useEffect(() => {
                 <p className="text-gray-600 dark:text-gray-400">
                   {sectors.length} empresas cadastradas
                 </p>
-              </div>
-              <div className="flex gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                    {sectors.filter(p => p.status === 'Ativo').length}
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Ativos</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
-                    {sectors.filter(p => p.status === 'Em análise').length}
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">Em análise</div>
-                </div>
               </div>
             </div>
           </div>

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { Dialog } from '../Dialog';
 import { showMessage } from '../../adapters/showMessage';
 import { ButtonEditStatusFramer } from '../ButtonEditStatusFramer';
+import { RouterLinks } from '../RouterLinks';
 
 export function Column({ data, onCardClick }) {
   const { delete_status } = useKanbanMember();
@@ -43,7 +44,6 @@ export function Column({ data, onCardClick }) {
           {data.count}
         </span>
       </div>
-
        <div>
 
        <ButtonEditStatusFramer status={data} />
@@ -90,9 +90,12 @@ export function Column({ data, onCardClick }) {
         )}
       </Droppable>
 
-      <button className="mt-4 w-full text-center text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 transition">
-        Novo Card
-      </button>
+      <RouterLinks
+          href="/nova-tarefa"
+          className="mt-4 w-full block text-center text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 transition"
+        >
+          Nova tarefa
+      </RouterLinks>
     </section>
   );
 }

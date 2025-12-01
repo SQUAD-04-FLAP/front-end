@@ -146,3 +146,23 @@ export const updateStatusFramer = async (idStatus, nome) => {
     throw e;
   }
 }
+
+export const updateFramer = async (idQuadro, framerData) => {
+  try {
+    const res = await fetch(`${API_URL}/${idQuadro}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify(framerData),
+    });
+
+    if (!res.ok) throw new Error(`Não foi possível atualizar o quadro com ID ${idQuadro}`);
+    
+    return await res.json();
+  } catch (e) {
+    console.error("[QuadroService] Erro ao atualizar o quadro:", e);
+    throw e;
+  }
+};

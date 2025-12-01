@@ -47,7 +47,7 @@ export default function AvatarDropdown() {
       <img
         onClick={toggleDropdown}
         className="w-10 h-10 rounded-full cursor-pointer transition"
-        src={user.avatar || "img/profile-default.jpg"}
+        src={user.avatar || "https://ui-avatars.com/api/?name=" + user.nome}
         alt={user.nome}
       />
 
@@ -58,15 +58,6 @@ export default function AvatarDropdown() {
         <div class="font-medium truncate">{user.email}</div>
       </div>
           <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
-            <li>
-              <RouterLinks
-                href="#"
-                className="flex items-center gap-2 px-4 py-2 hover:bg-purple-50 dark:hover:bg-purple-600 rounded-md transition"
-              >
-                <User className="w-4 h-4 text-blue-600" />
-                Perfil
-              </RouterLinks>
-            </li>
             <li>
               <RouterLinks
                 href="/configuracoes"

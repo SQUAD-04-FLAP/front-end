@@ -4,10 +4,11 @@ export const initialStateKanban = {
   tasks: [],
   status: [],
   selectedBoardStatus: [],
-  loading: true,
+  loading: false,
+  loadingEditTask: false,
   error: null,
-  selectedBoard: localStorage.getItem('selectedBoard') || '',
-  selectedSector: localStorage.getItem('selectedSector') || '',
+  selectedBoard: '',
+  selectedSector: '',
   selectedTask: null,
   isModalOpen: false,
 };
@@ -111,6 +112,18 @@ case "DELETE_STATUS_FAILURE":
       s.id === action.payload.id ? action.payload : s
     ),
   };
+
+  case "UPDATE_TASK":
+  return {
+    ...state,
+    tasks: state.tasks.map(task =>
+      task.idTarefa === action.payload.idTarefa ? action.payload : task
+    ),
+  };
+
+case "SET_LOADING_UPDATE_TASK":
+  return { ...state, loadingEditTask: action.payload };
+
 
     default:
       return state;

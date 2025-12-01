@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { fetchTaskById } from "../../services/tasks";
 import { useAuth } from "../../hooks/useAuth";
 import { useComments } from "../../hooks/useComments";
+import { formatDate } from "../../utils/formatDate";
 
 export function CommentsTask({ taskId }) {
   const { state, dispatch } = useComments();
@@ -40,7 +41,7 @@ export function CommentsTask({ taskId }) {
           className="flex gap-4 p-4 bg-white dark:bg-gray-700 rounded-xl text-white"
         >
           <img
-            src={c.avatar || "img/profile-default.jpg"}
+            src={c.avatar || "https://ui-avatars.com/api/?name=" + c.nomeUsuario}
             alt={c.nomeUsuario}
             className="w-10 h-10 rounded-full object-cover flex-shrink-0"
           />
@@ -50,7 +51,7 @@ export function CommentsTask({ taskId }) {
                 {c.idUsuario === user.idUsuario ? "Você" : c.nomeUsuario}
               </span>
               <span className="text-sm text-gray-500">
-                {new Date(c.createdAt).toLocaleString("pt-BR")}
+                {formatDate(c.createdAt)}
               </span>
             </div>
             <p>{c.mensagem}</p>
