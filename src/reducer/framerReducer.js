@@ -41,6 +41,7 @@ export function framerReducer(state, action) {
             };
         case "UPDATE_FRAMER_FAILURE":
             return { ...state, loading: false, error: action.payload };
+        
         default:
             return state;
     }
