@@ -11,7 +11,7 @@ import { RouterLinks } from '../RouterLinks';
 export function Column({ data, onCardClick }) {
   const { delete_status } = useKanbanMember();
 
-   const handleDeleteStatus = async (id) => {
+  const handleDeleteStatus = async (id) => {
     toast(Dialog, {
       data: "Tem certeza que deseja excluir este status?",
       autoClose: false,
@@ -36,32 +36,30 @@ export function Column({ data, onCardClick }) {
     <section className="w-80 flex-shrink-0">
       <header className="flex justify-between items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2 border border-gray-200 dark:border-gray-700">
         <div className='flex items-center gap-2'>
-        <span className={`w-2 h-2 rounded-full ${data.colorDot}`} />
-        <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-          {data.name}
-        </h3>
-        <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
-          {data.count}
-        </span>
-      </div>
-       <div>
+          <span className={`w-2 h-2 rounded-full ${data.colorDot}`} />
+          <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+            {data.name}
+          </h3>
+          <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+            {data.count}
+          </span>
+        </div>
 
-       <ButtonEditStatusFramer status={data} />
-      
-        <button
-        onClick={() => handleDeleteStatus(data.id)}
-        className="p-2 rounded-full text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:text-red-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 cursor-pointer shadow-sm"
-        title="Excluir lista"
-      >
-        <X size={15} strokeWidth={2.2} />
-      </button>
-       </div>
+        <div>
+          <ButtonEditStatusFramer status={data} />
 
-
+          <button
+            onClick={() => handleDeleteStatus(data.id)}
+            className="p-2 rounded-full text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:text-red-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 cursor-pointer shadow-sm"
+            title="Excluir lista"
+          >
+            <X size={15} strokeWidth={2.2} />
+          </button>
+        </div>
       </header>
 
       <Droppable droppableId={data.id}>
-        {(provided, ) => (
+        {(provided,) => (
           <div
             className="mt-3 space-y-3 min-h-[50px]"
             {...provided.droppableProps}
@@ -77,7 +75,7 @@ export function Column({ data, onCardClick }) {
                     style={{
                       ...provided.draggableProps.style,
                       opacity: snapshot.isDragging ? 0.8 : 1,
-                      transition: "opacity 0.2s",
+                      // REMOVIDO transition que causava travamento!
                     }}
                   >
                     <Card task={task} onClick={onCardClick} />
@@ -85,16 +83,17 @@ export function Column({ data, onCardClick }) {
                 )}
               </Draggable>
             ))}
+
             {provided.placeholder}
           </div>
         )}
       </Droppable>
 
       <RouterLinks
-          href="/nova-tarefa"
-          className="mt-4 w-full block text-center text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 transition"
-        >
-          Nova tarefa
+        href="/nova-tarefa"
+        className="mt-4 w-full block text-center text-sm font-medium text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 transition"
+      >
+        Nova tarefa
       </RouterLinks>
     </section>
   );
