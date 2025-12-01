@@ -44,7 +44,6 @@ export function Column({ data, onCardClick }) {
           {data.count}
         </span>
       </div>
-
        <div>
 
        <ButtonEditStatusFramer status={data} />
