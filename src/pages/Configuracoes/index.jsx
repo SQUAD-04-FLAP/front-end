@@ -8,7 +8,7 @@ import { users } from '../../services/users';
 import { getUserPhoto } from '../../utils/getUserPhoto';
 
 export default function Configuracoes() {
-  const { user, updateUserById, loadingUpdateUserById, errorUpdateUserById } = useAuth();
+  const { user, updateUserById, errorUpdateUserById } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
