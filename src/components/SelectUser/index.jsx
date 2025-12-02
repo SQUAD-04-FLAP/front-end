@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { useEffect } from "react";
 
-export function SelectUser() {
+export function SelectUser( { onChange, selected = [] }) {
   const { allUsers } = useAuth();
 
   const dropdowns = [
@@ -17,22 +18,47 @@ export function SelectUser() {
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const [search, setSearch] = useState("");
-  const [selectedValues, setSelectedValues] = useState({});
+  // const [selectedValues, setSelectedValues] = useState({});
+
+  const [selectedValues, setSelectedValues] = useState({
+    users: selected,
+  });
+
+  // sempre que selectedValues mudar → notifica o pai
+  useEffect(() => {
+    onChange?.(selectedValues.users ?? []);
+  }, [selectedValues]);
+
+
+  // function toggleItem(dropdownName, value) {
+  //   setSelectedValues((prev) => {
+  //     const list = prev[dropdownName] || [];
+
+  //     if (list.includes(value)) {
+  //       return { ...prev, [dropdownName]: list.filter((i) => i !== value) };
+  //     }
+
+  //     return {
+  //       ...prev,
+  //       [dropdownName]: [...list, value],
+  //     };
+  //   });
+  // }
 
   function toggleItem(dropdownName, value) {
-    setSelectedValues((prev) => {
-      const list = prev[dropdownName] || [];
+  setSelectedValues((prev) => {
+    const list = prev[dropdownName] || [];
+    const updated = list.includes(value)
+      ? list.filter((i) => i !== value)
+      : [...list, value];
 
-      if (list.includes(value)) {
-        return { ...prev, [dropdownName]: list.filter((i) => i !== value) };
-      }
+    return {
+      ...prev,
+      [dropdownName]: updated,
+    };
+  });
+}
 
-      return {
-        ...prev,
-        [dropdownName]: [...list, value],
-      };
-    });
-  }
 
   function removeFilter(dropdownName, value) {
     setSelectedValues((prev) => ({
