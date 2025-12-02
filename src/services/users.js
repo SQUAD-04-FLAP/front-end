@@ -75,5 +75,35 @@ export const users =  {
         const dataUpdated = await response.json();
         return dataUpdated;
 
-    }
+    },
+
+        uploadProfilePic: async (idUsuario, file) => {
+        
+        const formData = new FormData();
+        formData.append("file", file);
+
+        // const response = await fetch(`${API_URL}/profilePic/${idUsuario}`, {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         ...getAuthHeader()
+        //     },
+        //     body: formData
+        // });
+
+    const response = await fetch(`${API_URL}/profilePic/${idUsuario}`, {
+        method: "POST",
+        headers: {
+            ...getAuthHeader()   // sem content-type!
+        },
+        body: formData
+    });
+
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error || "Erro ao enviar foto de perfil");
+        }
+
+        return await response.json();
+    },
 }
