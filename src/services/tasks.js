@@ -131,7 +131,6 @@ export async function createTask({ titulo, descricao, dtTermino, prioridade, idQ
     }
 
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (e) {
     console.error("[TasksService] Erro ao criar tarefa:", e);

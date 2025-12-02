@@ -4,6 +4,7 @@ import { X, Upload, Trash2 } from 'lucide-react';
 import { CommentsTask } from '../../components/CommentsTask';
 import { CreateComment } from '../CreateComment';
 import { useAuth } from '../../hooks/useAuth';
+import { useSectors } from '../../hooks/useSectors';
 import { DeleteButtonTask } from '../DeleteButtonTask';
 import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { showMessage } from '../../adapters/showMessage';
@@ -15,6 +16,7 @@ export function CardModal({ isOpen, onClose, task }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const { user, allUsers } = useAuth();
+  const { sectors } = useSectors();
   const { deleteTask, state, editTask, dispatch } = useKanbanMember();
 
   // Estados editáveis
@@ -24,6 +26,8 @@ export function CardModal({ isOpen, onClose, task }) {
   const [editedCreatedDate, setEditedCreatedDate] = useState('');
   const [editedEstimatedTime, setEditedEstimatedTime] = useState('');
   const [editedAssignee, setEditedAssignee] = useState('');
+  const [editedCompany, setEditedCompany] = useState('');
+
 
   const [attachments, setAttachments] = useState([
     { id: 1, name: 'mockup-filtros-v4.png', type: 'image' },
@@ -52,6 +56,19 @@ export function CardModal({ isOpen, onClose, task }) {
   };
 
   useEffect(() => {
+  if (task && isEditing) {
+    // Mapear responsáveis da tarefa para o formato do SelectMultiple
+    if (task.responsaveis && task.responsaveis.length > 0) {
+      const selectedUsers = task.responsaveis.map(responsavel => responsavel.idUsuario);
+      setEditedAssignee(selectedUsers);
+    } else {
+      setEditedAssignee([]);
+    }
+  }
+}, [task, isEditing]);
+
+
+  useEffect(() => {
     if (task) {
       const initialValues = {
         title: task.title || '',
@@ -62,6 +79,7 @@ export function CardModal({ isOpen, onClose, task }) {
         assignee: task.assignee || '',
         isActive: task.ativo ?? true,
         priority: task.prioridade || '',
+        company: task.idSetor || '',
       };
 
       setEditedTitle(initialValues.title);
@@ -112,7 +130,7 @@ export function CardModal({ isOpen, onClose, task }) {
     setIsEditing(false);
   };
 
-const handleSave = async () => {
+  const handleSave = async () => {
   const dtTerminoISO = new Date(editedDeadline.split('/').reverse().join('-')).toISOString();
 
   dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: true }); 
@@ -124,21 +142,22 @@ const handleSave = async () => {
       dtTermino: dtTerminoISO,
       ativo: editedIsActive,
       prioridade: editedPriority,
+      idSetor: Number(editedCompany),
       idsResponsaveis: editedAssignee,
     };
-
-    // console.log("Payload enviado para editTask:", payload);
-
-    // Chama a função de edição real
     await editTask(task.id, payload);
 
-     dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
+    console.log("Payload enviado para editTask:", payload);
 
+    dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
+
+    const novosResponsaveis = allUsers.filter(user => 
+      editedAssignee.includes(user.idUsuario)
+    );
 
     task.isActive = editedIsActive;
-    task.responsaveis = editedAssignee;
+    task.responsaveis = novosResponsaveis;
 
-    // Atualiza os valores originais localmente
     setOriginalValues({
       title: editedTitle,
       description: editedDescription,
@@ -153,14 +172,10 @@ const handleSave = async () => {
     setIsEditing(false);
     alert("Alterações salvas com sucesso!", true);
   } catch (error) {
-     dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
-
     alert("Erro ao salvar alterações");
-    console.error(error);
+    console.log(error);
   }
 };
-
-
 
   if (!isOpen || !task) return null;
 
@@ -228,6 +243,33 @@ const handleSave = async () => {
                   <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">{editedDescription}</p>
                 )}
               </div>
+
+              {/* Empresa */}
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Empresa</h3>
+
+              {isEditing ? (
+                <select
+                  value={editedCompany}
+                  onChange={(e) => setEditedCompany(e.target.value)}
+                  className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-blue-500 dark:border-blue-400 rounded-lg text-gray-900 dark:text-gray-100"
+                >
+                  <option value="">Selecione uma empresa...</option>
+
+                  {/* Supondo que você tenha allCompanies vindo do back */}
+                  {sectors.map((empresa) => (
+                    <option key={empresa.idSetor} value={empresa.idSetor}>
+                      {empresa.nome}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
+                  {task.nomeSetor || 'Sem empresa vinculada'}
+                </p>
+              )}
+            </div>
+
 
               {/* Responsável */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">

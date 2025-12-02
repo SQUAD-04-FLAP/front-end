@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useSectors } from "../../hooks/useSectors";
 import { useEffect } from "react";
 import { Building2, ChevronRight, MoreHorizontal } from "lucide-react";
+import { getUserPhoto } from "../../utils/getUserPhoto";
 
 export default function Dashboard() {
   const { sectors, dashboard, fetchDashboard, fetchTasksDueDate, tasksCloseDueDateGeneral, loading, loadingTasksDueDate } = useSectors();
@@ -188,7 +189,7 @@ export default function Dashboard() {
                         <div key={responsavel.idUsuario} className="relative group">
                           <img
                             className="w-8 h-8 border-2 border-white rounded-full shadow-sm transition-transform transform hover:scale-110"
-                            src={`https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
+                            src={getUserPhoto(responsavel) || `https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
                             alt={responsavel.nome}
                           />
                           <span className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity">
