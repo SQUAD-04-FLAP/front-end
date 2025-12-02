@@ -47,7 +47,7 @@ export function Card({ task, onClick }) {
         <div className="flex items-center gap-3 mb-4">
           <img
             src={
-              getUserPhoto(task.responsavel) ||
+              getUserPhoto({nome: task.nomeCriadoPor, fotoUrl: task.fotoCriadoPor}) ||
               `https://ui-avatars.com/api/?name=${encodeURIComponent(task.nomeCriadoPor)}&background=0D8ABC&color=fff`
             }
             alt="creator"
