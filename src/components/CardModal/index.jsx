@@ -9,6 +9,7 @@ import { useKanbanMember } from '../../hooks/useKanbanMember';
 import { showMessage } from '../../adapters/showMessage';
 import { SelectMultiple } from '../SelectMultiple';
 import { formatDate } from '../../utils/formatDate';
+import { getUserPhoto } from '../../utils/getUserPhoto';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -126,7 +127,7 @@ const handleSave = async () => {
       idsResponsaveis: editedAssignee,
     };
 
-    console.log("Payload enviado para editTask:", payload);
+    // console.log("Payload enviado para editTask:", payload);
 
     // Chama a função de edição real
     await editTask(task.id, payload);
@@ -237,7 +238,7 @@ const handleSave = async () => {
                     options={allUsers.map(u => ({
                       value: u.idUsuario,
                       label: u.nome,
-                      avatar: u.avatar || `https://ui-avatars.com/api/?name=${u.nome}&size=64`
+                      avatar: getUserPhoto(u) || `https://ui-avatars.com/api/?name=${u.nome}&size=64`
                     }))}
                     value={editedAssignee}
                     onChange={setEditedAssignee}
@@ -248,7 +249,7 @@ const handleSave = async () => {
                     {task.responsaveis.map((responsavel) => (
                       <div key={responsavel.idUsuario} className="relative group">
                         <img
-                          src={responsavel.avatar || `https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
+                          src={getUserPhoto(responsavel) || `https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
                           alt={responsavel.nome}
                           className="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover transition-transform transform hover:scale-110"
                         />
@@ -265,31 +266,6 @@ const handleSave = async () => {
                   </p>
                 )}
               </div>
-
-              {/* <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Responsável</h3>
-                {isEditing ? (
-                  <SelectMultiple
-                    options={allUsers.map(u => ({ value: u.idUsuario, label: u.nome, avatar: u.avatar || "https://ui-avatars.com/api/?name=" + u.nome}))}
-                    value={editedAssignee}
-                    onChange={setEditedAssignee}
-                    className="w-full h-12"
-                  />
-                ) : task.nomeResponsavel ? (
-                  <div className="flex items-center gap-4">
-                    <img
-                      src={task.assigneeAvatar || "https://ui-avatars.com/api/?name=" + task.nomeResponsavel}
-                      alt="Responsável"
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                    <p className="font-semibold text-gray-900 dark:text-gray-100 text-xl">{task.nomeResponsavel}</p>
-                  </div>
-                ) : (
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-base">
-                    Não há ninguém responsável por essa tarefa ainda
-                  </p>
-                )}
-              </div> */}
 
                {/* Criador */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">

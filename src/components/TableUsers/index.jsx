@@ -7,6 +7,7 @@ import { Dialog } from '../../components/Dialog';
 import { showMessage } from '../../adapters/showMessage';
 import { useNavigate } from 'react-router-dom';
 import { ButtonEditUser } from '../ButtonEditUser';
+import { getUserPhoto } from '../../utils/getUserPhoto';
 
 export function TableUsers() {
   const navigate = useNavigate();
@@ -110,9 +111,9 @@ export function TableUsers() {
                 <td className="px-4 py-3 text-sm text-slate-900 dark:text-slate-200 font-medium">
                   <div className="flex items-center cursor-pointer w-max">
                     <img 
-                      src={user.avatar || "https://ui-avatars.com/api/?name=" + user.nome} 
+                      src={getUserPhoto(user) || "https://ui-avatars.com/api/?name=" + user.nome} 
                       alt={user.nome} 
-                      className="w-9 h-9 rounded-full shrink-0" 
+                      className="w-9 h-9 rounded-full shrink-0 object-cover" 
                     />
                     <div className="ml-2">
                       <p>{user.nome}</p>
