@@ -4,12 +4,16 @@ import { useState } from 'react';
 import { formatDate } from '../../utils/formatDate';
 import { format } from "date-fns";
 
+import { users } from '../../services/users';
+import { getUserPhoto } from '../../utils/getUserPhoto';
+
 export default function Configuracoes() {
   const { user, updateUserById, loadingUpdateUserById, errorUpdateUserById } = useAuth();
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const [formData, setFormData] = useState({
     nome: user.nome || "",
-    avatar: user?.avatar || "",
+    fotoUrl: user.photoUrl || "",
     dtNascimento: user.dtNascimento
     ? format(new Date(user.dtNascimento), "yyyy-MM-dd")
     : ""
@@ -20,9 +24,25 @@ export default function Configuracoes() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    await updateUserById(user.idUsuario, formData);
-  };
+  e.preventDefault();
+
+  try {
+    // Se uma nova foto foi escolhida, envia
+    if (selectedFile) {
+      await users.uploadProfilePic(user.idUsuario, selectedFile);
+    }
+
+    // Atualiza os outros dados
+    await updateUserById(user.idUsuario, {
+      nome: formData.nome,
+      dtNascimento: formData.dtNascimento
+    });
+
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen py-10">
@@ -49,7 +69,7 @@ export default function Configuracoes() {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex justify-center md:block">
                 <img 
-                  src={user.avatar || "https://ui-avatars.com/api/?name=" + user.nome}
+                  src={getUserPhoto(user) || "https://ui-avatars.com/api/?name=" + user.nome}
                   className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg"
                 />
               </div>
@@ -112,7 +132,7 @@ export default function Configuracoes() {
               <div className="flex justify-center">
                 <div className="relative">
                   <img 
-                    src={formData.avatar || "https://ui-avatars.com/api/?name=" + user.nome}
+                    src={formData.avatar || getUserPhoto(user)}
                     className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg"
                   />
 
@@ -129,14 +149,17 @@ export default function Configuracoes() {
                     onChange={(e) => {
                       const file = e.target.files[0];
                       if (file) {
+                        setSelectedFile(file); // guarda o arquivo para envio
+
                         const reader = new FileReader();
                         reader.onload = () => {
-                          setFormData({ ...formData, avatar: reader.result });
+                          setFormData({ ...formData, avatar: reader.result }); // preview
                         };
                         reader.readAsDataURL(file);
                       }
                     }}
                   />
+
                 </div>
               </div>
 

@@ -1,3 +1,5 @@
+import { getUserPhoto } from "../../utils/getUserPhoto";
+
 export function Card({ task, onClick }) {
   const getPriorityClasses = (prioridade) => {
     switch (prioridade) {
@@ -45,6 +47,7 @@ export function Card({ task, onClick }) {
         <div className="flex items-center gap-3 mb-4">
           <img
             src={
+              getUserPhoto(task.responsavel) ||
               `https://ui-avatars.com/api/?name=${encodeURIComponent(task.nomeCriadoPor)}&background=0D8ABC&color=fff`
             }
             alt="creator"
@@ -74,7 +77,7 @@ export function Card({ task, onClick }) {
             <div key={responsavel.idUsuario} className="relative group">
               <img
                 className="w-8 h-8 border-2 border-white rounded-full shadow-sm transition-transform transform hover:scale-110"
-                src={`https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
+                src={getUserPhoto(responsavel) || `https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
                 alt={responsavel.nome}
               />
               {/* Tooltip */}
@@ -91,7 +94,7 @@ export function Card({ task, onClick }) {
         <div className="flex items-center gap-2">
           {task.assigneeAvatar && (
             <img
-              src={task.assigneeAvatar}
+              src={getUserPhoto({ nome: task.nomeCriadoPor, photoUrl: task.fotoCriadoPor })}
               alt="avatar"
               className="w-7 h-7 rounded-full object-cover ring-1 ring-gray-200 dark:ring-gray-700"
             />
