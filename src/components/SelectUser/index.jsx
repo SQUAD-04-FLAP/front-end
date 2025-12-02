@@ -39,10 +39,7 @@ const dropdowns = [
     if (!selected.length) return dropdown.label;
     return `${dropdown.label}: ${selected.length}`;
   }
-
-  console.log("selected enviado:", selected);
-
-
+  
   return (
     <div className="w-full">
       {/* Dropdown */}

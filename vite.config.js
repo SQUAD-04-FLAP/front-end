@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://ec2-54-226-167-245.compute-1.amazonaws.com:8080',
+        target: 'https://api.flapkanban.top',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
