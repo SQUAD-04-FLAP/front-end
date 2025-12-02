@@ -44,7 +44,7 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
       company
     };
 
-    console.log("🧪 Filtros aplicados:", filters);
+    // console.log("🧪 Filtros aplicados:", filters);
     onApplyFilters(filters);
   };
 

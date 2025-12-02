@@ -1,77 +1,47 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
-import { useEffect } from "react";
 
-export function SelectUser( { onChange, selected = [] }) {
+export function SelectUser({ onChange, selected = [] }) {
   const { allUsers } = useAuth();
 
-  const dropdowns = [
-    {
-      name: "users",
-      label: "Responsáveis",
-      items: allUsers.map((user) => ({
-        value: user.idUsuario,
-        label: user.nome,
-      })),
-    },
-  ];
+const dropdowns = [
+  {
+    name: "users",
+    label: "Responsáveis",
+    items: allUsers.map(user => ({
+      value: String(user.idUsuario),
+      label: user.nome
+    }))
+  }
+];
+
 
   const [openDropdown, setOpenDropdown] = useState(null);
   const [search, setSearch] = useState("");
-  // const [selectedValues, setSelectedValues] = useState({});
 
-  const [selectedValues, setSelectedValues] = useState({
-    users: selected,
-  });
-
-  // sempre que selectedValues mudar → notifica o pai
-  useEffect(() => {
-    onChange?.(selectedValues.users ?? []);
-  }, [selectedValues]);
-
-
-  // function toggleItem(dropdownName, value) {
-  //   setSelectedValues((prev) => {
-  //     const list = prev[dropdownName] || [];
-
-  //     if (list.includes(value)) {
-  //       return { ...prev, [dropdownName]: list.filter((i) => i !== value) };
-  //     }
-
-  //     return {
-  //       ...prev,
-  //       [dropdownName]: [...list, value],
-  //     };
-  //   });
-  // }
 
   function toggleItem(dropdownName, value) {
-  setSelectedValues((prev) => {
-    const list = prev[dropdownName] || [];
+    const list = selected || [];
+
     const updated = list.includes(value)
       ? list.filter((i) => i !== value)
       : [...list, value];
 
-    return {
-      ...prev,
-      [dropdownName]: updated,
-    };
-  });
-}
-
+    onChange(updated); // envia pro pai
+  }
 
   function removeFilter(dropdownName, value) {
-    setSelectedValues((prev) => ({
-      ...prev,
-      [dropdownName]: prev[dropdownName].filter((i) => i !== value),
-    }));
+    const updated = selected.filter((i) => i !== value);
+    onChange(updated);
   }
 
   function getSelectedLabel(dropdown) {
-    const items = selectedValues[dropdown.name] || [];
-    if (items.length === 0) return dropdown.label;
-    return `${dropdown.label}: ${items.length}`;
+    if (!selected.length) return dropdown.label;
+    return `${dropdown.label}: ${selected.length}`;
   }
+
+  console.log("selected enviado:", selected);
+
 
   return (
     <div className="w-full">
@@ -100,7 +70,9 @@ export function SelectUser( { onChange, selected = [] }) {
                   border border-stone-300 dark:border-stone-600
                 "
               >
-                <span className="truncate mx-2">{getSelectedLabel(dropdown)}</span>
+                <span className="truncate mx-2">
+                  {getSelectedLabel(dropdown)}
+                </span>
 
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -148,8 +120,7 @@ export function SelectUser( { onChange, selected = [] }) {
                     )}
 
                     {items.map((item) => {
-                      const isSelected =
-                        selectedValues[dropdown.name]?.includes(item.value);
+                      const isSelected = selected.includes(item.value);
 
                       return (
                         <div
@@ -186,33 +157,34 @@ export function SelectUser( { onChange, selected = [] }) {
 
       {/* Tags selecionadas */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {dropdowns.map((dropdown) => {
-          const selected = selectedValues[dropdown.name] || [];
+  {dropdowns.map((dropdown) => {
+    return selected.map((value) => {
+      const item = dropdown.items.find((i) => i.value === value);
 
-          return selected.map((value) => {
-            const item = dropdown.items.find((i) => i.value === value);
+      if (!item) return null; // 🚫 evita X sem nome
 
-            return (
-              <span
-                key={value}
-                className="
-                  flex items-center px-3 py-1 rounded-full 
-                  bg-rose-100 dark:bg-rose-400/20 
-                  text-rose-800 dark:text-rose-300
-                "
-              >
-                {item.label}
-                <button
-                  onClick={() => removeFilter(dropdown.name, value)}
-                  className="ml-2"
-                >
-                  ✕
-                </button>
-              </span>
-            );
-          });
-        })}
-      </div>
+      return (
+        <span
+          key={value}
+          className="
+            flex items-center px-3 py-1 rounded-full 
+            bg-rose-100 dark:bg-rose-400/20 
+            text-rose-800 dark:text-rose-300
+          "
+        >
+          {item.label}
+          <button
+            onClick={() => removeFilter(dropdown.name, value)}
+            className="ml-2"
+          >
+            ✕
+          </button>
+        </span>
+      );
+    });
+  })}
+</div>
+
     </div>
   );
 }
