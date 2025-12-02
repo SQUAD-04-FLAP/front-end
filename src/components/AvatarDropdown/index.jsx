@@ -3,6 +3,7 @@ import { User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { RouterLinks } from "../RouterLinks";
 import { useLocation } from "react-router-dom";
+import { getUserPhoto } from "../../utils/getUserPhoto";
 
 export default function AvatarDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,10 +47,11 @@ export default function AvatarDropdown() {
     <div className="relative" ref={dropdownRef}>
       <img
         onClick={toggleDropdown}
-        className="w-10 h-10 rounded-full cursor-pointer transition"
-        src={user.avatar || "https://ui-avatars.com/api/?name=" + user.nome}
+        className="w-10 h-10 rounded-full cursor-pointer transition object-cover"
+        src={getUserPhoto(user) || "https://ui-avatars.com/api/?name=" + user.nome}
         alt={user.nome}
       />
+
 
       {isOpen && (
         <div className="absolute right-0 mt-2 z-10 bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 rounded-lg shadow-lg w-48 animate-fadeIn">
