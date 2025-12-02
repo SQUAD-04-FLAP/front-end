@@ -9,6 +9,7 @@ import { getUserPhoto } from '../../utils/getUserPhoto';
 
 export default function Configuracoes() {
   const { user, updateUserById, loadingUpdateUserById, errorUpdateUserById } = useAuth();
+  const [isSaving, setIsSaving] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
   const [formData, setFormData] = useState({
@@ -24,7 +25,8 @@ export default function Configuracoes() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    setIsSaving(true);
 
   try {
     // Se uma nova foto foi escolhida, envia
@@ -40,6 +42,8 @@ export default function Configuracoes() {
 
   } catch (err) {
     console.error(err);
+  } finally {
+    setIsSaving(false);
   }
 };
 
@@ -189,10 +193,10 @@ export default function Configuracoes() {
 
               <button 
                 type="submit"
-                disabled={loadingUpdateUserById}
+                disabled={isSaving }
                 className="w-full bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-3 rounded-lg"
               >
-                {loadingUpdateUserById ? "Salvando..." : "Salvar Alterações"}
+                {isSaving  ? "Salvando..." : "Salvar Alterações"}
               </button>
 
             </form>
