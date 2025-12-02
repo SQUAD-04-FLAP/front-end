@@ -79,6 +79,7 @@ export function CardModal({ isOpen, onClose, task }) {
         assignee: task.assignee || '',
         isActive: task.ativo ?? true,
         priority: task.prioridade || '',
+        company: task.idSetor || '',
       };
 
       setEditedTitle(initialValues.title);
@@ -129,7 +130,7 @@ export function CardModal({ isOpen, onClose, task }) {
     setIsEditing(false);
   };
 
-const handleSave = async () => {
+  const handleSave = async () => {
   const dtTerminoISO = new Date(editedDeadline.split('/').reverse().join('-')).toISOString();
 
   dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: true }); 
@@ -144,19 +145,19 @@ const handleSave = async () => {
       idSetor: Number(editedCompany),
       idsResponsaveis: editedAssignee,
     };
+    await editTask(task.id, payload);
 
     console.log("Payload enviado para editTask:", payload);
 
-    // Chama a função de edição real
-    await editTask(task.id, payload);
+    dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
 
-     dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
-
+    const novosResponsaveis = allUsers.filter(user => 
+      editedAssignee.includes(user.idUsuario)
+    );
 
     task.isActive = editedIsActive;
-    task.responsaveis = editedAssignee;
+    task.responsaveis = novosResponsaveis;
 
-    // Atualiza os valores originais localmente
     setOriginalValues({
       title: editedTitle,
       description: editedDescription,
@@ -171,14 +172,10 @@ const handleSave = async () => {
     setIsEditing(false);
     alert("Alterações salvas com sucesso!", true);
   } catch (error) {
-     dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
-
     alert("Erro ao salvar alterações");
-    console.error(error);
+    console.log(error);
   }
 };
-
-
 
   if (!isOpen || !task) return null;
 
