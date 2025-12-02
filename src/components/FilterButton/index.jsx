@@ -43,6 +43,8 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
       noActiveLastFourWeeks,
       company
     };
+
+    // console.log("🧪 Filtros aplicados:", filters);
     onApplyFilters(filters);
   };
 
@@ -66,7 +68,7 @@ export function FilterButton({ onApplyFilters = () => {}, onClearFilters = () =>
   };
 
 
-  // SelectUser deve notificar com um array de ids ou nomes; adaptamos aqui
+  // SelectUser deve notificar com um array de ids ou nomes;
   const handleSelectUsersChange = (value) => {
     // espera-se value ser array de ids ou objetos; normalize para array de strings (ids ou nomes)
     if (!value) return setSelectedUsers([]);
