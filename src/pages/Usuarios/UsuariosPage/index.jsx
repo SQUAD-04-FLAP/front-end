@@ -4,6 +4,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useTask } from "../../../hooks/useTask";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { getUserPhoto } from "../../../utils/getUserPhoto";
 
 export default function UsuariosPage() {
   const { allUsers } = useAuth();
@@ -61,7 +62,7 @@ export default function UsuariosPage() {
 
           <img
             src={
-              usuario.avatar ||
+              getUserPhoto(usuario) ||
               "https://ui-avatars.com/api/?name=" + usuario.nome
             }
             alt="Foto do usuário"
