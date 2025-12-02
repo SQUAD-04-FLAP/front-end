@@ -47,7 +47,6 @@ export default function Configuracoes() {
   }
 };
 
-
   return (
     <section className="bg-gray-50 dark:bg-gray-900 min-h-screen py-10">
       <div className="w-[96%] md:w-[90%] lg:w-[85%] mx-auto flex flex-col gap-10">
