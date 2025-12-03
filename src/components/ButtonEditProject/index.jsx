@@ -74,19 +74,25 @@ export function ButtonEditProject({ project }) {
               </div>
 
               <div>
-                <label htmlFor="descricao" className="block text-gray-700 dark:text-gray-300 mb-1">
-                  Descrição
+                <label
+                  htmlFor="descricao"
+                  className="block text-gray-700 dark:text-gray-300 mb-1"
+                >
+                  Links úteis (ChatGPT ou outras ferramentas).
                 </label>
+
                 <textarea
                   id="descricao"
                   name="descricao"
                   value={formData.descricao}
                   onChange={handleChange}
+                  placeholder="Cole aqui links úteis, um por linha..."
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
                   rows={4}
                   required
                 />
               </div>
+
 
               <div className="flex justify-end gap-2">
                 <button

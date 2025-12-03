@@ -328,6 +328,7 @@ function groupTasksByStatus(tasks, boardStatus) {
         fotoCriadoPor: t.fotoUrl,
         responsaveis: t.responsaveis,
         nomeSetor: t.nomeSetor,
+        anexos: t.anexos
       })),
   }));
 }

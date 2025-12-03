@@ -65,7 +65,7 @@ export function AdicionarProjetoModal({ isOpen, onClose }) {
 
       setNomeProjeto('');
       setIconeEscolhido('Briefcase');
-      setCorEscolhida('#3b82f6');
+      // setCorEscolhida('#3b82f6');
       setImagemCustomizada(null);
 
       showMessage.success("Empresa criada com sucesso!", true);
