@@ -113,7 +113,7 @@ export function Card({ task, onClick }) {
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19 2H8a2 2 0 0 0-2 2v3H5a1 1 0 0 0-1 1v11.586A2 2 0 0 0 5.414 21L8 18.414V19a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/>
             </svg>
-            <span>{task.attachments}</span>
+            <span>{task.anexos.length}</span>
           </div>
         </div>
       </div>
