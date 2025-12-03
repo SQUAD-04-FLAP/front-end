@@ -208,28 +208,31 @@ export async function uploadTaskAttachment(idTarefa, file) {
   }
 }
 
+export async function deleteTaskAttachment(idAnexo) {
+  try {
+    const res = await fetch(`${API_URL}/anexos/${idAnexo}`, {
+      method: "DELETE",
+      headers: {
+        ...getAuthHeader(),
+      },
+    });
 
-// export async function uploadTaskAttachment(idTarefa, base64File) {
-//   try {
-//     const res = await fetch(`${API_URL}/anexos/${idTarefa}`, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         ...getAuthHeader(),
-//       },
-//       body: JSON.stringify({
-//         file: base64File, // a API espera isso
-//       }),
-//     });
+    if (res.status === 204) {
+      return true; // sucesso silencioso
+    }
 
-//     if (!res.ok) {
-//       const text = await res.text();
-//       throw new Error(`Erro ao enviar anexo: ${text}`);
-//     }
+    if (res.status === 404) {
+      throw new Error("Anexo não encontrado");
+    }
 
-//     return await res.json();
-//   } catch (e) {
-//     console.error("[TasksService] Erro ao enviar anexo:", e);
-//     throw e;
-//   }
-// }
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Erro ao excluir anexo: ${text}`);
+    }
+
+    return true;
+  } catch (e) {
+    console.error("[TasksService] Erro ao excluir anexo:", e);
+    throw e;
+  }
+}

@@ -11,7 +11,9 @@ import { showMessage } from '../../adapters/showMessage';
 import { SelectMultiple } from '../SelectMultiple';
 import { formatDate } from '../../utils/formatDate';
 import { getUserPhoto } from '../../utils/getUserPhoto';
+
 import { uploadTaskAttachment } from '../../services/tasks';
+import { deleteTaskAttachment } from '../../services/tasks';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -26,8 +28,6 @@ export function CardModal({ isOpen, onClose, task }) {
     }
   }, [task]);
 
-
-  console.log(task);
 
   // Estados editáveis
   const [editedTitle, setEditedTitle] = useState('');
@@ -44,37 +44,6 @@ export function CardModal({ isOpen, onClose, task }) {
   const [originalValues, setOriginalValues] = useState({});
   const [editedIsActive, setEditedIsActive] = useState(false);
   const [editedPriority, setEditedPriority] = useState('Média');
-
-// const handleAddAttachment = () => {
-//   const input = document.createElement("input");
-//   input.type = "file";
-//   input.multiple = true;
-
-//   input.onchange = async (e) => {
-//     const files = Array.from(e.target.files);
-
-//     for (const file of files) {
-//       try {
-//         const uploaded = await uploadTaskAttachment(task.id, file);
-
-//         // Atualizar UI
-//         setAttachments((prev) => [
-//           ...prev,
-//           {
-//             id: uploaded.id,
-//             name: file.name,
-//             type: file.type.includes("pdf") ? "pdf" : "image",
-//           },
-//         ]);
-//       } catch (err) {
-//         console.error("Erro ao enviar:", err);
-//         alert("Erro ao enviar o arquivo");
-//       }
-//     }
-//   };
-
-//   input.click();
-// };
 
 const handleAddAttachment = () => {
   const input = document.createElement("input");
@@ -118,13 +87,26 @@ const handleAddAttachment = () => {
   input.click();
 };
 
+const handleRemoveAttachment = async (id, name) => {
+  if (confirm(`Deseja remover o anexo "${name}"?`)) {
+    try {
+      // 1. Remove no backend
+      await deleteTaskAttachment(id);
 
+      // 2. Remove no estado local
+      const newAttachments = _attachment.filter(att => att.idAnexo !== id);
+      setAttachments(newAttachments);
 
-  const handleRemoveAttachment = (id, name) => {
-    if (confirm(`Deseja remover o anexo "${name}"?`)) {
-      setAttachments(prev => prev.filter(att => att.id !== id));
+      // 3. Atualiza o estado global da tarefa
+      const updatedTask = { ...task, anexos: newAttachments };
+      dispatch({ type: "UPDATE_TASK", payload: updatedTask });
+
+    } catch (err) {
+      alert("Erro ao remover anexo: " + err.message);
+      console.error("Erro:", err);
     }
-  };
+  }
+};
 
   useEffect(() => {
   if (task && isEditing) {
@@ -526,7 +508,7 @@ const handleAddAttachment = () => {
 
                       {isEditing && (
                         <button
-                          onClick={() => handleRemoveAttachment(attachment.id, attachment.name)}
+                          onClick={() => handleRemoveAttachment(attachment.idAnexo, attachment.nomeOriginal)}
                           className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition"
                         >
                           <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
