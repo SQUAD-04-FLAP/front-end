@@ -11,6 +11,7 @@ import { showMessage } from '../../adapters/showMessage';
 import { SelectMultiple } from '../SelectMultiple';
 import { formatDate } from '../../utils/formatDate';
 import { getUserPhoto } from '../../utils/getUserPhoto';
+import { uploadTaskAttachment } from '../../services/tasks';
 
 export function CardModal({ isOpen, onClose, task }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -18,6 +19,8 @@ export function CardModal({ isOpen, onClose, task }) {
   const { user, allUsers } = useAuth();
   const { sectors } = useSectors();
   const { deleteTask, state, editTask, dispatch } = useKanbanMember();
+
+  console.log(task);
 
   // Estados editáveis
   const [editedTitle, setEditedTitle] = useState('');
@@ -29,7 +32,7 @@ export function CardModal({ isOpen, onClose, task }) {
   const [editedCompany, setEditedCompany] = useState('');
 
 
-  const [attachments, setAttachments] = useState([
+  const [_, setAttachments] = useState([
     { id: 1, name: 'mockup-filtros-v4.png', type: 'image' },
     { id: 2, name: 'especificacoes-tecnicas.pdf', type: 'pdf' }
   ]);
@@ -38,16 +41,56 @@ export function CardModal({ isOpen, onClose, task }) {
   const [editedIsActive, setEditedIsActive] = useState(false);
   const [editedPriority, setEditedPriority] = useState('Média');
 
-    const handleAddAttachment = () => {
-    // Criar input de arquivo temporário
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.multiple = true;
-    input.accept = '*/*';
+  //   const handleAddAttachment = () => {
+  //   // Criar input de arquivo temporário
+  //   const input = document.createElement('input');
+  //   input.type = 'file';
+  //   input.multiple = true;
+  //   input.accept = '*/*';
   
     
-    input.click();
+  //   input.click();
+  // };
+
+  const handleAddAttachment = () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.multiple = true;
+
+  input.onchange = async (e) => {
+    const files = Array.from(e.target.files);
+
+    for (const file of files) {
+      const reader = new FileReader();
+
+      reader.onload = async () => {
+        const base64 = reader.result.split(",")[1];
+
+        try {
+          const uploaded = await uploadTaskAttachment(task.id, base64);
+
+          // Atualizar UI
+          setAttachments((prev) => [
+            ...prev,
+            {
+              id: uploaded.id,
+              name: file.name,
+              type: file.type.includes("pdf") ? "pdf" : "image",
+            },
+          ]);
+        } catch (err) {
+          console.error("Erro ao enviar:", err);
+          alert("Erro ao enviar o arquivo");
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
+
+  input.click();
+};
+
 
   const handleRemoveAttachment = (id, name) => {
     if (confirm(`Deseja remover o anexo "${name}"?`)) {
@@ -421,21 +464,43 @@ export function CardModal({ isOpen, onClose, task }) {
                   )}
                 </div>
               </div>
-
+              
+              {/* Anexos */}
                <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Anexos
                 </h3>
-                <div className="space-y-3">
-                  {attachments.map((attachment) => (
-                    <div key={attachment.id} className="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition group">
-                      <svg className={`w-5 h-5 flex-shrink-0 ${attachment.type === 'pdf' ? 'text-red-600' : 'text-blue-600'}`} fill="currentColor" viewBox="0 0 20 20">
+               <div className="space-y-3">
+                  {(!task.anexos || task.anexos.length === 0) && (
+                    <p className="text-gray-500 dark:text-gray-400 text-sm italic">
+                      Nenhum anexo disponível.
+                    </p>
+                  )}
+
+                  {task.anexos?.map((attachment) => (
+                    <div
+                      key={attachment.idAnexo}
+                      className="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition group"
+                    >
+                      <svg
+                        className={`w-5 h-5 flex-shrink-0 ${
+                          attachment.type === "pdf" ? "text-red-600" : "text-blue-600"
+                        }`}
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
                         <path d="M4 4v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0014.586 6L12 3.414A2 2 0 0010.586 3H6a2 2 0 00-2 1z" />
                       </svg>
-                      <span className="text-gray-700 dark:text-gray-300 truncate flex-1">{attachment.name}</span>
+
+                      <span className="text-gray-700 dark:text-gray-300 truncate flex-1">
+                        {attachment.nomeOriginal}
+                      </span>
+
                       {isEditing && (
                         <button
-                          onClick={() => handleRemoveAttachment(attachment.id, attachment.name)}
+                          onClick={() =>
+                            handleRemoveAttachment(attachment.idAnexo, attachment.nomeOriginal)
+                          }
                           className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition"
                         >
                           <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
@@ -444,6 +509,7 @@ export function CardModal({ isOpen, onClose, task }) {
                     </div>
                   ))}
                 </div>
+
                 {isEditing && (
                   <button 
                     onClick={handleAddAttachment}

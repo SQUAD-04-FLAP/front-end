@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { BtnNewProject } from '../../components/BtnNewProject';
 import { ButtonEditProject } from '../../components/ButtonEditProject';
 import { useAuth } from '../../hooks/useAuth';
+import { linkify } from '../../utils/linkify';
 
 export function Projects() {
     const { sectors, dispatch, state } = useSectors();
@@ -78,7 +79,7 @@ useEffect(() => {
 
                 {/* Conteúdo do Card */}
                 <div className="p-6">
-                  <p 
+                  {/* <p 
                     className="text-gray-600 dark:text-gray-400 text-sm mb-4 overflow-hidden"
                     style={{
                       display: '-webkit-box',
@@ -89,7 +90,20 @@ useEffect(() => {
                     }}
                   >
                     {projeto.descricao}
-                  </p>
+                  </p> */}
+
+                  <p
+                  className="text-gray-600 dark:text-gray-400 text-sm mb-4 overflow-hidden"
+                  style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical',
+                    lineHeight: '1.4em',
+                    maxHeight: '4.2em'
+                  }}
+                  dangerouslySetInnerHTML={{ __html: linkify(projeto.descricao) }}
+                />
+
 
                   {/* Ações */}
                   <div className="flex gap-2">
@@ -153,7 +167,7 @@ useEffect(() => {
                   📊 Resumo Geral
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {sectors.length} empresas cadastradas
+                  {sectors.length} empresa(s) cadastrada(s)
                 </p>
               </div>
             </div>

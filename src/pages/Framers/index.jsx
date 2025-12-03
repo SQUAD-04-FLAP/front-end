@@ -101,7 +101,7 @@ export function Framers() {
                   📊 Resumo Geral
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {framers.length} quadros cadastrados
+                  {framers.length} quadro(s) cadastrado(s)
                 </p>
               </div>
               <div className="flex gap-4">

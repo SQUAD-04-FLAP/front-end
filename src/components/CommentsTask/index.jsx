@@ -3,6 +3,7 @@ import { fetchTaskById } from "../../services/tasks";
 import { useAuth } from "../../hooks/useAuth";
 import { useComments } from "../../hooks/useComments";
 import { formatDate } from "../../utils/formatDate";
+import { getUserPhoto } from "../../utils/getUserPhoto";
 
 export function CommentsTask({ taskId }) {
   const { state, dispatch } = useComments();
@@ -41,7 +42,7 @@ export function CommentsTask({ taskId }) {
           className="flex gap-4 p-4 bg-white dark:bg-gray-700 rounded-xl text-white"
         >
           <img
-            src={c.avatar || "https://ui-avatars.com/api/?name=" + c.nomeUsuario}
+            src={getUserPhoto(c.fotoUrl) || "https://ui-avatars.com/api/?name=" + c.nomeUsuario}
             alt={c.nomeUsuario}
             className="w-10 h-10 rounded-full object-cover flex-shrink-0"
           />
