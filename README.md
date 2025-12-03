@@ -1,12 +1,77 @@
-# React + Vite
+# Flap - Front-end
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interface ágil, construída com React, Vite e Tailwind. Esses passos são para rodar somente o front-end.
 
-Currently, two official plugins are available:
+## 🧱 Tecnologias utilizadas
+- React — a espinha dorsal da interface
+- Vite — servidor rápido como um estalo
+- Tailwind CSS — estilização expressa
+- Axios / Fetch — integração com APIs
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Pré-requisitos
 
-## Expanding the ESLint configuration
+Antes de iniciar a jornada, garanta que sua máquina tenha:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Node.js (versão recomendada: 18+)
+- NPM ou Yarn
+- (Opcional) Editor de código de sua preferência — VSCode é sempre uma boa companhia 🚀
+
+## 🚀 Passo a passo para rodar o Front
+
+Siga os passos abaixo para iniciar o projeto no seu ambiente local:
+
+### 1️⃣ Clone o repositório
+
+   ```bash
+git clone https://github.com/SQUAD-04-FLAP/front-end.git
+   ```
+
+Isso criará uma cópia quente e cheirosa do projeto aí no seu ambiente.
+
+### 2️⃣ Instale as dependências
+
+Entre na pasta do projeto:
+
+  ```bash
+cd front-end
+   ```
+
+E instale tudo:
+
+  ```bash
+npm install
+   ```
+
+ou se preferir Yarn:
+  ```bash
+yarn install
+   ```
+
+### 3️⃣ Execute o servidor de desenvolvimento
+
+Com as dependências no lugar, acenda a fogueira:
+  ```bash
+npm run dev
+   ```
+ou
+  ```bash
+yarn dev
+   ```
+
+O Vite abrirá as portas cintilantes do front em algo como:
+
+👉 http://localhost:5173
+
+### 4️⃣ Personalize, experimente, crie
+
+Agora que o projeto está rodando, você pode:
+- Alterar componentes
+- Ajustar estilos com Tailwind
+- Integrar com o back-end
+- Testar comportamentos
+- Criar novas telas
+
+O território é seu — caminhe com liberdade ✨
+
+## 📄 Licença
+[MIT](https://choosealicense.com/licenses/mit/)
