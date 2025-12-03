@@ -20,6 +20,13 @@ export function CardModal({ isOpen, onClose, task }) {
   const { sectors } = useSectors();
   const { deleteTask, state, editTask, dispatch } = useKanbanMember();
 
+    useEffect(() => {
+    if (task) {
+      setAttachments(task?.anexos || []);
+    }
+  }, [task]);
+
+
   console.log(task);
 
   // Estados editáveis
@@ -32,64 +39,85 @@ export function CardModal({ isOpen, onClose, task }) {
   const [editedCompany, setEditedCompany] = useState('');
 
 
-  const [_, setAttachments] = useState([
-    { id: 1, name: 'mockup-filtros-v4.png', type: 'image' },
-    { id: 2, name: 'especificacoes-tecnicas.pdf', type: 'pdf' }
-  ]);
+  const [_attachment, setAttachments] = useState([]);
 
   const [originalValues, setOriginalValues] = useState({});
   const [editedIsActive, setEditedIsActive] = useState(false);
   const [editedPriority, setEditedPriority] = useState('Média');
 
-  //   const handleAddAttachment = () => {
-  //   // Criar input de arquivo temporário
-  //   const input = document.createElement('input');
-  //   input.type = 'file';
-  //   input.multiple = true;
-  //   input.accept = '*/*';
-  
-    
-  //   input.click();
-  // };
+// const handleAddAttachment = () => {
+//   const input = document.createElement("input");
+//   input.type = "file";
+//   input.multiple = true;
 
-  const handleAddAttachment = () => {
+//   input.onchange = async (e) => {
+//     const files = Array.from(e.target.files);
+
+//     for (const file of files) {
+//       try {
+//         const uploaded = await uploadTaskAttachment(task.id, file);
+
+//         // Atualizar UI
+//         setAttachments((prev) => [
+//           ...prev,
+//           {
+//             id: uploaded.id,
+//             name: file.name,
+//             type: file.type.includes("pdf") ? "pdf" : "image",
+//           },
+//         ]);
+//       } catch (err) {
+//         console.error("Erro ao enviar:", err);
+//         alert("Erro ao enviar o arquivo");
+//       }
+//     }
+//   };
+
+//   input.click();
+// };
+
+const handleAddAttachment = () => {
   const input = document.createElement("input");
   input.type = "file";
   input.multiple = true;
 
   input.onchange = async (e) => {
     const files = Array.from(e.target.files);
+    if (!files.length) return;
 
-    for (const file of files) {
-      const reader = new FileReader();
+    try {
+      // Faz upload de todos os arquivos em paralelo
+      const uploadedFiles = await Promise.all(
+        files.map(async (file) => {
+          const uploaded = await uploadTaskAttachment(task.id, file);
+          return {
+            id: uploaded.id,
+            name: file.name,
+            type: file.type.includes("pdf") ? "pdf" : "image",
+          };
+        })
+      );
 
-      reader.onload = async () => {
-        const base64 = reader.result.split(",")[1];
-
-        try {
-          const uploaded = await uploadTaskAttachment(task.id, base64);
-
-          // Atualizar UI
-          setAttachments((prev) => [
-            ...prev,
-            {
-              id: uploaded.id,
-              name: file.name,
-              type: file.type.includes("pdf") ? "pdf" : "image",
-            },
-          ]);
-        } catch (err) {
-          console.error("Erro ao enviar:", err);
-          alert("Erro ao enviar o arquivo");
-        }
+      // Cria um novo objeto task com os anexos atualizados
+      const updatedTask = {
+        ...task,
+        anexos: [...(task.anexos || []), ...uploadedFiles],
       };
 
-      reader.readAsDataURL(file);
+      // Atualiza o estado global do Kanban
+      dispatch({ type: "UPDATE_TASK", payload: updatedTask });
+
+      // Se quiser, atualiza um estado local para preview imediato
+      setAttachments(updatedTask.anexos);
+    } catch (err) {
+      console.error("Erro ao enviar anexos:", err);
+      alert("Erro ao enviar os arquivos");
     }
   };
 
   input.click();
 };
+
 
 
   const handleRemoveAttachment = (id, name) => {
@@ -466,20 +494,20 @@ export function CardModal({ isOpen, onClose, task }) {
               </div>
               
               {/* Anexos */}
-               <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
                   Anexos
                 </h3>
-               <div className="space-y-3">
-                  {(!task.anexos || task.anexos.length === 0) && (
+                <div className="space-y-3">
+                  {_attachment.length === 0 && (
                     <p className="text-gray-500 dark:text-gray-400 text-sm italic">
                       Nenhum anexo disponível.
                     </p>
                   )}
 
-                  {task.anexos?.map((attachment) => (
+                  {_attachment.map((attachment) => (
                     <div
-                      key={attachment.idAnexo}
+                      key={attachment.id} // usar id do estado local
                       className="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition group"
                     >
                       <svg
@@ -498,9 +526,7 @@ export function CardModal({ isOpen, onClose, task }) {
 
                       {isEditing && (
                         <button
-                          onClick={() =>
-                            handleRemoveAttachment(attachment.idAnexo, attachment.nomeOriginal)
-                          }
+                          onClick={() => handleRemoveAttachment(attachment.id, attachment.name)}
                           className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded transition"
                         >
                           <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
@@ -520,6 +546,7 @@ export function CardModal({ isOpen, onClose, task }) {
                   </button>
                 )}
               </div>
+
             </div>
           </div>
         </div>

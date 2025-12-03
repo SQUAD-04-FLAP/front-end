@@ -182,17 +182,18 @@ export async function fetchTasksByUserID(idUsuario) {
   }
 }
 
-export async function uploadTaskAttachment(idTarefa, base64File) {
+export async function uploadTaskAttachment(idTarefa, file) {
   try {
+    // Cria um FormData
+    const formData = new FormData();
+    formData.append("file", file);
+
     const res = await fetch(`${API_URL}/anexos/${idTarefa}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         ...getAuthHeader(),
       },
-      body: JSON.stringify({
-        file: base64File, // a API espera isso
-      }),
+      body: formData,
     });
 
     if (!res.ok) {
@@ -206,3 +207,29 @@ export async function uploadTaskAttachment(idTarefa, base64File) {
     throw e;
   }
 }
+
+
+// export async function uploadTaskAttachment(idTarefa, base64File) {
+//   try {
+//     const res = await fetch(`${API_URL}/anexos/${idTarefa}`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         ...getAuthHeader(),
+//       },
+//       body: JSON.stringify({
+//         file: base64File, // a API espera isso
+//       }),
+//     });
+
+//     if (!res.ok) {
+//       const text = await res.text();
+//       throw new Error(`Erro ao enviar anexo: ${text}`);
+//     }
+
+//     return await res.json();
+//   } catch (e) {
+//     console.error("[TasksService] Erro ao enviar anexo:", e);
+//     throw e;
+//   }
+// }
