@@ -325,7 +325,7 @@ function groupTasksByStatus(tasks, boardStatus) {
         dtCreated: t.createdAt,
         isActive: t.ativo,
         nomeCriadoPor: t.nomeCriadoPor,
-        fotoCriadoPor: t.fotoUrl,
+        fotoUrlCriador: t.fotoUrlCriador,
         responsaveis: t.responsaveis,
         nomeSetor: t.nomeSetor,
         anexos: t.anexos

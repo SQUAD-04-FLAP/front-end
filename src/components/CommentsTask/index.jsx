@@ -42,7 +42,7 @@ export function CommentsTask({ taskId }) {
           className="flex gap-4 p-4 bg-white dark:bg-gray-700 rounded-xl text-white"
         >
           <img
-            src={getUserPhoto(c.fotoUrl) || "https://ui-avatars.com/api/?name=" + c.nomeUsuario}
+            src={getUserPhoto({ fotoUrl: c.fotoUrlUsuario, nome: c.nomeUsuario }) || "https://ui-avatars.com/api/?name=" + c.nomeUsuario}
             alt={c.nomeUsuario}
             className="w-10 h-10 rounded-full object-cover flex-shrink-0"
           />

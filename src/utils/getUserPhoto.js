@@ -1,4 +1,3 @@
-// const BASE_IMAGE_URL = "http://ec2-54-226-167-245.compute-1.amazonaws.com:8080/flapboard/arquivos/";
 const BASE_IMAGE_URL = "https://api.flapkanban.top/flapboard/arquivos/";
 
 export function getUserPhoto(user) {
