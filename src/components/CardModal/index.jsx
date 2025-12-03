@@ -38,7 +38,6 @@ export function CardModal({ isOpen, onClose, task }) {
   const [editedAssignee, setEditedAssignee] = useState('');
   const [editedCompany, setEditedCompany] = useState('');
 
-
   const [_attachment, setAttachments] = useState([]);
 
   const [originalValues, setOriginalValues] = useState({});
@@ -60,9 +59,8 @@ const handleAddAttachment = () => {
         files.map(async (file) => {
           const uploaded = await uploadTaskAttachment(task.id, file);
           return {
-            id: uploaded.id,
-            name: file.name,
-            type: file.type.includes("pdf") ? "pdf" : "image",
+            idAnexo: uploaded.id,
+            nomeOriginal: file.name,
           };
         })
       );
@@ -87,14 +85,14 @@ const handleAddAttachment = () => {
   input.click();
 };
 
-const handleRemoveAttachment = async (id, name) => {
+const handleRemoveAttachment = async (idAnexo, name) => {
   if (confirm(`Deseja remover o anexo "${name}"?`)) {
     try {
       // 1. Remove no backend
-      await deleteTaskAttachment(id);
+      await deleteTaskAttachment(idAnexo);
 
       // 2. Remove no estado local
-      const newAttachments = _attachment.filter(att => att.idAnexo !== id);
+      const newAttachments = _attachment.filter(att => att.idAnexo !== idAnexo);
       setAttachments(newAttachments);
 
       // 3. Atualiza o estado global da tarefa
@@ -200,7 +198,7 @@ const handleRemoveAttachment = async (id, name) => {
     };
     await editTask(task.id, payload);
 
-    console.log("Payload enviado para editTask:", payload);
+    // console.log("Payload enviado para editTask:", payload);
 
     dispatch({ type: "SET_LOADING_UPDATE_TASK", payload: false });
 
