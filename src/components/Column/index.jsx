@@ -75,7 +75,6 @@ export function Column({ data, onCardClick }) {
                     style={{
                       ...provided.draggableProps.style,
                       opacity: snapshot.isDragging ? 0.8 : 1,
-                      // REMOVIDO transition que causava travamento!
                     }}
                   >
                     <Card task={task} onClick={onCardClick} />
