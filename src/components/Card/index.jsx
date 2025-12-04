@@ -45,15 +45,6 @@ export function Card({ task, onClick }) {
       {/* Criador da tarefa */}
       {task.nomeCriadoPor && (
         <div className="flex items-center gap-3 mb-4">
-          <img
-            src={
-              getUserPhoto({nome: task.nomeCriadoPor, fotoUrl: task.fotoUrlCriador}) ||
-              `https://ui-avatars.com/api/?name=${encodeURIComponent(task.nomeCriadoPor)}&background=0D8ABC&color=fff`
-            }
-            alt="creator"
-            className="w-9 h-9 rounded-full object-cover shadow-sm ring-2 ring-gray-200 dark:ring-gray-700"
-          />
-
           <div className="flex flex-col leading-tight">
             <span className="text-[11px] uppercase tracking-wide text-gray-400 dark:text-gray-500">
               Criado por
