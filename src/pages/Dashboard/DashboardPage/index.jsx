@@ -212,7 +212,7 @@ export function DashboardPage() {
                     {task.responsaveis.map((responsavel) => (
                         <div key={responsavel.idUsuario} className="relative group">
                         <img
-                            className="w-8 h-8 border-2 border-white rounded-full shadow-sm transition-transform transform hover:scale-110"
+                            className="w-8 h-8 object-cover border-2 border-white rounded-full shadow-sm transition-transform transform hover:scale-110"
                             src={getUserPhoto(responsavel) || `https://ui-avatars.com/api/?name=${responsavel.nome}&size=64`}
                             alt={responsavel.nome}
                         />
