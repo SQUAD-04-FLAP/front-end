@@ -9,46 +9,75 @@ export function ButtonAddNewList() {
   const [isLoading, setIsLoading] = useState(false);
   const { state, create_status, dispatch } = useKanbanMember();
 
-  const handleCreate = async () => {
-    if (!listName.trim()) return showMessage.warn("Digite um nome para a lista!", true);
-    if (!state.selectedBoard) return alert("Nenhum quadro selecionado!");
+  // const handleCreate = async () => {
+  //   if (!listName.trim()) return showMessage.warn("Digite um nome para a lista!", true);
+  //   if (!state.selectedBoard) return alert("Nenhum quadro selecionado!");
 
-    try {
-      setIsLoading(true);
+  //   try {
+  //     setIsLoading(true);
 
-      await create_status(state.selectedBoard, listName);
+  //     await create_status(state.selectedBoard, listName);
 
-      dispatch({
-          type: "SET_QUADRO_FILTER",
-          payload: {
-            id: state.selectedBoard,
-            name: state.selectedBoardName,
-            statusList: [...state.selectedBoardStatus, { nome: listName, id: Date.now() }]
-          }
-        });
+  //     dispatch({
+  //         type: "SET_QUADRO_FILTER",
+  //         payload: {
+  //           id: state.selectedBoard,
+  //           name: state.selectedBoardName,
+  //           statusList: [...state.selectedBoardStatus, { nome: listName, id: Date.now() }]
+  //         }
+  //       });
 
 
-      // dispatch({
-      //   type: "SET_QUADRO_FILTER",
-      //   payload: {
-      //     id: state.selectedBoard,
-      //     name: state.selectedBoardName,
-      //     statusList: [...state.selectedBoardStatus, newStatus]
-      //   }
-      // });
+  //     // dispatch({
+  //     //   type: "SET_QUADRO_FILTER",
+  //     //   payload: {
+  //     //     id: state.selectedBoard,
+  //     //     name: state.selectedBoardName,
+  //     //     statusList: [...state.selectedBoardStatus, newStatus]
+  //     //   }
+  //     // });
 
     
-      showMessage.success("Nova lista criada com sucesso!", true);
+  //     showMessage.success("Nova lista criada com sucesso!", true);
 
-      setListName("");
-      setIsOpen(false);
-    } catch (err) {
-      showMessage.error("Aconteceu um problema ao criar uma nova lista.", true);
-      alert("Erro ao criar status: " + err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     setListName("");
+  //     setIsOpen(false);
+  //   } catch (err) {
+  //     showMessage.error("Aconteceu um problema ao criar uma nova lista.", true);
+  //     alert("Erro ao criar status: " + err.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const handleCreate = async () => {
+  if (!listName.trim()) return showMessage.warn("Digite um nome para a lista!", true);
+  if (!state.selectedBoard) return alert("Nenhum quadro selecionado!");
+
+  try {
+    setIsLoading(true);
+
+    // Cria o status via API
+    const newStatus = await create_status(state.selectedBoard, listName);
+
+    // Atualiza o board no state
+    dispatch({
+      type: "CREATE_STATUS_SUCCESS",
+      payload: newStatus, // o status criado pela API
+    });
+
+    showMessage.success("Nova lista criada com sucesso!", true);
+
+    setListName("");
+    setIsOpen(false);
+  } catch (err) {
+    showMessage.error("Aconteceu um problema ao criar uma nova lista.", true);
+    console.error("Erro ao criar status:", err);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <>
