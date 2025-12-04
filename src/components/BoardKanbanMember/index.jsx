@@ -18,6 +18,8 @@ export function BoardKanbanMember() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
 
+  console.log(state);
+
   const loading = state.loading;
 
   // Aplica os filtros antes de agrupar
