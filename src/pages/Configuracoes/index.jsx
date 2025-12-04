@@ -72,6 +72,7 @@ export default function Configuracoes() {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex justify-center md:block">
                 <img 
+                  loading='lazy'
                   src={getUserPhoto(user) || "https://ui-avatars.com/api/?name=" + user.nome}
                   className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg"
                 />
@@ -134,7 +135,8 @@ export default function Configuracoes() {
               {/* Foto de perfil */}
               <div className="flex justify-center">
                 <div className="relative">
-                  <img 
+                  <img
+                    loading='lazy'
                     src={formData.avatar || getUserPhoto(user)}
                     className="w-32 h-32 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow-lg"
                   />
