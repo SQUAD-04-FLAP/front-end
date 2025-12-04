@@ -46,6 +46,7 @@ export default function AvatarDropdown() {
   return (
     <div className="relative" ref={dropdownRef}>
       <img
+        loading='lazy'
         onClick={toggleDropdown}
         className="w-10 h-10 rounded-full cursor-pointer transition object-cover"
         src={getUserPhoto(user) || "https://ui-avatars.com/api/?name=" + user.nome}
