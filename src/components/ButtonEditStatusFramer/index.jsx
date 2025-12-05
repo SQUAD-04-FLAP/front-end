@@ -88,13 +88,6 @@ export function ButtonEditStatusFramer({ status }) {
                     >
                     {loading ? "Salvando..." : "Salvar"}
                 </button>
-
-                {/* <button
-                  onClick={handleSave}
-                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                >
-                  Salvar
-                </button> */}
               </div>
             </motion.div>
           </div>

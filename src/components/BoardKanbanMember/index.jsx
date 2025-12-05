@@ -18,6 +18,8 @@ export function BoardKanbanMember() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
 
+  console.log(state);
+
   const loading = state.loading;
 
   // Aplica os filtros antes de agrupar
@@ -36,6 +38,7 @@ export function BoardKanbanMember() {
       setColumns([]);
     }
   }, [filteredTasks, state.selectedBoardStatus]);
+
 
   const handleCardClick = (task) => {
     setSelectedTask(task);
@@ -56,7 +59,7 @@ export function BoardKanbanMember() {
     const task = state.tasks.find((t) => t.idTarefa === taskId);
     if (!task) return;
 
-    if (task.idQuadro.toString() !== state.selectedBoard) {
+    if (task.idQuadro !== state.selectedBoard) {
       console.warn("Tentativa de mover tarefa para outro quadro — bloqueado.");
       return;
     }
