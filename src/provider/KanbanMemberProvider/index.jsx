@@ -59,29 +59,54 @@ export function KanbanMemberProvider({ children }) {
     }
   };
 
-   const create_status = async (idQuadro, nome) => {
-      dispatch({ type: "CREATE_STATUS_REQUEST" });
-      try {
-        const newStatus = await createStatus(idQuadro, nome);
-        dispatch({ type: "CREATE_STATUS_SUCCESS", payload: newStatus });
-        return newStatus;
-      } catch (e) {
-        dispatch({ type: "CREATE_STATUS_FAILURE", payload: e.message });
-        throw e;
-      }
-  };
-
-  const delete_status = async (id) => {
-  dispatch({ type: "DELETE_STATUS_REQUEST" });
+const create_status = async (idQuadro, nome) => {
+  dispatch({ type: "CREATE_STATUS_REQUEST" });
 
   try {
-    await deleteStatus(id);
-    dispatch({ type: "DELETE_STATUS_SUCCESS", payload: id });
+    const newStatus = await createStatus(idQuadro, nome);
+
+    dispatch({ 
+      type: "CREATE_STATUS_SUCCESS", 
+      payload: newStatus, 
+      boardId: idQuadro 
+    });
+
+    return newStatus;
   } catch (e) {
-    dispatch({ type: "DELETE_STATUS_FAILURE", payload: e.message });
+    dispatch({ type: "CREATE_STATUS_FAILURE", payload: e.message });
     throw e;
   }
 };
+
+const delete_status = async (id) => {
+dispatch({ type: "DELETE_STATUS_REQUEST" });
+
+try {
+  await deleteStatus(id);
+  // dispatch({ type: "DELETE_STATUS_SUCCESS", payload: id });
+  dispatch({ 
+  type: "DELETE_STATUS_SUCCESS", 
+  payload: id,
+  boardId: state.selectedBoard
+});
+} catch (e) {
+  dispatch({ type: "DELETE_STATUS_FAILURE", payload: e.message });
+  throw e;
+}
+};
+
+
+//   const delete_status = async (id) => {
+//   dispatch({ type: "DELETE_STATUS_REQUEST" });
+
+//   try {
+//     await deleteStatus(id);
+//     dispatch({ type: "DELETE_STATUS_SUCCESS", payload: id });
+//   } catch (e) {
+//     dispatch({ type: "DELETE_STATUS_FAILURE", payload: e.message });
+//     throw e;
+//   }
+// };
 
 const update_status = async (idStatus, nome) => {
   dispatch({ type: "UPDATE_STATUS_REQUEST" });
@@ -89,7 +114,13 @@ const update_status = async (idStatus, nome) => {
   try {
     const updated = await updateStatusFramer(idStatus, nome);
 
-    dispatch({ type: "UPDATE_STATUS_SUCCESS", payload: updated });
+    // dispatch({ type: "UPDATE_STATUS_SUCCESS", payload: updated });
+  dispatch({
+    type: "UPDATE_STATUS_SUCCESS",
+    payload: updated,
+    boardId: state.selectedBoard
+  });
+
     return updated;
   } catch (e) {
     dispatch({ type: "UPDATE_STATUS_FAILURE", payload: e.message });

@@ -73,18 +73,6 @@ const updateSector = async (idSetor, updatedData) => {
         }
   };
 
-  //  const fetchTasksDueDate = async (idSector) => {
-  //       dispatch({ type: "FETCH_TASKS_DUE_DATE_REQUEST" });
-
-  //       try {
-  //           const data = await getCloseTasksDueDate(idSector);
-  //           dispatch({ type: "FETCH_TASKS_DUE_DATE_SUCCESS", payload: data });
-
-  //       } catch (e) {
-  //           dispatch({ type: "FETCH_TASKS_DUE_DATE_FAILURE", payload: e.message });
-  //       }
-  // };
-
  const fetchTasksDueDate = async (idSector) => {
         dispatch({ type: "FETCH_TASKS_DUE_DATE_REQUEST" });
 

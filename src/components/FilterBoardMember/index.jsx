@@ -8,7 +8,7 @@ export function FilterBoardMember({ ...props }) {
   const { dispatch } = useKanbanMember();
 
   const [quadroSelecionado, setQuadroSelecionado] = useState("");
-  const [status, setStatus] = useState("loading");
+  const [status, setStatus] = useState("loading")
 
   // Atualiza o status do carregamento
   useEffect(() => {
@@ -21,70 +21,29 @@ export function FilterBoardMember({ ...props }) {
     }
   }, [framers, isLoading]);
 
-  // Seleciona quadro salvo no localStorage
-  
-  // useEffect(() => {
-  //   if (status === "loaded" && framers.length > 0) {
-  //     const savedBoard = localStorage.getItem("selectedBoard");
-  //     const savedBoardName = localStorage.getItem("selectedBoardName");
-  //     const savedBoardStatus = localStorage.getItem("selectedBoardStatus");
+ useEffect(() => {
+    if (framers?.length) {
+      dispatch({
+        type: "SET_BOARDS",
+        payload: framers
+      });
+    }
+  }, [framers, dispatch]);
 
-  //     if (savedBoard) {
-  //       const quadro = framers.find(f => f.idQuadro === parseInt(savedBoard));
-  //       const name = quadro?.nome || savedBoardName;
-  //       const statusList = quadro?.status || JSON.parse(savedBoardStatus || "[]");
-
-  //       setQuadroSelecionado(savedBoard);
-
-  //       dispatch({
-  //         type: "SET_QUADRO_FILTER",
-  //         payload: { id: savedBoard, name, statusList },
-  //       });
-  //     }
-  //   }
-  // }, [framers, status, dispatch]);
-
-  // Quando usuário muda o select
-  const handleChange = (e) => {
+const handleChange = (e) => {
   const id = e.target.value;
   const quadro = framers.find(f => f.idQuadro === parseInt(id));
   const name = quadro?.nome || "";
   const statusList = quadro?.status || [];
 
   setQuadroSelecionado(id);
-  localStorage.setItem("selectedBoard", id);
-  localStorage.setItem("selectedBoardName", name);
-  localStorage.setItem("selectedBoardStatus", JSON.stringify(statusList));
 
-  // Atualiza filtro
   dispatch({
     type: "SET_QUADRO_FILTER",
-    payload: { id, name, statusList },
-  });
-
-  // Adiciona o board ao estado boards
-  dispatch({
-    type: "SET_BOARDS",
-    payload: [quadro], // ou [...state.boards, quadro] se quiser acumular
+    payload: { id: parseInt(id), name, statusList },
   });
 };
 
-  // const handleChange = (e) => {
-  //   const id = e.target.value;
-  //   const quadro = framers.find(f => f.idQuadro === parseInt(id));
-  //   const name = quadro?.nome || "";
-  //   const statusList = quadro?.status || [];
-
-  //   setQuadroSelecionado(id);
-  //   localStorage.setItem("selectedBoard", id);
-  //   localStorage.setItem("selectedBoardName", name);
-  //   localStorage.setItem("selectedBoardStatus", JSON.stringify(statusList));
-
-  //   dispatch({
-  //     type: "SET_QUADRO_FILTER",
-  //     payload: { id, name, statusList },
-  //   });
-  // };
 
   return (
     <div className="relative inline-block">

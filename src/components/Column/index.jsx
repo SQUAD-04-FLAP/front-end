@@ -10,6 +10,7 @@ import { RouterLinks } from '../RouterLinks';
 
 export function Column({ data, onCardClick }) {
   const { delete_status } = useKanbanMember();
+  // console.log(data);
 
   const handleDeleteStatus = async (id) => {
     toast(Dialog, {
