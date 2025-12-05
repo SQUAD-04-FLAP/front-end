@@ -5,10 +5,6 @@ import { FilterContext } from './FilterContext';
 export function FilterProvider({ children }) {
   const [state, dispatch] = useReducer(filterReducer, initialStateFilter)
 
-  const setSelectedSector = (sectorId) => {
-    dispatch({ type: "SET_SECTOR", payload: sectorId });
-  };
-
   const setFramers = (framers) => dispatch({ type: "SET_FRAMERS", payload: framers })
 
   const clearFilters = () => {
@@ -16,7 +12,7 @@ export function FilterProvider({ children }) {
   };
 
   return (
-    <FilterContext.Provider value={{ state, dispatch, setSelectedSector, setFramers, clearFilters }}>
+    <FilterContext.Provider value={{ state, dispatch, setFramers, clearFilters }}>
       {children}
     </FilterContext.Provider>
   );
