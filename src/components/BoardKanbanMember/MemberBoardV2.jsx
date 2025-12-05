@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { Column } from '../../components/Column';
 import { CardModal } from '../../components/CardModal';
 import { DragDropContext } from '@hello-pangea/dnd';
@@ -8,8 +8,12 @@ import { FilterButton } from '../FilterButton';
 import { moveTask } from '../../services/tasks';
 import { useAuth } from '../../hooks/useAuth';
 import { ButtonAddNewList } from '../ButtonAddNewList';
+import { io } from 'socket.io-client';
 
-export function BoardKanbanMember() {
+// const SOCKET_URL = 'http://192.168.100.5:3000';
+const SOCKET_URL = 'https://api.flapkanban.top';
+
+export function BoardKanbanMemberV2() {
   const { state, dispatch } = useKanbanMember();
   const [columns, setColumns] = useState([]);
   const [taskFilters, setTaskFilters] = useState(null);
@@ -18,9 +22,85 @@ export function BoardKanbanMember() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
 
-  console.log(state);
+  // console.log(state);
 
   const loading = state.loading;
+
+  const socketRef = useRef(null);
+  const isRemoteUpdate = useRef(false);
+
+  const handleTaskUpdateFromModal = (updatedTask) => {
+    dispatch({
+      type: "UPDATE_SINGLE_TASK_DATA",
+      payload: updatedTask
+    });
+  };
+
+  const joinAndSync = (socket, roomId, isCreator) => {
+    socket.emit("join-room", roomId, (response) => {
+      if (!response.ok) return console.error(response.error);
+
+      const roomData = response.data;
+      const hasRoomData = roomData && Array.isArray(roomData) && roomData.length > 0;
+
+      if (hasRoomData) {
+        isRemoteUpdate.current = true;
+        dispatch({ type: "SET_TASKS_FROM_SOCKET", payload: roomData });
+      } else {
+        if (state.tasks && state.tasks.length > 0) {
+          socket.emit("update-room", roomId, state.tasks);
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (!state.selectedBoard) return;
+
+    socketRef.current = io(SOCKET_URL);
+    const socket = socketRef.current;
+    const roomId = state.selectedBoard.toString();
+
+    socket.on("connect", () => {
+      socket.emit("list-rooms", (existingRooms) => {
+        const roomExists = existingRooms.includes(roomId);
+
+        if (!roomExists) {
+          socket.emit("create-room", roomId, (response) => {
+            if (response.ok) joinAndSync(socket, roomId, true);
+            else console.error("Erro ao criar sala:", response.error);
+          });
+        } else {
+          joinAndSync(socket, roomId, false);
+        }
+      });
+    });
+
+    socket.on("room-data", (fullJson) => {
+      isRemoteUpdate.current = true;
+      dispatch({ type: "SET_TASKS_FROM_SOCKET", payload: fullJson });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.selectedBoard]);
+
+  useEffect(() => {
+    if (isRemoteUpdate.current) {
+      isRemoteUpdate.current = false;
+      return;
+    }
+
+    if (!socketRef.current || !state.selectedBoard) return;
+
+    if (state.tasks && state.tasks.length > 0) {
+      const roomId = state.selectedBoard.toString();
+      socketRef.current.emit("update-room", roomId, state.tasks);
+    }
+
+  }, [state.tasks, state.selectedBoard]);
 
   // Aplica os filtros antes de agrupar
   const filteredTasks = useMemo(() => {
@@ -121,11 +201,11 @@ export function BoardKanbanMember() {
         <DragDropContext onDragEnd={handleDragEnd}>
           <div className="overflow-x-auto">
             <div className="flex justify-center gap-4 min-w-max pb-4">
-              
+
               {/* 🔹 Loading */}
               {loading ? (
                 <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
-                    <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : columns.length === 0 ? (
                 <div className="text-center text-gray-500 dark:text-gray-400 w-full py-20">
@@ -148,7 +228,7 @@ export function BoardKanbanMember() {
         </DragDropContext>
       </main>
 
-      <CardModal 
+      <CardModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         task={selectedTask}
@@ -212,12 +292,12 @@ function applyFilters(tasks = [], filters = {}) {
       if (!found) return false;
     }
 
-  // 2.5) company / setor filter
-  if (filters.company && filters.company.trim() !== "") {
-    const taskCompany = normalize(t.nomeSetor);
-    const filterCompany = normalize(filters.company);
-    if (taskCompany !== filterCompany) return false;
-  }
+    // 2.5) company / setor filter
+    if (filters.company && filters.company.trim() !== "") {
+      const taskCompany = normalize(t.nomeSetor);
+      const filterCompany = normalize(filters.company);
+      if (taskCompany !== filterCompany) return false;
+    }
     // 3) status complete / not complete
     if (filters.isReady) {
       // consider completed if nomeStatus contains 'conclu' or 'complet'
@@ -292,7 +372,7 @@ function parseDateSafe(value) {
 }
 function startOfDay(d = new Date()) {
   const x = new Date(d);
-  x.setHours(0,0,0,0);
+  x.setHours(0, 0, 0, 0);
   return x;
 }
 function withinDays(now, date, days) {

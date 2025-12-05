@@ -10,8 +10,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { ButtonAddNewList } from '../ButtonAddNewList';
 import { io } from 'socket.io-client';
 
-// const SOCKET_URL = 'http://192.168.100.5:3000';
-const SOCKET_URL = 'https://api.flapkanban.top';
+const SOCKET_URL = 'http://192.168.100.5:3000';
+// const SOCKET_URL = 'https://api.flapkanban.top';
 
 export function BoardKanbanMemberV2() {
   const { state, dispatch } = useKanbanMember();

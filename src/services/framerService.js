@@ -166,3 +166,25 @@ export const updateFramer = async (idQuadro, framerData) => {
     throw e;
   }
 };
+
+export async function getFramerById(idQuadro) {
+  try {
+    const res = await fetch(`${API_URL}/${idQuadro}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`Erro ao buscar o quadro com ID ${idQuadro}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("[QuadroService] Erro ao buscar quadro por ID:", error);
+    throw error;
+  }
+}
+
