@@ -9,6 +9,7 @@ import {createTask} from '../../services/tasks';
 import { createStatus } from '../../services/framerService';
 import { deleteStatus } from '../../services/framerService';
 import { updateStatusFramer } from '../../services/framerService';
+import { getFramerById } from '../../services/framerService';
 
 export function KanbanMemberProvider({ children }) {
   const [state, dispatch] = useReducer(kanbanReducer, initialStateKanban);
@@ -65,10 +66,26 @@ const create_status = async (idQuadro, nome) => {
   try {
     const newStatus = await createStatus(idQuadro, nome);
 
-    dispatch({ 
-      type: "CREATE_STATUS_SUCCESS", 
-      payload: newStatus, 
-      boardId: idQuadro 
+    dispatch({
+      type: "CREATE_STATUS_SUCCESS",
+      payload: newStatus,
+      boardId: idQuadro
+    });
+
+    const updatedBoard = await getFramerById(idQuadro);
+
+    dispatch({
+      type: "SET_BOARDS",
+      payload: [updatedBoard]
+    });
+
+    dispatch({
+      type: "SET_QUADRO_FILTER",
+      payload: {
+        id: updatedBoard.idQuadro,
+        name: updatedBoard.nome,
+        statusList: updatedBoard.status
+      }
     });
 
     return newStatus;
@@ -77,6 +94,7 @@ const create_status = async (idQuadro, nome) => {
     throw e;
   }
 };
+
 
 const delete_status = async (id) => {
 dispatch({ type: "DELETE_STATUS_REQUEST" });
@@ -95,26 +113,12 @@ try {
 }
 };
 
-
-//   const delete_status = async (id) => {
-//   dispatch({ type: "DELETE_STATUS_REQUEST" });
-
-//   try {
-//     await deleteStatus(id);
-//     dispatch({ type: "DELETE_STATUS_SUCCESS", payload: id });
-//   } catch (e) {
-//     dispatch({ type: "DELETE_STATUS_FAILURE", payload: e.message });
-//     throw e;
-//   }
-// };
-
 const update_status = async (idStatus, nome) => {
   dispatch({ type: "UPDATE_STATUS_REQUEST" });
 
   try {
     const updated = await updateStatusFramer(idStatus, nome);
 
-    // dispatch({ type: "UPDATE_STATUS_SUCCESS", payload: updated });
   dispatch({
     type: "UPDATE_STATUS_SUCCESS",
     payload: updated,

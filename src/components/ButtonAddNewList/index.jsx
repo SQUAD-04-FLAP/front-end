@@ -16,13 +16,11 @@ export function ButtonAddNewList() {
   try {
     setIsLoading(true);
 
-    // Cria o status via API
     const newStatus = await create_status(state.selectedBoard, listName);
 
-    // Atualiza o board no state
     dispatch({
       type: "CREATE_STATUS_SUCCESS",
-      payload: newStatus, // o status criado pela API
+      payload: newStatus,
     });
 
     showMessage.success("Nova lista criada com sucesso!", true);

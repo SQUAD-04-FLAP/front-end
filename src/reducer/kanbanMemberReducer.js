@@ -1,13 +1,10 @@
 export const initialStateKanban = {
-  columns: [],
   boards: [],
   tasks: [],
   loading: false,
   loadingEditTask: false,
   error: null,
   selectedBoard: '',
-  selectedTask: null,
-  isModalOpen: false,
 };
 
 export function kanbanReducer(state, action) {
